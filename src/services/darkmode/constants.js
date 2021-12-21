@@ -7,6 +7,4 @@ const constants = reduxService.prepareConstants(
   ]
 )
 
-console.log(constants)
-
 export default constants

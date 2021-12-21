@@ -49,15 +49,15 @@ class SunriseAuction extends React.PureComponent {
     const end = new Date((now + 60 * 60 * 24 * 365 * 100) * 1000)
     return (
       <div>
-        <div className='font-bold text-center mt-4'>{'Sunrise Auction'}</div>
+        <div className='font-bold text-center mt-4 text-lg'>{'Sunrise Auction'}</div>
         <div className='max-w-sm m-auto mt-4'>{'Welcome to the sunrise auction. During the auction, you may select & bid on the domains you wish to acquire. You can update your bids at any time during the bid placement phase.'}</div>
         <div className='mt-8'>
-          <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded p-4 font-bold'>
+          <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold'>
             <div>{'My Bids'}</div>
 						<ArrowRightIcon className="h-6" />
           </div>
         </div>
-        <div className='mt-4 bg-gray-100 rounded p-4'>
+        <div className='mt-4 bg-gray-100 rounded-lg p-4'>
           <div className='font-bold mb-4'>{'Auction Phases'}</div>
           <div className='underline mb-8 text-sm text-gray-700'>{'Read more about the Sunrise Auction here'}</div>
           <div className='mt-2'>

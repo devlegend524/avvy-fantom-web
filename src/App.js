@@ -12,6 +12,7 @@ function App() {
     <BrowserRouter>
       <views.Wrapper>
         <Routes>
+          <Route path={linkingService.path('Domain')} element={<views.Domain/>} />
           <Route path={linkingService.path('Landing')} element={<views.Landing />} />
           <Route path={linkingService.path('MyDomains')} element={<views.MyDomains />} />
           <Route path={linkingService.path('SunriseAuction')} element={<views.SunriseAuction />} />

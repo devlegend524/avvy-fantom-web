@@ -1,10 +1,32 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { ArrowRightIcon, SearchIcon } from '@heroicons/react/solid'
+import { useNavigate } from 'react-router-dom'
 
-import linkingService from 'services/linking'
 import darkmodeSelectors from 'services/darkmode/selectors'
 import darkmodeActions from 'services/darkmode/actions'
+import linkingService from 'services/linking'
+
+function DomainSearch(props) {
+  let navigator = useNavigate()
+  let onBeforeSubmit = props.onBeforeSubmit
+  let textInput = React.createRef()
+  
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (onBeforeSubmit) onBeforeSubmit()
+    const domain = textInput.current.value
+    textInput.current.value = ''
+    linkingService.navigate(navigator, 'Domain', { domain })
+  }
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <input ref={textInput} autoCapitalize="off" placeholder={'Search domain names'} className='bg-transparent w-full placeholder:text-gray-400 text-black text-center p-4' />
+    </form>
+  )
+}
 
 class Wrapper extends React.PureComponent {
   constructor(props) {
@@ -27,28 +49,39 @@ class Wrapper extends React.PureComponent {
   render() {
     return (
 			<div className='font-poppins'>
+        {/* Mobile menu */}
 				<div className="fixed top-0 bg-white h-full left-0 w-screen z-10 transition-all" style={{left: '100%', transform: this.state.menuOpen ? 'translateX(-100%)' : 'translateX(0)'}}>
 					<div className="absolute top-0 right-0 p-4 cursor-pointer" onClick={this.toggleMenu.bind(this)}>
 						<svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</div>
-					<div className="font-poppins flex-col flex justify-center items-center h-full p-4">
+					<div className="font-poppins flex-col flex items-center h-full p-4">
 						<a className="block text-center" href="#">
 							<img src="/images/logo.png" className="w-16 m-auto mb-4" />
 						</a>
+            <div className='mb-4 bg-gray-100 rounded-xl w-full text-center relative'>
+              <DomainSearch onBeforeSubmit={this.toggleMenu.bind(this)} />
+              <div className='absolute right-0 top-0 h-full flex items-center justify-center mr-4 pointer-events-none'>
+                <SearchIcon className='w-6 text-gray-300' />
+              </div>
+            </div>
             <Link 
-              className='block text-center text-lg p-2' 
-              to={linkingService.path('SunriseAuction')}
-              onClick={this.toggleMenu.bind(this)}>
-              Sunrise Auction
-            </Link>
-            <Link 
-              className='block text-center text-lg p-2' 
+              className='block text-lg p-2 w-full h-16 flex items-center justify-between' 
               to={linkingService.path('MyDomains')}
               onClick={this.toggleMenu.bind(this)}>
-              My Domains
+              <div>My Domains</div>
+              <ArrowRightIcon className='w-6' />
             </Link>
+            <div className='w-full h-1 bg-gray-100'></div>
+            <Link 
+              className='block text-lg p-2 w-full h-16 flex items-center justify-between' 
+              to={linkingService.path('SunriseAuction')}
+              onClick={this.toggleMenu.bind(this)}>
+              <div>Sunrise Auction</div>
+              <ArrowRightIcon className='w-6' />
+            </Link>
+            <div className='w-full h-1 bg-gray-100'></div>
 						<div className="h-24"></div>
 					</div>
 					<div className="absolute bottom-0 mb-8 text-center w-full">
@@ -59,6 +92,8 @@ class Wrapper extends React.PureComponent {
 						</div>
 					</div>
 				</div>
+
+        {/* Page header */}
 				<div className="fixed top-0 w-full h-16 md:h-24 border-b-2 border-gray-100 bg-white">
 					<div className="text-center flex items-center justify-between w-full h-full max-w-screen-xl m-auto">
 						<Link to={linkingService.path('Landing')}>
@@ -87,6 +122,8 @@ class Wrapper extends React.PureComponent {
 						</div>
 					</div>
 				</div>
+
+        {/* Content */}
         <div className="h-16 md:h-24"></div>
         <div className='max-w-screen-md m-auto p-4'>
           {this.props.children}
