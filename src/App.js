@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import {
   BrowserRouter,
   Routes,
@@ -11,12 +10,9 @@ function App() {
   return (
     <BrowserRouter>
       <views.Wrapper />
-      {/*
       <Routes>
-        <Route path="/" element={<Test />} />
-        <Route path="wat" element={<Wat />} />
+        <Route path="/" element={<div />} />
       </Routes>
-      */}
     </BrowserRouter>
   );
 }

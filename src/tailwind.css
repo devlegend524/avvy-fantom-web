@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* latin */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 300;
+  src: url(/fonts/Poppins-Light.ttf);
+}
+/* latin */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/fonts/Poppins-Regular.ttf);
+}
+/* latin */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  src: url(/fonts/Poppins-SemiBold.ttf);
+}
+/* latin */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  src: url(/fonts/Poppins-Bold.ttf);
+}
+/* latin */
+@font-face {
+  font-family: 'Zen Dots';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/fonts/ZenDots-Regular.ttf);
+}

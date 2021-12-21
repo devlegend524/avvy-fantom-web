@@ -24,3 +24,6 @@ yarn-error.log*
 
 # local stuff
 env.sh
+*.swp
+*.swo
+.directory
