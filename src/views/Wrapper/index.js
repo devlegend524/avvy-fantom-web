@@ -66,9 +66,6 @@ class Wrapper extends React.PureComponent {
 							</svg>
 						</div>
 						<div className="pr-8 hidden md:flex">
-              <div className="cursor-pointer">
-                <span onClick={this.toggleDarkmode.bind(this)}>Dark Mode</span>
-              </div>
 							<div className="font-poppins ml-8 text-md">
 								<a href="#">Sunrise Auction</a>
 							</div>
