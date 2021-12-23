@@ -20,7 +20,7 @@ const linking = {
   // generates the path, to be used in links
   path: (pathName, params) => {
     let path = paths[pathName]
-    if (!path) throw `Missing path "${pathName}". Check services/linking.js.`
+    if (!path) throw new Error(`Missing path "${pathName}". Check services/linking.js.`)
     if (params) {
       for (let key in params) {
         path = path.replace(`:${key}`, params[key])

@@ -8,6 +8,8 @@ module.exports = {
       colors: {
         'grayish-200': '#2E2E2E',
         'grayish-300': '#3D3D3D',
+        'alert-blue': '#009BCC',
+        'alert-red': '#E00000',
       },
       fontFamily: {
         'poppins': ["'Poppins'", 'sans-serif'],

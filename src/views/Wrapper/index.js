@@ -2,31 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { ArrowRightIcon, SearchIcon } from '@heroicons/react/solid'
-import { useNavigate } from 'react-router-dom'
 
-import darkmodeSelectors from 'services/darkmode/selectors'
-import darkmodeActions from 'services/darkmode/actions'
-import linkingService from 'services/linking'
-
-function DomainSearch(props) {
-  let navigator = useNavigate()
-  let onBeforeSubmit = props.onBeforeSubmit
-  let textInput = React.createRef()
-  
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (onBeforeSubmit) onBeforeSubmit()
-    const domain = textInput.current.value
-    textInput.current.value = ''
-    linkingService.navigate(navigator, 'Domain', { domain })
-  }
-  
-  return (
-    <form onSubmit={handleSubmit}>
-      <input ref={textInput} autoCapitalize="off" placeholder={'Search domain names'} className='bg-transparent w-full placeholder:text-gray-400 text-black text-center p-4' />
-    </form>
-  )
-}
+import components from 'components'
+import services from 'services'
 
 class Wrapper extends React.PureComponent {
   constructor(props) {
@@ -48,7 +26,15 @@ class Wrapper extends React.PureComponent {
  
   render() {
     return (
-			<div className='font-poppins'>
+			<div className={`font-poppins`}>
+        
+        <components.Modal ref={(ref) => this.searchModal = ref}>
+          <div className='font-bold'>
+            
+          </div>
+          <components.DomainSearch onBeforeSubmit={() => this.searchModal.toggle()} />
+        </components.Modal>
+
         {/* Mobile menu */}
 				<div className="fixed top-0 bg-white h-full left-0 w-screen z-10 transition-all" style={{left: '100%', transform: this.state.menuOpen ? 'translateX(-100%)' : 'translateX(0)'}}>
 					<div className="absolute top-0 right-0 p-4 cursor-pointer" onClick={this.toggleMenu.bind(this)}>
@@ -58,17 +44,14 @@ class Wrapper extends React.PureComponent {
 					</div>
 					<div className="font-poppins flex-col flex items-center h-full p-4">
 						<a className="block text-center" href="#">
-							<img src="/images/logo.png" className="w-16 m-auto mb-4" />
+							<img src="/images/logo.png" className="w-16 m-auto mb-4" alt="Avvy Domains" />
 						</a>
-            <div className='mb-4 bg-gray-100 rounded-xl w-full text-center relative'>
-              <DomainSearch onBeforeSubmit={this.toggleMenu.bind(this)} />
-              <div className='absolute right-0 top-0 h-full flex items-center justify-center mr-4 pointer-events-none'>
-                <SearchIcon className='w-6 text-gray-300' />
-              </div>
+            <div className='mb-2 w-full'>
+              <components.DomainSearch onBeforeSubmit={this.toggleMenu.bind(this)} />
             </div>
             <Link 
               className='block text-lg p-2 w-full h-16 flex items-center justify-between' 
-              to={linkingService.path('MyDomains')}
+              to={services.linking.path('MyDomains')}
               onClick={this.toggleMenu.bind(this)}>
               <div>My Domains</div>
               <ArrowRightIcon className='w-6' />
@@ -76,7 +59,7 @@ class Wrapper extends React.PureComponent {
             <div className='w-full h-1 bg-gray-100'></div>
             <Link 
               className='block text-lg p-2 w-full h-16 flex items-center justify-between' 
-              to={linkingService.path('SunriseAuction')}
+              to={services.linking.path('SunriseAuction')}
               onClick={this.toggleMenu.bind(this)}>
               <div>Sunrise Auction</div>
               <ArrowRightIcon className='w-6' />
@@ -87,7 +70,7 @@ class Wrapper extends React.PureComponent {
 					<div className="absolute bottom-0 mb-8 text-center w-full">
 						<div className="w-32 m-auto">
 							<a href="https://avax.network">
-								<img src="/images/avax.png" />
+								<img src="/images/avax.png" alt="Powered by Avalanche." />
 							</a>
 						</div>
 					</div>
@@ -96,10 +79,10 @@ class Wrapper extends React.PureComponent {
         {/* Page header */}
 				<div className="fixed top-0 w-full h-16 md:h-24 border-b-2 border-gray-100 bg-white">
 					<div className="text-center flex items-center justify-between w-full h-full max-w-screen-xl m-auto">
-						<Link to={linkingService.path('Landing')}>
+						<Link to={services.linking.path('Landing')}>
 							<div className="h-full ml-1 md:ml-3 items-center justify-center flex">
 								<div>
-									<img src="/images/logo.png" className="w-12 md:w-20 m-auto" />
+									<img src="/images/logo.png" className="w-12 md:w-20 m-auto" alt="Avvy Domains" />
 								</div>
 								<div className="text-left ml-1 md:ml-3">
 									<div className="font-zen uppercase text-md md:text-xl">Avvy</div>
@@ -112,12 +95,17 @@ class Wrapper extends React.PureComponent {
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
 							</svg>
 						</div>
-						<div className="pr-8 hidden md:flex">
+						<div className="pr-8 hidden md:flex items-center">
 							<div className="font-poppins ml-8 text-md">
-								<Link to={linkingService.path('SunriseAuction')}>Sunrise Auction</Link>
+                <div className="p-8 cursor-pointer" onClick={() => this.searchModal.toggle()}>
+                  <SearchIcon className='w-6' />
+                </div>
+							</div>
+							<div className="font-poppins text-md">
+								<Link to={services.linking.path('SunriseAuction')}>Sunrise Auction</Link>
 							</div>
 							<div className="font-poppins ml-8 text-md">
-        				<Link to={linkingService.path('MyDomains')}>My Domains</Link>
+        				<Link to={services.linking.path('MyDomains')}>My Domains</Link>
 							</div>
 						</div>
 					</div>
@@ -134,11 +122,11 @@ class Wrapper extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  isDarkmode: darkmodeSelectors.isDarkmode(state),
+  isDarkmode: services.darkmode.selectors.isDarkmode(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setDarkmode: (value) => dispatch(darkmodeActions.setDarkmode(value)),
+  setDarkmode: (value) => dispatch(services.darkmode.actions.setDarkmode(value)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wrapper)
