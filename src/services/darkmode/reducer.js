@@ -19,8 +19,10 @@ export const reducer = (state = initialState, action) => {
   }
 }
 
-export default {
+const exports = {
   reducer, 
   reducerName,
   initialState,
 }
+
+export default exports

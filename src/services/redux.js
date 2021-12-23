@@ -15,6 +15,8 @@ export const prepareConstants = (prefix, labels) => {
   }, {})
 }
 
-export default {
+const exports = {
   prepareConstants,
 }
+
+export default exports

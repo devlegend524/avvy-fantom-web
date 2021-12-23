@@ -12,4 +12,10 @@ class Landing extends React.PureComponent {
   }
 }
 
-export default Landing
+const mapStateToProps = (state) => ({
+})
+
+const mapDispatchToProps = (dispatch) => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Landing)
