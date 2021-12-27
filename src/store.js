@@ -1,14 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 // import reducers
-import darkmodeService from './services/darkmode/reducer'
+import services from 'services'
+import views from 'views'
 
 
 const reducerMap = {}
 
 new Array(
-  //services
-  darkmodeService,
+  views.Domain.redux.reducer,
+  services.darkmode.reducer,
+  services.user.reducer
 ).forEach(service => {
   reducerMap[service.reducerName] = service.reducer
 })

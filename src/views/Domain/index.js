@@ -3,55 +3,57 @@ import { connect } from 'react-redux'
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import { InformationCircleIcon } from '@heroicons/react/outline'
 
-import linkingService from 'services/linking'
+import services from 'services'
 import components from 'components'
 
-const NAME_STATUSES = {
-  CAN_REGISTER: 1,
-  CAN_BID: 2,
-  BIDDING_CLOSED: 3,
-  UNAVAILABLE: 4,
-}
+import actions from './actions'
+import constants from './constants'
+import reducer from './reducer'
+import selectors from './selectors'
 
+import RegistrationFlow from './RegistrationFlow'
+
+console.log(RegistrationFlow)
 
 class Domain extends React.PureComponent {
   constructor(props) {
     super(props)
-    const params = linkingService.getParams('Domain')
+    const params = services.linking.getParams('Domain')
     this.state = {
       domain: params.domain,
-      //nameStatus: NAME_STATUSES.CAN_REGISTER,
-      //nameStatus: NAME_STATUSES.CAN_BID
-      //nameStatus: NAME_STATUSES.BIDDING_CLOSED,
-      nameStatus: NAME_STATUSES.UNAVAILABLE,
     }
     this.searchPlaceholder = 'Search for another name'
+    this.props.loadDomain(params.domain)
   }
 
   updateParams = () => {
-    const params = linkingService.getParams('Domain')
+    const params = services.linking.getParams('Domain')
     this.setState({
       domain: params.domain
     })
+    this.props.loadDomain(params.domain)
   }
 
   componentDidMount() {
-    linkingService.addEventListener('Domain', this.updateParams)
+    services.linking.addEventListener('Domain', this.updateParams)
   }
 
   componentWillUnmount() {
-    linkingService.removeEventListener('Domain', this.updateParams)
+    services.linking.removeEventListener('Domain', this.updateParams)
   }
 
-  renderCanRegisterBody() {
+  renderAvailableBody() {
     return (
       <div className='max-w-md m-auto'>
+        <components.Modal ref={(ref) => this.registrationModal = ref}> 
+          <RegistrationFlow />
+        </components.Modal>
         <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
           <CheckCircleIcon className='w-6 text-alert-blue mr-2' />
           <div className='text-alert-blue'>{'Available for registration'}</div>
         </div>
         <div className='mt-8'>
-          <components.Button text={'Register this name'} />
+          <components.Button text={'Register this name'} onClick={() => this.registrationModal.toggle()} />
         </div>
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />
@@ -60,7 +62,7 @@ class Domain extends React.PureComponent {
     )
   }
 
-  renderCanBidBody() {
+  renderAuctionAvailableBody() {
     return (
       <div className='max-w-md m-auto'>
         <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
@@ -77,7 +79,7 @@ class Domain extends React.PureComponent {
     )
   }
 
-  renderBiddingClosedBody() {
+  renderAuctionBiddingClosedBody() {
     return (
       <div className='max-w-md m-auto'>
         <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
@@ -97,7 +99,35 @@ class Domain extends React.PureComponent {
     )
   }
 
-  renderUnavailableBody() {
+  renderRegisteredSelfBody() {
+    return (
+      <div className='max-w-md m-auto'>
+        <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
+          <InformationCircleIcon className='w-6 text-alert-red mr-2' />
+          <div className='text-alert-red'>{'Not available for registration'}</div>
+        </div>
+        <div className='mt-4'>
+          <components.DomainSearch placeholder={this.searchPlaceholder} />
+        </div>
+        <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8'>
+          <div>
+            <div className='font-bold'>{'Registrant'}</div>
+            <div>
+              {'0x9d7b2CF7daD4A5FA54E3d4CC3A6'}
+            </div>
+          </div>
+          <div className='mt-4'>
+            <div className='font-bold'>{'Expiry'}</div>
+            <div>
+              {'Jan 10, 2021 at 10:31pm'}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderRegisteredOtherBody() {
     return (
       <div className='max-w-md m-auto'>
         <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
@@ -126,18 +156,25 @@ class Domain extends React.PureComponent {
   }
 
   renderBody() {
-    switch (this.state.nameStatus) {
-      case NAME_STATUSES.CAN_REGISTER:
-        return this.renderCanRegisterBody()
+    if (this.props.isLoading || !this.props.domain) return null
 
-      case NAME_STATUSES.CAN_BID:
-        return this.renderCanBidBody()
+    const statuses = this.props.domain.constants.DOMAIN_STATUSES
 
-      case NAME_STATUSES.BIDDING_CLOSED:
-        return this.renderBiddingClosedBody()
+    switch (this.props.domain.status) {
+      case statuses.AVAILABLE:
+        return this.renderAvailableBody()
 
-      case NAME_STATUSES.UNAVAILABLE:
-        return this.renderUnavailableBody()
+      case statuses.AUCTION_AVAILABLE:
+        return this.renderAuctionAvailableBody()
+
+      case statuses.AUCTION_BIDDING_CLOSED:
+        return this.renderAuctionBiddingClosedBody()
+
+      case statuses.REGISTERED_OTHER:
+        return this.renderRegisteredOtherBody()
+
+      case statuses.REGISTERED_SELF:
+        return this.renderRegisteredSelfBody()
       
       default:
         return null
@@ -155,9 +192,21 @@ class Domain extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
+  isLoading: selectors.isLoading(state),
+  domain: selectors.domain(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  loadDomain: (domain) => dispatch(actions.loadDomain(domain)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Domain)
+const component = connect(mapStateToProps, mapDispatchToProps)(Domain)
+
+component.redux = {
+  actions,
+  constants,
+  reducer,
+  selectors,
+}
+
+export default component

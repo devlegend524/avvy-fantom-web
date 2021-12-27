@@ -19,7 +19,7 @@ class MyDomains extends React.PureComponent {
     return ( 
       <div>
         <div className='mt-4 mb-4 text-lg text-center font-bold'>{"My Domains"}</div>
-        <div className='max-w-sm m-auto mt-4'>{'These are the domains currently in your wallet. To manage your domains, click here.'}</div>
+        {/*<div className='max-w-sm m-auto mt-4'>{'These are the domains currently in your wallet. To manage your domains, click here.'}</div>*/}
         <div className='mt-8'>
           {this.domains.map((domain, index) => (
             <Link
