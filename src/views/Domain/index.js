@@ -42,6 +42,11 @@ class Domain extends React.PureComponent {
     services.linking.removeEventListener('Domain', this.updateParams)
   }
 
+  addToCart(navigator) {
+    this.props.addToCart(this.state.domain)
+    services.linking.navigate(navigator, 'Register', {})
+  }
+
   renderAvailableBody() {
     return (
       <div className='max-w-md m-auto'>
@@ -53,7 +58,10 @@ class Domain extends React.PureComponent {
           <div className='text-alert-blue'>{'Available for registration'}</div>
         </div>
         <div className='mt-8'>
-          <components.Button text={'Register this name'} onClick={() => this.registrationModal.toggle()} />
+          <components.Button 
+            text={'Register this name'} 
+            onClick={(navigator) => this.addToCart(navigator)} 
+          />
         </div>
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />
@@ -198,6 +206,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   loadDomain: (domain) => dispatch(actions.loadDomain(domain)),
+  addToCart: (domain) => dispatch(services.cart.actions.addToCart(domain)),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Domain)

@@ -11,6 +11,7 @@ const paths = {
   Landing: '/',
   MyDomains: '/user/domains',
   SunriseAuction: '/sunrise',
+  Register: '/register',
 }
 
 const linkingEvents = new EventTarget()
@@ -56,7 +57,7 @@ const linking = {
   // we need to make sure to update any
   // existing components
   navigate: (navigator, pathName, params) => {
-    navigator(linkingService.path('Domain', params))
+    navigator(linkingService.path(pathName, params))
     linkingEvents.dispatchEvent(
       new Event(pathName)
     )
