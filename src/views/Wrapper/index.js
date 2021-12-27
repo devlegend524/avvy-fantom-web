@@ -44,7 +44,7 @@ class Wrapper extends React.PureComponent {
 					</div>
 					<div className="font-poppins flex-col flex items-center h-full p-4">
 						<a className="block text-center" href="#">
-							<img src="/images/logo.png" className="w-16 m-auto mb-4" alt="Avvy Domains" />
+							<img src={services.linking.static('images/logo.png')} className="w-16 m-auto mb-4" alt="Avvy Domains" />
 						</a>
             <div className='mb-2 w-full'>
               <components.DomainSearch onBeforeSubmit={this.toggleMenu.bind(this)} />
@@ -70,7 +70,7 @@ class Wrapper extends React.PureComponent {
 					<div className="absolute bottom-0 mb-8 text-center w-full">
 						<div className="w-32 m-auto">
 							<a href="https://avax.network">
-								<img src="/images/avax.png" alt="Powered by Avalanche." />
+								<img src={services.linking.static('images/avax.png')} alt="Powered by Avalanche." />
 							</a>
 						</div>
 					</div>
@@ -82,7 +82,7 @@ class Wrapper extends React.PureComponent {
 						<Link to={services.linking.path('Landing')}>
 							<div className="h-full ml-1 md:ml-3 items-center justify-center flex">
 								<div>
-									<img src="/images/logo.png" className="w-12 md:w-20 m-auto" alt="Avvy Domains" />
+									<img src={services.linking.static('images/logo.png')} className="w-12 md:w-20 m-auto" alt="Avvy Domains" />
 								</div>
 								<div className="text-left ml-1 md:ml-3">
 									<div className="font-zen uppercase text-md md:text-xl">Avvy</div>

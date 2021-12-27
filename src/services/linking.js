@@ -61,6 +61,11 @@ const linking = {
       new Event(pathName)
     )
   },
+
+  // returns the url for a static file
+  static: (path) => {
+    return `/${path}`
+  }
 }
 
 export default linking

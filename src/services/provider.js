@@ -6,6 +6,8 @@
 import API from 'services/api'
 import { ethers } from 'ethers'
 
+import services from 'services'
+
 let _isConnected = false
 let _chainId;
 let _account;
@@ -47,8 +49,12 @@ const provider = {
 
   // get api client
   buildAPI: () => {
-    _chainId = parseInt(window.ethereum.chainId, 16);
-    _provider = new ethers.providers.Web3Provider(window.ethereum)
+    _chainId = window.ethereum.chainId ? parseInt(window.ethereum.chainId, 16) : parseInt(services.environment.DEFAULT_CHAIN_ID, 16) 
+    if (_chainId) {
+      _provider = new ethers.providers.Web3Provider(window.ethereum)
+    } else {
+      _provider = new ethers.providers.JsonRpcProvider(services.environment.DEFAULT_PROVIDER_URL)
+    }
     _signer = _provider.getSigner()
     return new API(_chainId, _account, _signer);
   },

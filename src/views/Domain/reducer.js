@@ -4,6 +4,7 @@ export const reducerName = 'myDomainsView'
 
 export const initialState = {
   isLoading: false,
+  domain: null,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -12,6 +13,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: action.isLoading
+      }
+
+    case constants.SET_DOMAIN:
+      return {
+        ...state,
+        domain: action.domain
       }
 
     default:
