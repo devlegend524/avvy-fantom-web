@@ -7,11 +7,14 @@ import views from 'views'
 
 const reducerMap = {}
 
-new Array(
+const reducers = [
   views.Domain.redux.reducer,
+  services.cart.reducer,
   services.darkmode.reducer,
   services.user.reducer
-).forEach(service => {
+]
+
+reducers.forEach(service => {
   reducerMap[service.reducerName] = service.reducer
 })
 

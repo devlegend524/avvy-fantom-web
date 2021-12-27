@@ -49,10 +49,11 @@ const provider = {
 
   // get api client
   buildAPI: () => {
-    _chainId = window.ethereum.chainId ? parseInt(window.ethereum.chainId, 16) : parseInt(services.environment.DEFAULT_CHAIN_ID, 16) 
-    if (_chainId) {
+    if (_isConnected) {
+      _chainId = window.ethereum.chainId ? parseInt(window.ethereum.chainId, 16) : parseInt(services.environment.DEFAULT_CHAIN_ID, 16) 
       _provider = new ethers.providers.Web3Provider(window.ethereum)
     } else {
+      _chainId = services.environment.DEFAULT_CHAIN_ID
       _provider = new ethers.providers.JsonRpcProvider(services.environment.DEFAULT_PROVIDER_URL)
     }
     _signer = _provider.getSigner()

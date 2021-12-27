@@ -121,8 +121,8 @@ class AvvyClient {
       domain,
       owner,
       status: domainStatus,
-      priceUSDText: '$15.00 USD',
-      priceUSDCents: ethers.BigNumber.from('1500'),
+      priceUSDCents: '1500',
+      timestamp: parseInt(Date.now() / 1000),
     }
   }
 
