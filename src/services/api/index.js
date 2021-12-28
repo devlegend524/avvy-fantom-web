@@ -58,6 +58,25 @@ class AvvyClient {
     return true
   }
 
+  async getNamePrice(domain) {
+    const name = domain.split('.')[0]
+    let priceUSDCents = '1500'
+    if (name.length === 3) {
+      priceUSDCents = '50000'
+    } else if (name.length === 4) {
+      priceUSDCents = '15000'
+    } else if (name.length === 5) {
+      priceUSDCents = '5000'
+    }
+    return priceUSDCents
+  }
+
+  async getAVAXConversionRate() {
+    // this is just fixed price for now based on latestRound from oracle
+    const rate = ethers.BigNumber.from('10676253362')
+    return ethers.BigNumber.from('10').pow('24').div(rate)
+  }
+
   async loadDomain(domain) {
     
     // hash the name
@@ -81,6 +100,10 @@ class AvvyClient {
       domainStatus = this.DOMAIN_STATUSES.AUCTION_BIDDING_CLOSED
     }
 
+    let priceUSDCents = await this.getNamePrice(domain)
+    let avaxConversionRate = await this.getAVAXConversionRate()
+    let priceAVAXEstimate = avaxConversionRate.mul(ethers.BigNumber.from(priceUSDCents)).toString()
+
     return {
       constants: {
         DOMAIN_STATUSES: this.DOMAIN_STATUSES,
@@ -88,7 +111,8 @@ class AvvyClient {
       domain,
       owner,
       status: domainStatus,
-      priceUSDCents: '1500',
+      priceUSDCents,
+      priceAVAXEstimate,
       timestamp: parseInt(Date.now() / 1000),
     }
   }

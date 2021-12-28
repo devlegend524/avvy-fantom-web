@@ -30,6 +30,9 @@ class Register extends React.PureComponent {
 
   componentDidMount() {
     services.linking.addEventListener('Domain', this.updateParams)
+    setTimeout(() => {
+      this.props.refreshNameData()
+    }, 1)
   }
 
   componentWillUnmount() {
@@ -64,7 +67,7 @@ class Register extends React.PureComponent {
     const nameData = this.props.nameData[name]
     if (!nameData) return null
     const quantity = this.props.quantities[name]
-    const itemTotal = services.money.mulUSD(quantity, nameData.priceUSDCents)
+    const itemTotal = services.money.mul(quantity, nameData.priceUSDCents)
     return (
       <div className='max-w-sm'>
         <div className='flex items-center'>
@@ -117,22 +120,34 @@ class Register extends React.PureComponent {
     }
     const total = names.reduce((sum, curr) => {
       const namePrice = nameData[curr].priceUSDCents
+      const namePriceAvax = nameData[curr].priceAVAXEstimate
+      if (!namePrice || !namePriceAvax) return {
+        usd: '0',
+        avax: '0'
+      }
       const quantity = quantities[curr]
-      const registrationPrice = services.money.mulUSD(namePrice, quantity)
-      return services.money.addUSD(sum, registrationPrice)
-    }, '0')
+      const registrationPrice = services.money.mul(namePrice, quantity)
+      const registrationPriceAvax = services.money.mul(namePriceAvax, quantity)
+      return {
+        usd: services.money.add(sum.usd, registrationPrice),
+        avax: services.money.add(sum.avax, registrationPriceAvax),
+      }
+    }, {usd: '0', avax: '0'})
     return (
       <>
         {names.map(this.renderName.bind(this))}
         <div className='max-w-md m-auto mt-8'>
           <div style={{maxWidth: '300px'}} className='m-auto mb-8'>
-            <div className='text-lg text-center font-bold border-b border-gray-400 pb-4 mb-4'>{'Purchase Summary'}</div>
+            <div className='border-b border-gray-400 pb-4 mb-4'>
+              <div className='text-lg text-center font-bold'>{'Purchase Summary'}</div>
+              <div className='text-md text-center text-gray-500'>{'(Estimated)'}</div>
+            </div>
             <div className='flex justify-between'>
               <div className='font-bold'>
                 {"Total"}
               </div>
               <div className=''>
-                {services.money.renderUSD(total)}
+                {services.money.renderUSD(total.usd)}
               </div>
             </div>
             <div className='flex justify-between'>
@@ -140,11 +155,11 @@ class Register extends React.PureComponent {
                 {"Total (AVAX)"}
               </div>
               <div className=''>
-                {services.money.renderUSD(total)}
+                {services.money.renderAVAX(total.avax)}
               </div>
             </div>
             <div className='my-8'>
-              <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX'} />
+              <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX. Amounts noted are estimates; actual price will be determined in future steps.'} />
             </div>
           </div>
           <components.Button text={'Continue Registration'} onClick={this.startPurchase.bind(this)} />
@@ -176,6 +191,7 @@ const mapDispatchToProps = (dispatch) => ({
   removeFromCart: (name) => dispatch(services.cart.actions.removeFromCart(name)),
   incrementQuantity: (name) => dispatch(services.cart.actions.incrementQuantity(name)),
   decrementQuantity: (name) => dispatch(services.cart.actions.decrementQuantity(name)),
+  refreshNameData: () => dispatch(services.cart.actions.refreshAllNameData()),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Register)
