@@ -20,15 +20,20 @@ const money = {
     return `\$${dollars}.${cents} USD`
   },
 
-  // multiplies two usd cents strings together
-  mulUSD: (str1, str2) => {
+  renderAVAX: (amount) => {
+    const amt = ethers.utils.formatEther(amount)
+    return (+amt).toFixed(4) + ' AVAX'
+  },
+
+  // multiplies two strings together
+  mul: (str1, str2) => {
     const n1 = ethers.BigNumber.from(str1)
     const n2 = ethers.BigNumber.from(str2)
     return n1.mul(n2).toString()
   },
 
-  // adds two usd cents strings together
-  addUSD: (str1, str2) => {
+  // adds two strings together
+  add: (str1, str2) => {
     const n1 = ethers.BigNumber.from(str1)
     const n2 = ethers.BigNumber.from(str2)
     return n1.add(n2).toString()
