@@ -3243,6 +3243,11 @@
     "hoopy" "^0.1.4"
     "tryer" "^1.0.1"
 
+"big-integer@^1.6.42", "big-integer@^1.6.48":
+  "integrity" "sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg=="
+  "resolved" "https://registry.npmjs.org/big-integer/-/big-integer-1.6.51.tgz"
+  "version" "1.6.51"
+
 "big.js@^5.2.2":
   "integrity" "sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ=="
   "resolved" "https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz"
@@ -3257,6 +3262,11 @@
   "integrity" "sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA=="
   "resolved" "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz"
   "version" "2.2.0"
+
+"blakejs@^1.1.0":
+  "integrity" "sha512-bLG6PHOCZJKNshTjGRBvET0vTciwQE6zFKOKKXPDJfwFBd4Ac0yBfPZqcGvGJap50l7ktvlpFqc2jGVaUgbJgg=="
+  "resolved" "https://registry.npmjs.org/blakejs/-/blakejs-1.1.1.tgz"
+  "version" "1.1.1"
 
 "bluebird@^3.5.5":
   "integrity" "sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg=="
@@ -5579,6 +5589,16 @@
   "version" "2.0.1"
   dependencies:
     "bser" "2.1.1"
+
+"ffjavascript@^0.2.46":
+  "integrity" "sha512-UUjkb2BMTrYGzD2jrurgLzOXZ2ZWQyRjj0GImiGp7wlOCJx4mZqIqSJbq6q5g2U9Jrmx26zjxiNQ/BsukPqS2Q=="
+  "resolved" "https://registry.npmjs.org/ffjavascript/-/ffjavascript-0.2.46.tgz"
+  "version" "0.2.46"
+  dependencies:
+    "big-integer" "^1.6.48"
+    "wasmbuilder" "^0.0.11"
+    "wasmcurves" "0.1.0"
+    "web-worker" "^1.2.0"
 
 "figgy-pudding@^3.5.1":
   "integrity" "sha512-0btnI/H8f2pavGMN8w40mlSKOfTK2SVJmBfBeVIj3kNw0swwgzyRq0d5TJVOwodFmtvpPeWPN/MCcfuWF0Ezbw=="
@@ -10227,7 +10247,12 @@
   "resolved" "https://registry.npmjs.org/redux-persist/-/redux-persist-6.0.0.tgz"
   "version" "6.0.0"
 
-"redux@^4.0.0", "redux@>4.0.0":
+"redux-thunk@^2.4.1":
+  "integrity" "sha512-OOYGNY5Jy2TWvTL1KgAlVy6dcx3siPJ1wTq741EPyUKfn6W6nChdICjZwCd0p8AZBs5kWpZlbkXW2nE/zjUa+Q=="
+  "resolved" "https://registry.npmjs.org/redux-thunk/-/redux-thunk-2.4.1.tgz"
+  "version" "2.4.1"
+
+"redux@^4", "redux@^4.0.0", "redux@>4.0.0":
   "integrity" "sha512-SH8PglcebESbd/shgf6mii6EIoRM0zrQyjcuQ+ojmfxjTtE0z9Y8pa62iA/OJ58qjP6j27uyW4kUF4jl/jd6sw=="
   "resolved" "https://registry.npmjs.org/redux/-/redux-4.1.2.tgz"
   "version" "4.1.2"
@@ -12121,6 +12146,21 @@
   dependencies:
     "makeerror" "1.0.x"
 
+"wasmbuilder@^0.0.11":
+  "integrity" "sha512-rly3aPUwDYjNW+g+FhA567l/fsgI3yDE9eUoGAmkgnDlt6NsXA2XIYOwox8TH6IzDoDEHH1k+CQheMm4LDBvUA=="
+  "resolved" "https://registry.npmjs.org/wasmbuilder/-/wasmbuilder-0.0.11.tgz"
+  "version" "0.0.11"
+  dependencies:
+    "big-integer" "^1.6.48"
+
+"wasmcurves@0.1.0":
+  "integrity" "sha512-kIlcgbVUAv2uQ6lGsepGz/m5V40+Z6rvTBkqCYn3Y2+OcXst+UaP4filJYLh/xDxjJl62FFjZZeAnpeli1Y5/Q=="
+  "resolved" "https://registry.npmjs.org/wasmcurves/-/wasmcurves-0.1.0.tgz"
+  "version" "0.1.0"
+  dependencies:
+    "big-integer" "^1.6.42"
+    "blakejs" "^1.1.0"
+
 "watchpack-chokidar2@^2.0.1":
   "integrity" "sha512-nCFfBIPKr5Sh61s4LPpy1Wtfi0HE8isJ3d2Yb5/Ppw2P2B/3eVSEBjKfN0fmHJSK14+31KwMKmcrzs2GM4P0Ww=="
   "resolved" "https://registry.npmjs.org/watchpack-chokidar2/-/watchpack-chokidar2-2.0.1.tgz"
@@ -12150,6 +12190,11 @@
   "integrity" "sha512-PFMKIY+bRSXlMxVAQ+m2aw9c/ioUYfDgrYot0YUa+/xa0sakubWhSDyxAKwzymvXVdF4CZI71g06W+mqhzu6ig=="
   "resolved" "https://registry.npmjs.org/web-vitals/-/web-vitals-1.1.2.tgz"
   "version" "1.1.2"
+
+"web-worker@^1.2.0":
+  "integrity" "sha512-PgF341avzqyx60neE9DD+XS26MMNMoUQRz9NOZwW32nPQrF6p77f1htcnjBSEV8BGMKZ16choqUG4hyI0Hx7mA=="
+  "resolved" "https://registry.npmjs.org/web-worker/-/web-worker-1.2.0.tgz"
+  "version" "1.2.0"
 
 "webidl-conversions@^5.0.0":
   "integrity" "sha512-VlZwKPCkYKxQgeSbH5EyngOmRp7Ww7I9rQLERETtf5ofd9pGeswWiOtogpEO850jziPRarreGxn5QIiTqpb2wA=="
