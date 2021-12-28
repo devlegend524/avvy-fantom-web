@@ -98,7 +98,7 @@ class Register extends React.PureComponent {
   renderNames() {
     if (!this.props.names || this.props.names.length === 0) return (
       <div className='max-w-md m-auto'>
-        <div className='mb-4'>
+        <div className='mb-8'>
           <components.labels.Information text={"You haven't selected any names to register"} />
         </div>
         <components.DomainSearch />
@@ -107,7 +107,7 @@ class Register extends React.PureComponent {
     const names = Array.from(this.props.names).sort((a, b) => a > b ? 1 : -1)
     return (
       <>
-        <div className='mb-4'>
+        <div className='mb-8'>
           <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX'} />
         </div>
         {names.map(this.renderName.bind(this))}

@@ -1,9 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
+import thunk from 'redux-thunk'
+import { createStore, applyMiddleware, combineReducers } from 'redux'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
 // import reducers
 import services from 'services'
 import views from 'views'
-
 
 const reducerMap = {}
 
@@ -18,8 +20,18 @@ reducers.forEach(service => {
   reducerMap[service.reducerName] = service.reducer
 })
 
-export const store = configureStore({
-  reducer: reducerMap
-});
+const persistedReducer = persistReducer({
+    key: 'root',
+    storage,
+  },
+  combineReducers(reducerMap)
+)
+
+export const store = createStore(
+  persistedReducer,
+  applyMiddleware(thunk),
+);
+
+let persistor = persistStore(store)
 
 export default store
