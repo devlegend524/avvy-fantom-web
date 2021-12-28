@@ -41,10 +41,14 @@ const provider = {
 
     _account = accounts[0]
     _isConnected = true
-
-    events.dispatchEvent(
-      new Event(EVENTS.CONNECTED)
-    )
+    
+    // we put a timeout here to let react
+    // components digest the connection first
+    setTimeout(() => {
+      events.dispatchEvent(
+        new Event(EVENTS.CONNECTED)
+      )
+    }, 1)
   },
 
   // get api client

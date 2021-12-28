@@ -112,6 +112,9 @@ class Register extends React.PureComponent {
     const names = Array.from(this.props.names).sort((a, b) => a > b ? 1 : -1)
     const nameData = this.props.nameData
     const quantities = this.props.quantities
+    for (let i = 0; i < names.length; i += 1) {
+      if (!nameData[names[i]] || !quantities[names[i]]) return null
+    }
     const total = names.reduce((sum, curr) => {
       const namePrice = nameData[curr].priceUSDCents
       const quantity = quantities[curr]
@@ -123,7 +126,7 @@ class Register extends React.PureComponent {
         {names.map(this.renderName.bind(this))}
         <div className='max-w-md m-auto mt-8'>
           <div style={{maxWidth: '300px'}} className='m-auto mb-8'>
-            <div className='text-center font-bold border-b border-gray-400 pb-4 mb-4'>{'Purchase Summary'}</div>
+            <div className='text-lg text-center font-bold border-b border-gray-400 pb-4 mb-4'>{'Purchase Summary'}</div>
             <div className='flex justify-between'>
               <div className='font-bold'>
                 {"Total"}
