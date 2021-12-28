@@ -11,37 +11,6 @@ import client from '@avvy/client'
 
 import services from 'services'
 
-async function loadWasm(name) {
-  const path = services.linking.static(`circuits/${name}.wasm`);
-  const importObject = {
-    imports: {
-      imported_func: function (arg) {
-      },
-      wasi_unstable: () => {}
-    },
-    env: {
-      memoryBase: 0,
-      tableBase: 0,
-      memory: new WebAssembly.Memory({initial: 256, maximum: 1024}),
-      table: new WebAssembly.Table({initial: 256, element: 'anyfunc'}),
-      __assert_fail: function() {
-        // todo
-      },
-      emscripten_resize_heap: function() {
-        // todo
-      },
-      emscripten_memcpy_big: function() {
-        // todo
-      },
-      setTempRet0: function() {
-        // todo
-      }
-    }
-  };
-  const obj = await WebAssembly.instantiateStreaming(window.fetch(path), importObject)
-  return obj
-}
-
 class AvvyClient {
   constructor(chainId, account, signer) {
     const contracts = artifacts.contracts[chainId]
@@ -112,8 +81,6 @@ class AvvyClient {
       domainStatus = this.DOMAIN_STATUSES.AUCTION_BIDDING_CLOSED
     }
 
-    //await this.getDomainPriceProof(domain)
-
     return {
       constants: {
         DOMAIN_STATUSES: this.DOMAIN_STATUSES,
@@ -128,34 +95,24 @@ class AvvyClient {
 
   async getDomainPriceProof(domain) {
     const domainSplit = domain.split('.')
-    const name = await client.string2AsciiArray(domain, 62)
+    const name = domainSplit[0]
+    const nameArr = await client.string2AsciiArray(name, 62)
     const namespace = domainSplit[domainSplit.length - 1]
     const namespaceHash = await client.nameHash(namespace)
     const hash = await client.nameHash(domain)
-    const minLength = 6
-    const wasm = await loadWasm('PriceCheck')
-    const { proof, publicSignals } = await window.snarkjs.plonk.fullProve( 
-      {
-        namespaceId: namespaceHash.toString(),
-        name,
-        hash: hash.toString(),
-        minLength
-      },
-      wasm,
-      //services.linking.static('circuits/PriceCheck.wasm'), 
-      services.linking.static('circuits/PriceCheck_final.zkey')
-    )
-    console.log(proof, publicSignals)
-
-    /*
-    proofCompnent.innerHTML = JSON.stringify(proof, null, 1);
-
-
-    const vkey = await fetch("verification_key.json").then( function(res) {
-        return res.json();
-    });
-
-    */
+    let minLength = name.length
+    if (name.length >= 6) minLength = 6
+    const c = client
+    const inputs = {
+      namespaceId: namespaceHash.toString(),
+      name: nameArr,
+      hash: hash.toString(),
+      minLength
+    }
+    const proveRes = await services.circuits.prove('PriceCheck', inputs)
+    const verify = await services.circuits.verify('PriceCheck', proveRes)
+    const calldata = await services.circuits.calldata(proveRes)
+    return calldata
   }
 }
 
