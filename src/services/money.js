@@ -26,6 +26,13 @@ const money = {
     const n2 = ethers.BigNumber.from(str2)
     return n1.mul(n2).toString()
   },
+
+  // adds two usd cents strings together
+  addUSD: (str1, str2) => {
+    const n1 = ethers.BigNumber.from(str1)
+    const n2 = ethers.BigNumber.from(str2)
+    return n1.add(n2).toString()
+  },
 }
 
 export default money

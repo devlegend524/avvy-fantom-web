@@ -4,8 +4,6 @@ import { connect } from 'react-redux'
 import components from 'components'
 import services from 'services'
 
-import selectors from './selectors'
-
 
 class RegistrationFlow extends React.PureComponent {
   constructor(props) {
@@ -42,18 +40,15 @@ class RegistrationFlow extends React.PureComponent {
     if (!this.state.connected) return this.renderConnect()
     return (
       <>
-        <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Register Name'}</div>
+        <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Generate Proofs'}</div>
         <div className=''>
           <div className='font-bold'>Name</div>
-          <div>{this.props.domain.domain}</div>
         </div>
         <div className='mt-4'>
           <div className='font-bold'>Annual registration fee</div>
-          <div>{this.props.domain.priceUSDText}</div>
         </div>
         <div className='mt-4'>
           <div className='font-bold'>Total</div>
-          <div>{this.props.domain.priceUSDText}</div>
         </div>
       </>
     )
@@ -61,7 +56,7 @@ class RegistrationFlow extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  domain: selectors.domain(state),
+  names: services.cart.selectors.names(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
