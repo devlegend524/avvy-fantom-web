@@ -11,9 +11,6 @@ import constants from './constants'
 import reducer from './reducer'
 import selectors from './selectors'
 
-import RegistrationFlow from './RegistrationFlow'
-
-console.log(RegistrationFlow)
 
 class Domain extends React.PureComponent {
   constructor(props) {
@@ -50,9 +47,6 @@ class Domain extends React.PureComponent {
   renderAvailableBody() {
     return (
       <div className='max-w-md m-auto'>
-        <components.Modal ref={(ref) => this.registrationModal = ref}> 
-          <RegistrationFlow />
-        </components.Modal>
         <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
           <CheckCircleIcon className='w-6 text-alert-blue mr-2' />
           <div className='text-alert-blue'>{'Available for registration'}</div>

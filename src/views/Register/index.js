@@ -10,6 +10,7 @@ import constants from './constants'
 import reducer from './reducer'
 import selectors from './selectors'
 
+import RegistrationFlow from './RegistrationFlow'
 
 class Register extends React.PureComponent {
   constructor(props) {
@@ -45,6 +46,10 @@ class Register extends React.PureComponent {
 
   removeFromCart(name) {
     this.props.removeFromCart(name)
+  }
+
+  startPurchase() {
+    this.registrationModal.toggle()
   }
 
   renderNameData(name) {
@@ -105,12 +110,42 @@ class Register extends React.PureComponent {
       </div>
     )
     const names = Array.from(this.props.names).sort((a, b) => a > b ? 1 : -1)
+    const nameData = this.props.nameData
+    const quantities = this.props.quantities
+    const total = names.reduce((sum, curr) => {
+      const namePrice = nameData[curr].priceUSDCents
+      const quantity = quantities[curr]
+      const registrationPrice = services.money.mulUSD(namePrice, quantity)
+      return services.money.addUSD(sum, registrationPrice)
+    }, '0')
     return (
       <>
-        <div className='mb-8'>
-          <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX'} />
-        </div>
         {names.map(this.renderName.bind(this))}
+        <div className='max-w-md m-auto mt-8'>
+          <div style={{maxWidth: '300px'}} className='m-auto mb-8'>
+            <div className='text-center font-bold border-b border-gray-400 pb-4 mb-4'>{'Purchase Summary'}</div>
+            <div className='flex justify-between'>
+              <div className='font-bold'>
+                {"Total"}
+              </div>
+              <div className=''>
+                {services.money.renderUSD(total)}
+              </div>
+            </div>
+            <div className='flex justify-between'>
+              <div className='font-bold'>
+                {"Total (AVAX)"}
+              </div>
+              <div className=''>
+                {services.money.renderUSD(total)}
+              </div>
+            </div>
+            <div className='my-8'>
+              <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX'} />
+            </div>
+          </div>
+          <components.Button text={'Continue Registration'} onClick={this.startPurchase.bind(this)} />
+        </div>
       </>
     )
   }
@@ -118,6 +153,9 @@ class Register extends React.PureComponent {
   render() {
     return (
       <div>
+        <components.Modal ref={(ref) => this.registrationModal = ref}> 
+          <RegistrationFlow />
+        </components.Modal>
         <div className='mt-4 mb-4 text-lg text-center font-bold'>{'Register'}</div>
         {this.renderNames()}
       </div>

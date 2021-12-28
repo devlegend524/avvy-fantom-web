@@ -3,8 +3,8 @@ import { InformationCircleIcon } from '@heroicons/react/outline'
 
 function Information(props) {
   return (
-    <div className='flex items-center justify-center'>
-      <InformationCircleIcon className='w-6 text-gray-400 mr-2' />
+    <div className='flex items-start justify-center'>
+      <InformationCircleIcon className='w-6 text-gray-400 mr-2 flex-shrink-0' />
       <div className='text-gray-400'>{props.text}</div>
     </div>
   )
