@@ -5,6 +5,7 @@ const constants = reduxService.prepareConstants(
   [
     'SET_PROGRESS',
     'SET_PRICING_PROOF',
+    'SET_CONSTRAINTS_PROOF',
   ]
 )
 

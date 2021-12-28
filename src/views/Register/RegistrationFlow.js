@@ -73,7 +73,7 @@ class RegistrationFlow extends React.PureComponent {
           ) : (
             <>
               <div className='border border-gray-100 p-2 rounded'>
-                <div className='mb-4 text-center text-xs text-gray-400'>{this.props.progress.message}</div>
+                <div className='mb-4 text-center text-gray-400'>{this.props.progress.message}</div>
                 <components.ProgressBar progress={this.props.progress.percent} />
               </div>
               {this.props.progress.percent === 100 ? (
