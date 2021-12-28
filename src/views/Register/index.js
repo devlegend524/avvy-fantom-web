@@ -137,7 +137,7 @@ class Register extends React.PureComponent {
       <>
         {names.map(this.renderName.bind(this))}
         <div className='max-w-md m-auto mt-8'>
-          <div style={{maxWidth: '300px'}} className='m-auto mb-8'>
+          <div className='m-auto mb-8 max-w-xs'>
             <div className='border-b border-gray-400 pb-4 mb-4'>
               <div className='text-lg text-center font-bold'>{'Purchase Summary'}</div>
               <div className='text-md text-center text-gray-500'>{'(Estimated)'}</div>
@@ -158,9 +158,9 @@ class Register extends React.PureComponent {
                 {services.money.renderAVAX(total.avax)}
               </div>
             </div>
-            <div className='my-8'>
-              <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX. Amounts noted are estimates; actual price will be determined in future steps.'} />
-            </div>
+          </div>
+          <div className='my-8'>
+            <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX. Amounts noted are estimates; actual price will be determined in future steps.'} />
           </div>
           <components.Button text={'Continue Registration'} onClick={this.startPurchase.bind(this)} />
         </div>

@@ -142,6 +142,28 @@ class AvvyClient {
       calldata
     }
   }
+
+  async generateConstraintsProof(domain) {
+    const split = domain.split('.')
+    const _name = split[0]
+    const _namespace = split[1]
+    const namespace = await client.string2AsciiArray(_namespace, 62)
+    const name = await client.string2AsciiArray(_name, 62)
+    const hash = await client.nameHash(domain)
+    const inputs = {
+      namespace,
+      name,
+      hash: hash.toString(),
+    }
+    const proveRes = await services.circuits.prove('Constraints', inputs)
+    const verify = await services.circuits.verify('Constraints', proveRes)
+    if (!verify) throw new Error('Failed to verify')
+    const calldata = await services.circuits.calldata(proveRes)
+    return {
+      proveRes,
+      calldata
+    }
+  }
 }
 
 export default AvvyClient

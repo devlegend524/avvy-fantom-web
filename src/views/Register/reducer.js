@@ -25,6 +25,15 @@ export const reducer = (state = initialState, action) => {
         }
       }
 
+    case constants.SET_CONSTRAINTS_PROOF:
+      return {
+        ...state,
+        constraintsProofs: {
+          ...state.constraintsProofs,
+          [action.domain]: action.proof
+        }
+      }
+
     default:
       return state
   }
