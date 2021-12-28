@@ -11,6 +11,7 @@ const reducerMap = {}
 
 const reducers = [
   views.Domain.redux.reducer,
+  views.Register.redux.reducer,
   services.cart.reducer,
   services.darkmode.reducer,
   services.user.reducer
@@ -23,6 +24,9 @@ reducers.forEach(service => {
 const persistedReducer = persistReducer({
     key: 'root',
     storage,
+    whitelist: [
+      services.cart.reducer.reducerName,
+    ]
   },
   combineReducers(reducerMap)
 )

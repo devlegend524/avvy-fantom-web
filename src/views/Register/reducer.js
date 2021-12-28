@@ -3,22 +3,26 @@ import constants from './constants'
 export const reducerName = 'registerView'
 
 export const initialState = {
-  isLoading: false,
-  domain: null,
+  pricingProofs: {},
+  constraintsProofs: {},
+  progress: {}
 }
 
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case constants.SET_LOADING:
+    case constants.SET_PROGRESS:
       return {
         ...state,
-        isLoading: action.isLoading
+        progress: action.progress
       }
 
-    case constants.SET_DOMAIN:
+    case constants.SET_PRICING_PROOF:
       return {
         ...state,
-        domain: action.domain
+        pricingProofs: {
+          ...state.pricingProofs,
+          [action.domain]: action.proof
+        }
       }
 
     default:

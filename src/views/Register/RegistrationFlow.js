@@ -4,19 +4,34 @@ import { connect } from 'react-redux'
 import components from 'components'
 import services from 'services'
 
+import actions from './actions'
+import selectors from './selectors'
+
 
 class RegistrationFlow extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      connected: services.provider.isConnected()
+      connected: services.provider.isConnected(),
+      needsProofs: true
     }
   }
 
-  onConnect() {
+  generateProofs() {
     this.setState({
-      connected: services.provider.isConnected()
+      needsProofs: false
+    }, () => {
+      this.props.generateProofs(this.props.names)
     })
+  }
+
+  onConnect() {
+    setTimeout(() => {
+      this.setState({
+        connected: services.provider.isConnected(),
+        needsProofs: true
+      })
+    }, 1)
   }
 
   componentDidMount() {
@@ -27,28 +42,43 @@ class RegistrationFlow extends React.PureComponent {
     services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.names.length !== prevProps.names.length) {
+      this.setState({
+        needsProofs: true
+      })
+    }
+  }
+
   renderConnect() {
     return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Connect Wallet'}</div>
         <components.ConnectWallet />
-      </>
-    )
+      </>)
   }
 
   render() {
     if (!this.state.connected) return this.renderConnect()
+    const names = this.props.names
     return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Generate Proofs'}</div>
-        <div className=''>
-          <div className='font-bold'>Name</div>
-        </div>
-        <div className='mt-4'>
-          <div className='font-bold'>Annual registration fee</div>
-        </div>
-        <div className='mt-4'>
-          <div className='font-bold'>Total</div>
+        <components.labels.Information text={"We want to know certain things about your domain name, but we want to respect your privacy. To achieve both, we use a tool called a zero-knowledge proof. Generating these proofs requires a lot of computational power, so your browser might be slow or even freeze temporarily. Just sit tight, we'll let you know when it's done. Please do not refresh or exit the page."} />
+        <div className='mt-4 max-w-sm m-auto'>
+          {this.state.needsProofs ? (
+            <>
+              <components.Button text={'Generate proofs'} onClick={this.generateProofs.bind(this)} />
+            </>
+          ) : (
+            <>
+              <components.ProgressBar progress={this.props.progress.percent} />
+              <div className='mt-4 text-center'>{this.props.progress.message}</div>
+            </>
+          )}
+          {this.props.progress.percent === 100 ? (
+            <components.Button text={'Complete registration'} />
+          ) : null}
         </div>
       </>
     )
@@ -57,9 +87,12 @@ class RegistrationFlow extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
   names: services.cart.selectors.names(state),
+  progress: selectors.progress(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  generateProofs: (names) => dispatch(actions.generateProofs(names)),
+  resetProofs: () => dispatch(actions.resetProofs()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegistrationFlow)

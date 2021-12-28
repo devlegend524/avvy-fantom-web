@@ -93,7 +93,7 @@ class AvvyClient {
     }
   }
 
-  async getDomainPriceProof(domain) {
+  async generateDomainPriceProof(domain) {
     const domainSplit = domain.split('.')
     const name = domainSplit[0]
     const nameArr = await client.string2AsciiArray(name, 62)
@@ -111,8 +111,12 @@ class AvvyClient {
     }
     const proveRes = await services.circuits.prove('PriceCheck', inputs)
     const verify = await services.circuits.verify('PriceCheck', proveRes)
+    if (!verify) throw new Error('Failed to verify')
     const calldata = await services.circuits.calldata(proveRes)
-    return calldata
+    return {
+      proveRes,
+      calldata
+    }
   }
 }
 
