@@ -58,7 +58,6 @@ const actions = {
 
   refreshNameData: (name) => {
     return async (dispatch, getState) => {
-      console.log(`refreshing ${name}`)
       const api = services.provider.buildAPI()
       const data = await api.loadDomain(name)
       dispatch(actions.setNameData(name, data))
@@ -67,9 +66,7 @@ const actions = {
 
   refreshAllNameData: () => {
     return async (dispatch, getState) => {
-      console.log('here..')
       const names = selectors.names(getState())
-      console.log(names)
       names.forEach((name) => {
         dispatch(actions.refreshNameData(name))
       })

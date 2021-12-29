@@ -58,6 +58,7 @@ class AvvyClient {
     return true
   }
 
+  // ESTIMATE
   async getNamePrice(domain) {
     const name = domain.split('.')[0]
     let priceUSDCents = '1500'
@@ -71,9 +72,16 @@ class AvvyClient {
     return priceUSDCents
   }
 
+  async getNamePriceAVAX(domain, conversionRate) {
+    const _priceUSD = await this.getNamePrice(domain)
+    const priceUSD = ethers.BigNumber.from(_priceUSD)
+    const priceAVAX = priceUSD.mul(conversionRate)
+    return priceAVAX
+  }
+
   async getAVAXConversionRate() {
     // this is just fixed price for now based on latestRound from oracle
-    const rate = ethers.BigNumber.from('10676253362')
+    const rate = ethers.BigNumber.from('10000000000')
     return ethers.BigNumber.from('10').pow('24').div(rate)
   }
 
@@ -163,6 +171,44 @@ class AvvyClient {
       proveRes,
       calldata
     }
+  }
+
+  async commit(domains, quantities, constraintsProofs, pricingProofs, salt) {
+    let hashes = []
+    for (let i = 0; i < domains.length; i += 1) {
+      let hash = await client.nameHash(domains[i])
+      hashes.push(hash.toString())
+    }
+    const hash = await client.registrationCommitHash(hashes, quantities, constraintsProofs, pricingProofs, salt)
+    await this.contracts.LeasingAgentV1.commit(hash)
+    return hash
+  }
+
+  async register(domains, quantities, constraintsProofs, pricingProofs, salt) {
+    let hashes = []
+    let total = ethers.BigNumber.from('0')
+    const conversionRate = await this.getAVAXConversionRate()
+
+    for (let i = 0; i < domains.length; i += 1) {
+      let hash = await client.nameHash(domains[i])
+      hashes.push(hash.toString())
+      let namePrice = await this.getNamePriceAVAX(domains[i], conversionRate)
+      total = total.add(
+        ethers.BigNumber.from(quantities[i].toString()).mul(
+          namePrice
+        )
+      )
+    }
+
+    const tx = await this.contracts.PricingOracleV1.getPriceForName(hashes[0], pricingProofs[0])
+    const receipt = await tx.wait()
+    const price = receipt.events[0].args[0]
+    console.log('contract price', ethers.utils.formatEther(price))
+    console.log('payment price', ethers.utils.formatEther(total))
+
+    await this.contracts.LeasingAgentV1.register(hashes, quantities, constraintsProofs, pricingProofs, salt, {
+      value: total
+    })
   }
 }
 
