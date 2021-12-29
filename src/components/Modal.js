@@ -19,6 +19,10 @@ class Modal extends React.PureComponent {
     })
   }
 
+  hide() {
+    if (this.state.open) this.toggle()
+  }
+
   render() {
     const open = this.state.open
     return (

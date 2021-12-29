@@ -5,6 +5,7 @@ import darkmode from './darkmode'
 import environment from './environment'
 import linking from './linking'
 import money from './money'
+import namehash from './namehash'
 import provider from './provider'
 import redux from './redux'
 import time from './time'
@@ -18,6 +19,7 @@ const services = {
   environment,
   linking,
   money,
+  namehash,
   provider,
   redux,
   time,

@@ -46,6 +46,21 @@ class AvvyClient {
     return owner
   }
 
+  async getDomainCountForOwner(account) {
+    const count = await this.contracts.Domain.balanceOf(account)
+    return parseInt(count.toString())
+  }
+
+  async getDomainIDsByOwner(account) {
+    const domainCount = await this.getDomainCountForOwner(account)
+    let domains = []
+    for (let i = 0; i < domainCount; i += 1) {
+      let id = await this.contracts.Domain.tokenOfOwnerByIndex(account, i.toString())
+      domains.push(id)
+    }
+    return domains
+  }
+
   async isAuctionPeriod() {
     return false
   }
@@ -70,6 +85,11 @@ class AvvyClient {
       priceUSDCents = '5000'
     }
     return priceUSDCents
+  }
+
+  async getNameExpiry(hash) {
+    const expiresAt = await this.contracts.Domain.getDomainExpiry(hash)
+    return parseInt(expiresAt.toString())
   }
 
   async getNamePriceAVAX(domain, conversionRate) {
@@ -98,7 +118,7 @@ class AvvyClient {
 
     if (tokenExists) {
       owner = await this.ownerOf(hash)
-      if (owner === this.account) domainStatus = this.DOMAIN_STATUSES.REGISTERED_SELF
+      if (owner && this.account && owner.toLowerCase() == this.account.toLowerCase()) domainStatus = this.DOMAIN_STATUSES.REGISTERED_SELF
       else domainStatus = this.DOMAIN_STATUSES.REGISTERED_OTHER
     } else if (isRegistrationPeriod) {
       domainStatus = this.DOMAIN_STATUSES.AVAILABLE
@@ -111,13 +131,16 @@ class AvvyClient {
     let priceUSDCents = await this.getNamePrice(domain)
     let avaxConversionRate = await this.getAVAXConversionRate()
     let priceAVAXEstimate = avaxConversionRate.mul(ethers.BigNumber.from(priceUSDCents)).toString()
+    let expiresAt = await this.getNameExpiry(hash)
 
     return {
       constants: {
         DOMAIN_STATUSES: this.DOMAIN_STATUSES,
       },
       domain,
+      hash,
       owner,
+      expiresAt,
       status: domainStatus,
       priceUSDCents,
       priceAVAXEstimate,

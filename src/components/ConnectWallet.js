@@ -23,9 +23,6 @@ class ConnectWallet extends React.PureComponent {
     }, async () => {
       try {
         await services.provider.connectMetamask()
-        this.setState({
-          connecting: false
-        })
       } catch (err) {
         alert('Failed to connect')
         this.setState({
