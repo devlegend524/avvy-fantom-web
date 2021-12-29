@@ -25,6 +25,14 @@ class RegistrationFlow extends React.PureComponent {
     })
   }
 
+  commitTransaction() {
+    this.props.commitTransaction()
+  }
+
+  finalizeTransaction() {
+    this.props.finalizeTransaction()
+  }
+
   onConnect() {
     setTimeout(() => {
       this.setState({
@@ -55,7 +63,8 @@ class RegistrationFlow extends React.PureComponent {
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Connect Wallet'}</div>
         <components.ConnectWallet />
-      </>)
+      </>
+    )
   }
 
   render() {
@@ -77,9 +86,14 @@ class RegistrationFlow extends React.PureComponent {
                 <components.ProgressBar progress={this.props.progress.percent} />
               </div>
               {this.props.progress.percent === 100 ? (
-                <div className='mt-4'>
-                  <components.Button text={'Complete registration'} />
-                </div>
+                <>
+                  <div className='mt-4'>
+                    <components.Button text={'Commit registration'} onClick={this.commitTransaction.bind(this)} />
+                  </div>
+                  <div className='mt-4'>
+                    <components.Button text={'Finalize registration'} onClick={this.finalizeTransaction.bind(this)} />
+                  </div>
+                </>
               ) : null}
             </>
           )}
@@ -90,13 +104,18 @@ class RegistrationFlow extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  names: services.cart.selectors.names(state),
   progress: selectors.progress(state),
+  names: services.cart.selectors.names(state),
+  quantities: services.cart.selectors.quantities(state),
+  pricingProofs: selectors.pricingProofs(state),
+  constraintsProofs: selectors.constraintsProofs(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   generateProofs: (names) => dispatch(actions.generateProofs(names)),
   resetProofs: () => dispatch(actions.resetProofs()),
+  commitTransaction: () => dispatch(actions.commit()),
+  finalizeTransaction: () => dispatch(actions.finalize()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegistrationFlow)
