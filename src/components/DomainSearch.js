@@ -12,8 +12,12 @@ function DomainSearch(props) {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (onBeforeSubmit) onBeforeSubmit()
-    const domain = textInput.current.value
+    let domain = textInput.current.value
     textInput.current.value = ''
+    const domainSplit = domain.split('.')
+    if (domainSplit.length === 1) {
+      domain = domain + '.avax'
+    }
     services.linking.navigate(navigator, 'Domain', { domain })
   }
   
