@@ -1,10 +1,9 @@
 import reduxService from 'services/redux'
 
 const constants = reduxService.prepareConstants(
-  'services/user',
+  'services/namehash',
   [
-    'SET_DOMAIN_IDS',
-    'SET_DOMAIN_COUNT',
+    'ADD_RECORD',
   ]
 )
 

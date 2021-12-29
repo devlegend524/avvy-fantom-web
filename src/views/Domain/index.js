@@ -101,30 +101,41 @@ class Domain extends React.PureComponent {
     )
   }
 
+  renderOwnershipDetails() {
+    return (
+      <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8'>
+        <div>
+          <div className='font-bold'>{'Registrant'}</div>
+          <div className='truncate'>
+            {this.props.domain.owner}
+          </div>
+        </div>
+        <div className='mt-4'>
+          <div className='font-bold'>{'Expiry'}</div>
+          <div>
+            {new Intl.DateTimeFormat(
+              navigator.language,
+              { month: 'short', day: 'numeric', year: 'numeric' }
+            ).format(this.props.domain.expiresAt * 1000)}
+            {' at '}
+            {new Intl.DateTimeFormat(
+              navigator.langauge,
+              { hour: 'numeric', minute: 'numeric' }
+            ).format(this.props.domain.expiresAt * 1000)}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderRegisteredSelfBody() {
     return (
       <div className='max-w-md m-auto'>
-        <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
-          <InformationCircleIcon className='w-6 text-alert-red mr-2' />
-          <div className='text-alert-red'>{'Not available for registration'}</div>
-        </div>
+        <components.labels.Information text={'This domain is registered to your account'} />
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />
         </div>
-        <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8'>
-          <div>
-            <div className='font-bold'>{'Registrant'}</div>
-            <div>
-              {'0x9d7b2CF7daD4A5FA54E3d4CC3A6'}
-            </div>
-          </div>
-          <div className='mt-4'>
-            <div className='font-bold'>{'Expiry'}</div>
-            <div>
-              {'Jan 10, 2021 at 10:31pm'}
-            </div>
-          </div>
-        </div>
+        {this.renderOwnershipDetails()}
       </div>
     )
   }
@@ -139,20 +150,7 @@ class Domain extends React.PureComponent {
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />
         </div>
-        <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8'>
-          <div>
-            <div className='font-bold'>{'Registrant'}</div>
-            <div>
-              {'0x9d7b2CF7daD4A5FA54E3d4CC3A6'}
-            </div>
-          </div>
-          <div className='mt-4'>
-            <div className='font-bold'>{'Expiry'}</div>
-            <div>
-              {'Jan 10, 2021 at 10:31pm'}
-            </div>
-          </div>
-        </div>
+        {this.renderOwnershipDetails()}
       </div>
     )
   }

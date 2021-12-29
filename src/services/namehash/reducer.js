@@ -1,24 +1,20 @@
 import constants from './constants'
 
-export const reducerName = 'userService'
+export const reducerName = 'nameHashService'
 
 export const initialState = {
-  domainIds: [],
-  domainCount: null,
+  reverseLookups: {}, // these lookups use the hash as a key and resolve to the name.
 }
 
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case constants.SET_DOMAIN_IDS:
+    case constants.ADD_RECORD:
       return {
         ...state,
-        domainIds: action.domainIds
-      }
-
-    case constants.SET_DOMAIN_COUNT:
-      return {
-        ...state,
-        domainCount: action.domainCount
+        reverseLookups: {
+          ...state.reverseLookups,
+          [action.hash]: action.name
+        }
       }
 
     default:

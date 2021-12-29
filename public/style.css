@@ -699,6 +699,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   overflow: hidden;
 }
 
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .rounded-xl {
   border-radius: 0.75rem;
 }

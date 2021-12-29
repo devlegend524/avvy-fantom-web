@@ -21,6 +21,7 @@ const actions = {
       dispatch(actions.setLoading(true))
       const api = services.provider.buildAPI()
       const domain = await api.loadDomain(_domain)
+      dispatch(services.namehash.actions.addRecord(_domain, domain.hash))
       dispatch(actions.setDomain(domain))
       dispatch(actions.setLoading(false))
     }

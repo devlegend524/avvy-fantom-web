@@ -2,15 +2,14 @@ import constants from './constants'
 import services from 'services'
 
 const actions = {
-  setDomains: (domains) => {
+  setDomainIds: (domainIds) => {
     return {
-      type: constants.SET_DOMAINS,
-      domains
+      type: constants.SET_DOMAIN_IDS,
+      domainIds
     }
   },
 
   setDomainCount: (domainCount) => {
-    console.log('setting domain count', domainCount)
     return {
       type: constants.SET_DOMAIN_COUNT,
       domainCount
@@ -20,11 +19,10 @@ const actions = {
   loadDomains: () => {
     return async (dispatch, getState) => {
       const api = services.provider.buildAPI()
-      dispatch(actions.setDomains(null))
-      const balanceOf = await api.contracts.Domain.balanceOf(api.account)
-      dispatch(actions.setDomainCount(parseInt(balanceOf.toString())))
-      const domains = []
-      dispatch(actions.setDomains(domains))
+      dispatch(actions.setDomainCount(null))
+      const domainIds = await api.getDomainIDsByOwner(api.account)
+      dispatch(actions.setDomainIds(domainIds))
+      dispatch(actions.setDomainCount(domainIds.length))
     }
   },
 }
