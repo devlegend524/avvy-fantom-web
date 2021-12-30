@@ -106,8 +106,8 @@ class AvvyClient {
     if (split[1] !== 'avax') return false
     if (split[0].length < 3) return false
     if (split[0].length > 62) return false
-    if (!split[0].match(/^[a-z0-9\-]+$/)) return false
-    if (split[0].length >= 4 && split[0][2] == '-' && split[0][3] == '-') return false
+    if (!split[0].match(/^[a-z0-9-]+$/)) return false
+    if (split[0].length >= 4 && split[0][2] === '-' && split[0][3] === '-') return false
     return true
   }
 
@@ -130,7 +130,7 @@ class AvvyClient {
 
     if (tokenExists) {
       owner = await this.ownerOf(hash)
-      if (owner && this.account && owner.toLowerCase() == this.account.toLowerCase()) domainStatus = this.DOMAIN_STATUSES.REGISTERED_SELF
+      if (owner && this.account && owner.toLowerCase() === this.account.toLowerCase()) domainStatus = this.DOMAIN_STATUSES.REGISTERED_SELF
       else domainStatus = this.DOMAIN_STATUSES.REGISTERED_OTHER
     } else if (isRegistrationPeriod) {
       domainStatus = this.DOMAIN_STATUSES.AVAILABLE
@@ -170,7 +170,6 @@ class AvvyClient {
     const hash = await client.nameHash(domain)
     let minLength = name.length
     if (name.length >= 6) minLength = 6
-    const c = client
     const inputs = {
       namespaceId: namespaceHash.toString(),
       name: nameArr,

@@ -14,8 +14,6 @@ const circuits = {
 		const path = services.linking.static(`circuits/${name}.wasm`);
     const wc = await buildWitnessCalculator(path)
     return wc
-
-		return
 	},
 
   prove: async (circuitName, inputs) => {
@@ -78,15 +76,15 @@ async function buildWitnessCalculator(uri) {
       runtime: {
           exceptionHandler : function(code) {
               let errStr;
-              if (code == 1) {
+              if (code === 1) {
                   errStr= "Signal not found. ";
-              } else if (code == 2) {
+              } else if (code === 2) {
                   errStr= "Too many signals set. ";
-              } else if (code == 3) {
+              } else if (code === 3) {
                   errStr= "Signal already set. ";
-              } else if (code == 4) {
+              } else if (code === 4) {
                   errStr= "Assert Failed. ";
-              } else if (code == 5) {
+              } else if (code === 5) {
                   errStr= "Not enough memory. ";
               } else {
                   errStr= "Unknown error\n";
@@ -104,7 +102,7 @@ async function buildWitnessCalculator(uri) {
   function getMessage() {
       var message = "";
       var c = instance.exports.getMessageChar();
-      while ( c != 0 ) {
+      while ( c !== 0 ) {
           message += String.fromCharCode(c);
           c = instance.exports.getMessageChar();
       }

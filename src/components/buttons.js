@@ -39,7 +39,9 @@ function Transparent(props) {
   )
 }
 
-export default {
+const exports = {
   Button,
   Transparent,
 }
+
+export default exports
