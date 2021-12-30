@@ -132,7 +132,7 @@ const actions = {
           pricingProofs.push(_pricingProofs[name])
           constraintsProofs.push(_constraintsProofs[name])
         })
-        let salt = 'test'
+        let salt = services.random.salt()
         dispatch(actions.setSalt(salt))
         await api.commit(
           names,

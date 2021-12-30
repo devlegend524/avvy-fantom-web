@@ -7,6 +7,7 @@ import linking from './linking'
 import money from './money'
 import names from './names'
 import provider from './provider'
+import random from './random'
 import redux from './redux'
 import time from './time'
 import user from './user'
@@ -21,6 +22,7 @@ const services = {
   money,
   names,
   provider,
+  random,
   redux,
   time,
   user,
