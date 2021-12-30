@@ -52,7 +52,7 @@ class Domain extends React.PureComponent {
           <div className='text-alert-blue'>{'Available for registration'}</div>
         </div>
         <div className='mt-8'>
-          <components.Button 
+          <components.buttons.Button 
             text={'Register this name'} 
             onClick={(navigator) => this.addToCart(navigator)} 
           />
@@ -72,7 +72,7 @@ class Domain extends React.PureComponent {
           <div className='text-alert-blue'>{'Available for auction'}</div>
         </div>
         <div className='mt-8'>
-          <components.Button text={'Bid on this name'} />
+          <components.buttons.Button text={'Bid on this name'} />
         </div>
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />

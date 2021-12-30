@@ -25,6 +25,7 @@ class Wrapper extends React.PureComponent {
   }
  
   render() {
+    console.log(window.location.pathname + ', ' + services.linking.path('Register'))
     return (
 			<div className={`font-poppins`}>
         
@@ -113,8 +114,13 @@ class Wrapper extends React.PureComponent {
 
         {/* Content */}
         <div className="h-16 md:h-24"></div>
+        <components.ContinueRegistration />
         <div className='max-w-screen-md m-auto p-4'>
           {this.props.children}
+        </div>
+
+        {/* Cart */}
+        <div className='absolute bottom-0 w-full'>
         </div>
 			</div>
     )
