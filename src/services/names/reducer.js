@@ -1,6 +1,6 @@
 import constants from './constants'
 
-export const reducerName = 'nameHashService'
+export const reducerName = 'nameService'
 
 export const initialState = {
   reverseLookups: {}, // these lookups use the hash as a key and resolve to the name.

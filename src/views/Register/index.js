@@ -51,7 +51,17 @@ class Register extends React.PureComponent {
     this.props.removeFromCart(name)
   }
 
+  removeUnavailable() {
+    this.props.names.forEach(name => {
+      const nameData = this.props.nameData[name]
+      if (nameData.status !== nameData.constants.DOMAIN_STATUSES.AVAILABLE) {
+        this.props.removeFromCart(name)
+      }
+    })
+  }
+
   startPurchase() {
+    this.removeUnavailable()
     this.registrationModal.toggle()
   }
 
@@ -69,13 +79,13 @@ class Register extends React.PureComponent {
     const quantity = this.props.quantities[name]
     const itemTotal = services.money.mul(quantity, nameData.priceUSDCents)
     return (
-      <div className='max-w-sm'>
+      <div className='max-w-sm select-none'>
         <div className='flex items-center'>
           <div className='p-4 cursor-pointer' onClick={() => this.decrementQuantity(name)}>
             <MinusCircleIcon className='w-8 text-gray-800' />
           </div>
           <div className='text-center text-sm'>
-            <div className='font-bold'>{quantity} {quantity === '1' ? 'year' : 'years'}</div>
+            <div className='font-bold'>{quantity} {parseInt(quantity) === 1 ? 'year' : 'years'}</div>
             <div className=''>{services.money.renderUSD(itemTotal)}</div>
           </div>
           <div className='p-4 cursor-pointer' onClick={() => this.incrementQuantity(name)}>
@@ -89,7 +99,18 @@ class Register extends React.PureComponent {
     )
   }
 
+  renderNotAvailable(name, status) {
+    return (
+      <div className='bg-gray-100 rounded-lg mb-4 p-4'>
+        {name} {'is not available for registration'}
+      </div>
+    )
+  }
+
   renderName(name, index) {
+    const nameData = this.props.nameData[name]
+    if (!nameData) return null
+    if (nameData.status !== nameData.constants.DOMAIN_STATUSES.AVAILABLE) return null
     return (
       <div key={index} className='bg-gray-100 rounded-lg mb-4 p-4'>
         <div className='flex justify-between flex-col items-center sm:flex-row'>
@@ -118,7 +139,12 @@ class Register extends React.PureComponent {
     for (let i = 0; i < names.length; i += 1) {
       if (!nameData[names[i]] || !quantities[names[i]]) return null
     }
+    const unavailable = []
     const total = names.reduce((sum, curr) => {
+      if (nameData[curr].status !== nameData[curr].constants.DOMAIN_STATUSES.AVAILABLE) {
+        unavailable.push(curr)
+        return sum
+      }
       const namePrice = nameData[curr].priceUSDCents
       const namePriceAvax = nameData[curr].priceAVAXEstimate
       if (!namePrice || !namePriceAvax) return {
@@ -135,6 +161,11 @@ class Register extends React.PureComponent {
     }, {usd: '0', avax: '0'})
     return (
       <>
+        {unavailable.length > 0 ? (
+          <div className='mb-4'>
+            <components.labels.Error text={`${unavailable.join(', ')} ${unavailable.length === 1 ? 'is' : 'are'}  no longer available for registration`} />
+          </div>
+        ) : null}
         {names.map(this.renderName.bind(this))}
         <div className='max-w-md m-auto mt-8'>
           <div className='m-auto mb-8 max-w-xs'>

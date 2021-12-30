@@ -14,7 +14,7 @@ const reducers = [
   views.Register.redux.reducer,
   services.cart.reducer,
   services.darkmode.reducer,
-  services.namehash.reducer,
+  services.names.reducer,
   services.user.reducer
 ]
 
@@ -27,7 +27,7 @@ const persistedReducer = persistReducer({
     storage,
     whitelist: [
       services.cart.reducer.reducerName,
-      services.namehash.reducer.reducerName,
+      services.names.reducer.reducerName,
     ]
   },
   combineReducers(reducerMap)

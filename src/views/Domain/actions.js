@@ -20,8 +20,16 @@ const actions = {
     return async (dispatch, getState) => {
       dispatch(actions.setLoading(true))
       const api = services.provider.buildAPI()
-      const domain = await api.loadDomain(_domain)
-      dispatch(services.namehash.actions.addRecord(_domain, domain.hash))
+      let domain
+      if (api.isSupported(_domain)) {
+        domain = await api.loadDomain(_domain)
+        dispatch(services.names.actions.addRecord(_domain, domain.hash))
+      } else {
+        domain = {
+          supported: false,
+          domain: _domain
+        }
+      }
       dispatch(actions.setDomain(domain))
       dispatch(actions.setLoading(false))
     }

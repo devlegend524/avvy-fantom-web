@@ -1,7 +1,7 @@
 import reduxService from 'services/redux'
 
 const constants = reduxService.prepareConstants(
-  'services/namehash',
+  'services/names',
   [
     'ADD_RECORD',
   ]
