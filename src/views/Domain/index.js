@@ -20,15 +20,20 @@ class Domain extends React.PureComponent {
       domain: params.domain,
     }
     this.searchPlaceholder = 'Search for another name'
-    this.props.loadDomain(params.domain)
+    this.loadDomain(params.domain)
   }
 
   updateParams = () => {
     const params = services.linking.getParams('Domain')
     this.setState({
       domain: params.domain
+    }, () => {
+      this.loadDomain(params.domain)
     })
-    this.props.loadDomain(params.domain)
+  }
+
+  loadDomain(domain) {
+    this.props.loadDomain(domain)
   }
 
   componentDidMount() {
@@ -101,6 +106,20 @@ class Domain extends React.PureComponent {
     )
   }
 
+  renderUnsupported() {
+    console.log('rendering unsupported')
+    return (
+      <div className='max-w-md m-auto'>
+        <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
+          <components.labels.Error text={'This name cannot be registered'} />
+        </div>
+        <div className='mt-4'>
+          <components.DomainSearch placeholder={this.searchPlaceholder} />
+        </div>
+      </div>
+    )
+  }
+
   renderOwnershipDetails() {
     return (
       <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8'>
@@ -145,7 +164,7 @@ class Domain extends React.PureComponent {
       <div className='max-w-md m-auto'>
         <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
           <InformationCircleIcon className='w-6 text-alert-red mr-2' />
-          <div className='text-alert-red'>{'Not available for registration'}</div>
+          <div className='text-alert-red'>{'This name is already registered'}</div>
         </div>
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />
@@ -157,6 +176,7 @@ class Domain extends React.PureComponent {
 
   renderBody() {
     if (this.props.isLoading || !this.props.domain) return null
+    if (!this.props.domain.supported) return this.renderUnsupported()
 
     const statuses = this.props.domain.constants.DOMAIN_STATUSES
 

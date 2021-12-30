@@ -42,6 +42,7 @@ export const reducer = (state = initialState, action) => {
       }
 
     case constants.SET_NAME_DATA:
+      console.log(action)
       return {
         ...state,
         nameData: {

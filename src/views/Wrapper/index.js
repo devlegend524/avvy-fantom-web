@@ -25,7 +25,6 @@ class Wrapper extends React.PureComponent {
   }
  
   render() {
-    console.log(window.location.pathname + ', ' + services.linking.path('Register'))
     return (
 			<div className={`font-poppins`}>
         

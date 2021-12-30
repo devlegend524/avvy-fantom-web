@@ -99,6 +99,16 @@ class AvvyClient {
     return priceAVAX
   }
 
+  isSupported(name) {
+    // checks whether a given name is supported by the system
+    const split = name.split('.')
+    if (split.length !== 2) return false
+    if (split[1] !== 'avax') return false
+    if (split[0].length < 3) return false
+    if (split[0].length > 62) return false
+    return true
+  }
+
   async getAVAXConversionRate() {
     // this is just fixed price for now based on latestRound from oracle
     const rate = ethers.BigNumber.from('10000000000')
@@ -137,8 +147,9 @@ class AvvyClient {
       constants: {
         DOMAIN_STATUSES: this.DOMAIN_STATUSES,
       },
+      supported: this.isSupported(domain),
       domain,
-      hash,
+      hash: hash.toString(),
       owner,
       expiresAt,
       status: domainStatus,
@@ -226,8 +237,6 @@ class AvvyClient {
     const tx = await this.contracts.PricingOracleV1.getPriceForName(hashes[0], pricingProofs[0])
     const receipt = await tx.wait()
     const price = receipt.events[0].args[0]
-    console.log('contract price', ethers.utils.formatEther(price))
-    console.log('payment price', ethers.utils.formatEther(total))
 
     await this.contracts.LeasingAgentV1.register(hashes, quantities, constraintsProofs, pricingProofs, salt, {
       value: total

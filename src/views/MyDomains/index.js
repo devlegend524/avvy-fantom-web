@@ -107,7 +107,7 @@ class MyDomains extends React.PureComponent {
 const mapStateToProps = (state) => ({
   domainIds: services.user.selectors.domainIds(state),
   domainCount: services.user.selectors.domainCount(state),
-  reverseLookups: services.namehash.selectors.reverseLookups(state),
+  reverseLookups: services.names.selectors.reverseLookups(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
