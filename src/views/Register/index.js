@@ -12,6 +12,7 @@ import selectors from './selectors'
 
 import RegistrationFlow from './RegistrationFlow'
 
+
 class Register extends React.PureComponent {
   constructor(props) {
     super(props)
