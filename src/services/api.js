@@ -241,6 +241,11 @@ class AvvyClient {
     })
     await registerTx.wait()
   }
+
+  async getAuctionPhases() {
+    const params = await this.contracts.SunriseAuctionV1.getAuctionParams()
+    return params.map(p => parseInt(p.toString()))
+  }
 }
 
 export default AvvyClient

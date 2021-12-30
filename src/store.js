@@ -12,9 +12,11 @@ const reducerMap = {}
 const reducers = [
   views.Domain.redux.reducer,
   views.Register.redux.reducer,
+  views.SunriseAuction.redux.reducer,
   services.cart.reducer,
   services.darkmode.reducer,
   services.names.reducer,
+  services.sunrise.reducer,
   services.user.reducer
 ]
 
@@ -28,6 +30,7 @@ const persistedReducer = persistReducer({
     whitelist: [
       services.cart.reducer.reducerName,
       services.names.reducer.reducerName,
+      services.sunrise.reducer.reducerName,
     ]
   },
   combineReducers(reducerMap)

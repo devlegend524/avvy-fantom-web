@@ -9,6 +9,7 @@ import names from './names'
 import provider from './provider'
 import random from './random'
 import redux from './redux'
+import sunrise from './sunrise'
 import time from './time'
 import user from './user'
 
@@ -24,6 +25,7 @@ const services = {
   provider,
   random,
   redux,
+  sunrise,
   time,
   user,
 }
