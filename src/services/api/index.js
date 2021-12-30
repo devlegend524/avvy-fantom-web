@@ -216,7 +216,8 @@ class AvvyClient {
       hashes.push(hash.toString())
     }
     const hash = await client.registrationCommitHash(hashes, quantities, constraintsProofs, pricingProofs, salt)
-    await this.contracts.LeasingAgentV1.commit(hash)
+    const tx = await this.contracts.LeasingAgentV1.commit(hash)
+    await tx.wait()
     return hash
   }
 
@@ -236,13 +237,10 @@ class AvvyClient {
       )
     }
 
-    const tx = await this.contracts.PricingOracleV1.getPriceForName(hashes[0], pricingProofs[0])
-    const receipt = await tx.wait()
-    const price = receipt.events[0].args[0]
-
-    await this.contracts.LeasingAgentV1.register(hashes, quantities, constraintsProofs, pricingProofs, salt, {
+    const registerTx = await this.contracts.LeasingAgentV1.register(hashes, quantities, constraintsProofs, pricingProofs, salt, {
       value: total
     })
+    await registerTx.wait()
   }
 }
 

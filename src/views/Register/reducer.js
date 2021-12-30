@@ -7,7 +7,12 @@ export const initialState = {
   commitSalt: null,
   pricingProofs: {},
   constraintsProofs: {},
-  progress: {}
+  progress: {},
+  hasCommit: false,
+  hasError: false,
+  isComplete: false,
+  isCommitting: false,
+  isFinalizing: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -46,6 +51,36 @@ export const reducer = (state = initialState, action) => {
           ...state.constraintsProofs,
           [action.domain]: action.proof
         }
+      }
+
+    case constants.SET_HAS_COMMIT:
+      return {
+        ...state,
+        hasCommit: action.value
+      }
+
+    case constants.SET_HAS_ERROR:
+      return {
+        ...state,
+        hasError: action.value
+      }
+
+    case constants.SET_IS_COMPLETE:
+      return {
+        ...state,
+        isComplete: action.value
+      }
+
+    case constants.SET_IS_COMMITTING:
+      return {
+        ...state,
+        isCommitting: action.value
+      }
+
+    case constants.SET_IS_FINALIZING:
+      return {
+        ...state,
+        isFinalizing: action.value
       }
 
     default:

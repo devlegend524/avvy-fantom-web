@@ -8,6 +8,11 @@ const selectors = {
   pricingProofs: (state) => root(state).pricingProofs,
   commitHash: (state) => root(state).commitHash,
   commitSalt: (state) => root(state).commitSalt,
+  hasCommit: (state) => root(state).hasCommit,
+  hasError: (state) => root(state).hasError,
+  isComplete: (state) => root(state).isComplete,
+  isCommitting: (state) => root(state).isCommitting,
+  isFinalizing: (state) => root(state).isFinalizing,
 }
 
 export default selectors
