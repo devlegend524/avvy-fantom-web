@@ -17,7 +17,7 @@ const money = {
       cents = strCents
     }
     while (cents.length < 2) cents = '0' + cents
-    return `\$${dollars}.${cents} USD`
+    return `$${dollars}.${cents} USD`
   },
 
   renderAVAX: (amount) => {

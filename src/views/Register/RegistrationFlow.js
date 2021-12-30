@@ -69,7 +69,6 @@ class RegistrationFlow extends React.PureComponent {
   }
 
   renderProofs() {
-    const names = this.props.names
     return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Generate Proofs'}</div>

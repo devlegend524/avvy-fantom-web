@@ -43,9 +43,11 @@ class Wrapper extends React.PureComponent {
 						</svg>
 					</div>
 					<div className="font-poppins flex-col flex items-center h-full p-4">
-						<a className="block text-center" href="#">
+						<Link 
+              to={services.linking.path('Landing')}
+              onClick={this.toggleMenu.bind(this)}>
 							<img src={services.linking.static('images/logo.png')} className="w-16 m-auto mb-4" alt="Avvy Domains" />
-						</a>
+            </Link>
             <div className='mb-2 w-full'>
               <components.DomainSearch onBeforeSubmit={this.toggleMenu.bind(this)} />
             </div>

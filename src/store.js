@@ -38,6 +38,6 @@ export const store = createStore(
   applyMiddleware(thunk),
 );
 
-let persistor = persistStore(store)
+persistStore(store)
 
 export default store
