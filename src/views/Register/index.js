@@ -62,7 +62,6 @@ class Register extends React.PureComponent {
   }
 
   startPurchase() {
-    //this.removeUnavailable()
     this.registrationModal.toggle()
   }
 
