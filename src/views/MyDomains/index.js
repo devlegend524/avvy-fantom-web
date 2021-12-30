@@ -77,7 +77,7 @@ class MyDomains extends React.PureComponent {
       <div className='max-w-md m-auto'>
         <components.labels.Information text={'You must be connected to a wallet to view your domains'} />
         <div className='mt-8'>
-          <components.Button text={'Connect your wallet'} onClick={() => this.connectModal.toggle()} />
+          <components.buttons.Button text={'Connect your wallet'} onClick={() => this.connectModal.toggle()} />
         </div>
       </div>
     )

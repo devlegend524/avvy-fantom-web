@@ -41,7 +41,7 @@ class ConnectWallet extends React.PureComponent {
               <components.labels.Information text={'Connecting to wallet'} />
             </div>
             <div className='max-w-sm m-auto'>
-              <components.Button type='sm' text='Cancel connection' onClick={this.reset.bind(this)} />
+              <components.buttons.Button type='sm' text='Cancel connection' onClick={this.reset.bind(this)} />
             </div>
           </div>
         ) : (

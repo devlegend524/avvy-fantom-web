@@ -77,7 +77,7 @@ class RegistrationFlow extends React.PureComponent {
         <div className='mt-4 max-w-sm m-auto'>
           {this.state.needsProofs ? (
             <>
-              <components.Button text={'Generate proofs'} onClick={this.generateProofs.bind(this)} />
+              <components.buttons.Button text={'Generate proofs'} onClick={this.generateProofs.bind(this)} />
             </>
           ) : (
             <>
@@ -88,10 +88,10 @@ class RegistrationFlow extends React.PureComponent {
               {this.props.progress.percent === 100 ? (
                 <>
                   <div className='mt-4'>
-                    <components.Button text={'Commit registration'} onClick={this.commitTransaction.bind(this)} />
+                    <components.buttons.Button text={'Commit registration'} onClick={this.commitTransaction.bind(this)} />
                   </div>
                   <div className='mt-4'>
-                    <components.Button text={'Finalize registration'} onClick={this.finalizeTransaction.bind(this)} />
+                    <components.buttons.Button text={'Finalize registration'} onClick={this.finalizeTransaction.bind(this)} />
                   </div>
                 </>
               ) : null}

@@ -17,6 +17,10 @@ const paths = {
 const linkingEvents = new EventTarget()
 
 const linking = {
+  
+  EVENTS: {
+    ROUTE_CHANGED: 1,
+  },
 
   // generates the path, to be used in links
   path: (pathName, params) => {
@@ -60,6 +64,12 @@ const linking = {
     navigator(linkingService.path(pathName, params))
     linkingEvents.dispatchEvent(
       new Event(pathName)
+    )
+  },
+
+  routeChanged: () => {
+    linkingEvents.dispatchEvent(
+      new Event(linking.EVENTS.ROUTE_CHANGED)
     )
   },
 

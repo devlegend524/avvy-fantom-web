@@ -162,7 +162,7 @@ class Register extends React.PureComponent {
           <div className='my-8'>
             <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX. Amounts noted are estimates; actual price will be determined in future steps.'} />
           </div>
-          <components.Button text={'Continue Registration'} onClick={this.startPurchase.bind(this)} />
+          <components.buttons.Button text={'Continue Registration'} onClick={this.startPurchase.bind(this)} />
         </div>
       </>
     )
