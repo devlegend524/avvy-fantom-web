@@ -159,13 +159,16 @@ class Register extends React.PureComponent {
         avax: services.money.add(sum.avax, registrationPriceAvax),
       }
     }, {usd: '0', avax: '0'})
+    if (unavailable.length > 0) return (
+      <div className='mb-4'>
+        <components.labels.Error text={`${unavailable.join(', ')} ${unavailable.length === 1 ? 'is' : 'are'}  no longer available for registration.`} />
+        <div className='mt-8 max-w-sm m-auto'>
+          <components.buttons.Button text={'Continue'} onClick={() => this.removeUnavailable()} />
+        </div>
+      </div>
+    )
     return (
       <>
-        {unavailable.length > 0 ? (
-          <div className='mb-4'>
-            <components.labels.Error text={`${unavailable.join(', ')} ${unavailable.length === 1 ? 'is' : 'are'}  no longer available for registration`} />
-          </div>
-        ) : null}
         {names.map(this.renderName.bind(this))}
         <div className='max-w-md m-auto mt-8'>
           <div className='m-auto mb-8 max-w-xs'>

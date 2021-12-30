@@ -12,8 +12,7 @@ const actions = {
 
   addToCart: (name) => {
     return (dispatch, getState) => {
-      //dispatch(actions._addToCart(name))
-      dispatch(actions._addToCart('testname.avax'))
+      dispatch(actions._addToCart(name))
       dispatch(actions.refreshNameData(name))
     }
   },
