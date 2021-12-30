@@ -10,6 +10,10 @@ class Modal extends React.PureComponent {
   }
 
   toggle() {
+    if (this.state.open && this.props.onClose) {
+      const result = this.props.onClose()
+      if (!result) return
+    }
     this.setState(state => ({
       open: !state.open
     }), () => {
