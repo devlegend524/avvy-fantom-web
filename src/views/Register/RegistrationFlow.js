@@ -72,7 +72,7 @@ class RegistrationFlow extends React.PureComponent {
     return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Generate Proofs'}</div>
-        <components.labels.Information text={"We want to know certain things about your domain name, but we want to respect your privacy. To achieve both, we use a tool called a zero-knowledge proof. Generating these proofs requires a lot of computational power, so your browser might be slow or even freeze temporarily. Just sit tight, we'll let you know when it's done. Please do not refresh or exit the page."} />
+        <components.labels.Information text={"Generating zero-knowledge proofs might cause your browser to slow down or even freeze temporarily. Just sit tight, we'll let you know when it's done. Please do not refresh or exit the page."} />
         {this.state.needsProofs ? (
           <div className='mt-8 max-w-sm m-auto'>
             <components.buttons.Button text={'Generate proofs'} onClick={this.generateProofs.bind(this)} />

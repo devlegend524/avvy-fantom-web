@@ -85,26 +85,22 @@ const actions = {
         for (let i = 0; i < names.length; i += 1) {
           let name = names[i]
           dispatch(actions.setProgress({
-            message: `Generating pricing proof for ${name}`,
+            message: `Generating pricing proof for ${name} (${j+1}/${numSteps})`,
             percent: parseInt((j / numSteps) * 100)
           }))
           let pricingRes = await api.generateDomainPriceProof(name)
           dispatch(actions.setPricingProof(name, pricingRes.calldata))
           j += 1
           dispatch(actions.setProgress({
-            message: `Generating constraints proof for ${name}`,
+            message: `Generating constraints proof for ${name} (${j+1}/${numSteps})`,
             percent: parseInt((j / numSteps) * 100),
           }))
           let constraintsRes = await api.generateConstraintsProof(name)
           dispatch(actions.setConstraintsProof(name, constraintsRes.calldata))
           j += 1
-          dispatch(actions.setProgress({
-            message: `Getting quote for ${name}`,
-            percent: parseInt((j / numSteps) * 100),
-          }))
         }
         dispatch(actions.setProgress({
-          message: 'Done',
+          message: `Done`,
           percent: 100,
         }))
       } catch (err) {
