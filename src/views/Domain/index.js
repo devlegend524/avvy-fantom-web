@@ -1,8 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { CheckCircleIcon } from '@heroicons/react/solid'
-import { InformationCircleIcon } from '@heroicons/react/outline'
-
+import { InformationCircleIcon } from '@heroicons/react/outline' 
 import services from 'services'
 import components from 'components'
 

@@ -12,7 +12,8 @@ const actions = {
 
   addToCart: (name) => {
     return (dispatch, getState) => {
-      dispatch(actions._addToCart(name))
+      //dispatch(actions._addToCart(name))
+      dispatch(actions._addToCart('testname.avax'))
       dispatch(actions.refreshNameData(name))
     }
   },
@@ -21,6 +22,13 @@ const actions = {
     return {
       type: constants.REMOVE_FROM_CART,
       name
+    }
+  },
+
+  clear: () => {
+    return (dispatch, getState) => {
+      const names = selectors.names(getState())
+      names.forEach(name => dispatch(actions.removeFromCart(name)))
     }
   },
 

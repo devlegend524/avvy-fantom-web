@@ -3,6 +3,7 @@ import ContinueRegistration from './ContinueRegistration'
 import DomainSearch from './DomainSearch'
 import Modal from './Modal'
 import ProgressBar from './ProgressBar'
+import Spinner from './Spinner'
 
 import buttons from './buttons'
 import labels from './labels'
@@ -16,6 +17,7 @@ const components = {
   DomainSearch,
   Modal,
   ProgressBar,
+  Spinner,
 }
 
 export default components

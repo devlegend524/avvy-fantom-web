@@ -12,8 +12,8 @@ function Information(props) {
 
 function Error(props) {
   return (
-    <div className='flex items-center justify-center'>
-      <InformationCircleIcon className='w-6 text-alert-red mr-2' />
+    <div className='flex items-start justify-center'>
+      <InformationCircleIcon className='w-6 text-alert-red mr-2 flex-shrink-0' />
       <div className='text-alert-red'>{props.text}</div>
     </div>
   )
@@ -21,8 +21,8 @@ function Error(props) {
 
 function Success(props) {
   return (
-    <div className='flex items-center justify-center'>
-      <CheckCircleIcon className='w-6 text-alert-blue mr-2' />
+    <div className='flex items-start justify-center'>
+      <CheckCircleIcon className='w-6 text-alert-blue mr-2 flex-shrink-0' />
       <div className='text-alert-blue'>{props.text}</div>
     </div>
   )

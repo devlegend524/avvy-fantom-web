@@ -463,6 +463,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   pointer-events: none;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .static {
   position: static;
 }
@@ -524,6 +528,11 @@ Ensure the default browser behavior of the `hidden` attribute.
 .mx-8 {
   margin-left: 2rem;
   margin-right: 2rem;
+}
+
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .mr-4 {
@@ -618,6 +627,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 6rem;
 }
 
+.h-32 {
+  height: 8rem;
+}
+
 .w-full {
   width: 100%;
 }
@@ -656,6 +669,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .w-4 {
   width: 1rem;
+}
+
+.w-2 {
+  width: 0.5rem;
 }
 
 .max-w-sm {
@@ -822,6 +839,11 @@ Ensure the default browser behavior of the `hidden` attribute.
 .bg-gray-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(107 114 128 / var(--tw-bg-opacity));
+}
+
+.bg-gray-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
 .p-4 {
@@ -1051,6 +1073,73 @@ Ensure the default browser behavior of the `hidden` attribute.
   src: url(/fonts/ZenDots-Regular.ttf);
 }
 
+/* spinner for loading */
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: 2px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  -webkit-animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+          animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+
+.lds-ring.lds-ring-dark div {
+  border: 2px solid #555;
+  border-color: #555 transparent transparent transparent;
+}
+
+.lds-ring div:nth-child(1) {
+  -webkit-animation-delay: -0.45s;
+          animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+  -webkit-animation-delay: -0.3s;
+          animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+  -webkit-animation-delay: -0.15s;
+          animation-delay: -0.15s;
+}
+
+@-webkit-keyframes lds-ring {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes lds-ring {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
 .placeholder\:text-gray-400::-webkit-input-placeholder {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
@@ -1182,3 +1271,4 @@ Ensure the default browser behavior of the `hidden` attribute.
     line-height: 1.25rem;
   }
 }
+
