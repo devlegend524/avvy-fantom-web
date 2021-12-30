@@ -106,6 +106,8 @@ class AvvyClient {
     if (split[1] !== 'avax') return false
     if (split[0].length < 3) return false
     if (split[0].length > 62) return false
+    if (!split[0].match(/^[a-z0-9\-]+$/)) return false
+    if (split[0].length >= 4 && split[0][2] == '-' && split[0][3] == '-') return false
     return true
   }
 
