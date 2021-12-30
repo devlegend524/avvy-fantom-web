@@ -3,6 +3,12 @@ import { connect } from 'react-redux'
 import { ArrowRightIcon, CheckIcon } from '@heroicons/react/solid'
 import { CalendarIcon } from '@heroicons/react/outline'
 
+import services from 'services'
+import actions from './actions'
+import constants from './constants'
+import reducer from './reducer'
+import selectors from './selectors'
+
 
 class AuctionPhase extends React.PureComponent {
   render() {
@@ -40,13 +46,39 @@ class AuctionPhase extends React.PureComponent {
 
 
 class SunriseAuction extends React.PureComponent {
+  componentDidMount() {
+    this.props.loadAuctionPhases()
+  }
+
+  renderAuctionPhases() {
+    if (!this.props.auctionPhases) return null
+    const bidPlacementStartsAt = this.props.auctionPhases[0] * 1000
+    const bidRevealStartsAt = this.props.auctionPhases[1] * 1000
+    const claimStartsAt = this.props.auctionPhases[2] * 1000
+    const claimEndsAt = this.props.auctionPhases[3] * 1000
+    const end = new Date((claimEndsAt + 60 * 60 * 24 * 365 * 100) * 1000)
+    console.log(Date.now() / 1000, this.props.auctionPhases)
+    return (
+      <div className='mt-4 bg-gray-100 rounded-lg p-4'>
+        <div className='font-bold mb-4'>{'Auction Phases'}</div>
+        <div className='underline mb-8 text-sm text-gray-700'>{'Read more about the Sunrise Auction here'}</div>
+        <div className='mt-2'>
+          <AuctionPhase name='Bid placement' startsAt={bidPlacementStartsAt} endsAt={bidRevealStartsAt} />
+        </div>
+        <div className='mt-2'>
+          <AuctionPhase name='Bid reveal' startsAt={bidRevealStartsAt} endsAt={claimStartsAt} />
+        </div>
+        <div className='mt-2'>
+          <AuctionPhase name='Domain claiming' startsAt={claimStartsAt} endsAt={claimEndsAt} />
+        </div>
+        <div className='mt-2'>
+          <AuctionPhase name='Auction over' startsAt={claimEndsAt} endsAt={end} />
+        </div>
+      </div>
+    )
+  }
+
   render() {
-    const now = parseInt(Date.now() / 1000)
-    const bidPlacementStartsAt = new Date((now - 120) * 1000)
-    const bidRevealStartsAt = new Date((now - 120) * 1000)
-    const claimStartsAt = new Date((now + 120) * 1000)
-    const claimEndsAt = new Date((now + 180) * 1000)
-    const end = new Date((now + 60 * 60 * 24 * 365 * 100) * 1000)
     return (
       <div>
         <div className='font-bold text-center mt-4 text-lg'>{'Sunrise Auction'}</div>
@@ -57,31 +89,27 @@ class SunriseAuction extends React.PureComponent {
 						<ArrowRightIcon className="h-6" />
           </div>
         </div>
-        <div className='mt-4 bg-gray-100 rounded-lg p-4'>
-          <div className='font-bold mb-4'>{'Auction Phases'}</div>
-          <div className='underline mb-8 text-sm text-gray-700'>{'Read more about the Sunrise Auction here'}</div>
-          <div className='mt-2'>
-            <AuctionPhase name='Bid placement' startsAt={bidPlacementStartsAt} endsAt={bidRevealStartsAt} />
-          </div>
-          <div className='mt-2'>
-            <AuctionPhase name='Bid reveal' startsAt={bidRevealStartsAt} endsAt={claimStartsAt} />
-          </div>
-          <div className='mt-2'>
-            <AuctionPhase name='Domain claiming' startsAt={claimStartsAt} endsAt={claimEndsAt} />
-          </div>
-          <div className='mt-2'>
-            <AuctionPhase name='Auction over' startsAt={claimEndsAt} endsAt={end} />
-          </div>
-        </div>
+        {this.renderAuctionPhases()}
       </div>
     )
   }
 }
 
 const mapStateToProps = (state) => ({
+  auctionPhases: selectors.auctionPhases(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  loadAuctionPhases: () => dispatch(actions.loadAuctionPhases()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SunriseAuction)
+const component = connect(mapStateToProps, mapDispatchToProps)(SunriseAuction)
+
+component.redux = {
+  actions,
+  constants,
+  reducer,
+  selectors,
+}
+
+export default component
