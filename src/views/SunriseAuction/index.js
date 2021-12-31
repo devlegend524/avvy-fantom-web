@@ -2,12 +2,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { ArrowRightIcon, CheckIcon } from '@heroicons/react/solid'
 import { CalendarIcon } from '@heroicons/react/outline'
+import { Link } from 'react-router-dom'
 
 import services from 'services'
 import actions from './actions'
 import constants from './constants'
 import reducer from './reducer'
 import selectors from './selectors'
+
+import MyBids from './MyBids'
 
 
 class AuctionPhase extends React.PureComponent {
@@ -84,10 +87,12 @@ class SunriseAuction extends React.PureComponent {
         <div className='font-bold text-center mt-4 text-lg'>{'Sunrise Auction'}</div>
         <div className='max-w-sm m-auto mt-4'>{'Welcome to the sunrise auction. During the auction, you may select & bid on the domains you wish to acquire. You can update your bids at any time during the bid placement phase.'}</div>
         <div className='mt-8'>
-          <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold'>
-            <div>{'My Bids'}</div>
-						<ArrowRightIcon className="h-6" />
-          </div>
+          <Link to={services.linking.path('SunriseAuctionMyBids')}>
+            <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold'>
+              <div>{'My Bids'}</div>
+              <ArrowRightIcon className="h-6" />
+            </div>
+          </Link>
         </div>
         {this.renderAuctionPhases()}
       </div>
@@ -111,5 +116,7 @@ component.redux = {
   reducer,
   selectors,
 }
+
+component.MyBids = MyBids
 
 export default component

@@ -7,6 +7,7 @@ import { ethers } from 'ethers'
 
 const money = {
   renderUSD: (strCents) => {
+    if (typeof strCents !== 'string') strCents = strCents.toString()
     let cents
     let dollars
     if (strCents.length > 2) {
