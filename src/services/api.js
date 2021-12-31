@@ -61,12 +61,18 @@ class AvvyClient {
     return domains
   }
 
-  async isAuctionPeriod() {
-    return false
+  async isAuctionPeriod(auctionPhases) {
+    const biddingStartsAt = parseInt(auctionPhases[0]) * 1000
+    const claimEndsAt = parseInt(auctionPhases[3]) * 1000
+    const now = parseInt(Date.now())
+    return now >= biddingStartsAt && now < claimEndsAt
   }
 
-  async isBiddingOpen() {
-    return false
+  async isBiddingOpen(auctionPhases) {
+    const biddingStartsAt = parseInt(auctionPhases[0]) * 1000
+    const revealStartsAt = parseInt(auctionPhases[1]) * 1000
+    const now = parseInt(Date.now())
+    return now >= biddingStartsAt && now < revealStartsAt 
   }
 
   async isRegistrationPeriod() {
@@ -122,8 +128,9 @@ class AvvyClient {
     // hash the name
     const hash = await client.nameHash(domain)
     const tokenExists = await this.tokenExists(hash)
-    const isAuctionPeriod = await this.isAuctionPeriod()
-    const isBiddingOpen = await this.isBiddingOpen()
+    const auctionPhases = await this.getAuctionPhases()
+    const isAuctionPeriod = await this.isAuctionPeriod(auctionPhases)
+    const isBiddingOpen = await this.isBiddingOpen(auctionPhases)
     const isRegistrationPeriod = await this.isRegistrationPeriod()
     let domainStatus
     let owner = null
@@ -132,18 +139,19 @@ class AvvyClient {
       owner = await this.ownerOf(hash)
       if (owner && this.account && owner.toLowerCase() === this.account.toLowerCase()) domainStatus = this.DOMAIN_STATUSES.REGISTERED_SELF
       else domainStatus = this.DOMAIN_STATUSES.REGISTERED_OTHER
-    } else if (isRegistrationPeriod) {
-      domainStatus = this.DOMAIN_STATUSES.AVAILABLE
     } else if (isAuctionPeriod && isBiddingOpen) {
       domainStatus = this.DOMAIN_STATUSES.AUCTION_AVAILABLE
     } else if (isAuctionPeriod && !isBiddingOpen) {
       domainStatus = this.DOMAIN_STATUSES.AUCTION_BIDDING_CLOSED
+    } else if (isRegistrationPeriod) {
+      domainStatus = this.DOMAIN_STATUSES.AVAILABLE
     }
 
     let priceUSDCents = await this.getNamePrice(domain)
     let avaxConversionRate = await this.getAVAXConversionRate()
     let priceAVAXEstimate = avaxConversionRate.mul(ethers.BigNumber.from(priceUSDCents)).toString()
     let expiresAt = await this.getNameExpiry(hash)
+
 
     return {
       constants: {
@@ -243,8 +251,13 @@ class AvvyClient {
   }
 
   async getAuctionPhases() {
+    const now = parseInt(Date.now() / 1000)
+    if (this._auctionPhasesCache && now - this._auctionPhasesCachedAt < 60 * 5) return this._auctionPhasesCache
     const params = await this.contracts.SunriseAuctionV1.getAuctionParams()
-    return params.map(p => parseInt(p.toString()))
+    const phases = params.map(p => parseInt(p.toString()))
+    this._auctionPhasesCache = phases
+    this._auctionPhasesCachedAt = now
+    return phases
   }
 }
 

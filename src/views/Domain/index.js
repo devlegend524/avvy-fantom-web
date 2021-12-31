@@ -5,6 +5,7 @@ import { InformationCircleIcon } from '@heroicons/react/outline'
 import services from 'services'
 import components from 'components'
 
+import AddBid from './AddBid'
 import actions from './actions'
 import constants from './constants'
 import reducer from './reducer'
@@ -48,6 +49,15 @@ class Domain extends React.PureComponent {
     services.linking.navigate(navigator, 'Register', {})
   }
 
+  bidOnName() {
+    this.bidModal.toggle()
+  }
+
+  handleAddBid(navigate, value) {
+    this.props.addBid(this.state.domain, value)
+    services.linking.navigate(navigate, 'SunriseAuctionMyBids')
+  }
+
   renderAvailableBody() {
     return (
       <div className='max-w-md m-auto'>
@@ -76,7 +86,7 @@ class Domain extends React.PureComponent {
           <div className='text-alert-blue'>{'Available for auction'}</div>
         </div>
         <div className='mt-8'>
-          <components.buttons.Button text={'Bid on this name'} />
+          <components.buttons.Button text={'Bid on this name'} onClick={this.bidOnName.bind(this)} />
         </div>
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />
@@ -88,12 +98,8 @@ class Domain extends React.PureComponent {
   renderAuctionBiddingClosedBody() {
     return (
       <div className='max-w-md m-auto'>
-        <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
-          <InformationCircleIcon className='w-6 text-gray-400 mr-2' />
-          <div className='text-gray-400'>{'Bidding is closed'}</div>
-        </div>
-        <div className='mt-4'>
-          <components.DomainSearch placeholder={this.searchPlaceholder} />
+        <div className='max-w-sm m-auto mt-4'>
+          <components.labels.Information text={'This name is up for auction'} />
         </div>
         <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8'>
           <div className='font-bold'>{'Bidding period is over'}</div>
@@ -101,12 +107,14 @@ class Domain extends React.PureComponent {
             {'This name is undergoing the Sunrise Auction process, however bidding is closed. If there are no winning bids, this name will be available for registration on Dec. 10.'}
           </div>
         </div>
+        <div className='mt-4'>
+          <components.DomainSearch placeholder={this.searchPlaceholder} />
+        </div>
       </div>
     )
   }
 
   renderUnsupported() {
-    console.log('rendering unsupported')
     return (
       <div className='max-w-md m-auto'>
         <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
@@ -203,6 +211,9 @@ class Domain extends React.PureComponent {
   render() {
     return (
       <div>
+        <components.Modal ref={(ref) => this.bidModal = ref} title={'Add a bid'}> 
+          <AddBid domain={this.state.domain} handleSubmit={(navigate, val) => this.handleAddBid(navigate, val)} />
+        </components.Modal>
         <div className='mt-4 mb-4 text-lg text-center font-bold'>{this.state.domain}</div>
         {this.renderBody()}
       </div>
@@ -218,6 +229,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   loadDomain: (domain) => dispatch(actions.loadDomain(domain)),
   addToCart: (domain) => dispatch(services.cart.actions.addToCart(domain)),
+  addBid: (domain, amount) => dispatch(services.sunrise.actions.addBid(domain, amount)),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Domain)

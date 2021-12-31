@@ -5,6 +5,7 @@ const constants = reduxService.prepareConstants(
   [
     'SET_DOMAIN',
     'SET_LOADING', 
+    'SET_AUCTION_PHASES',
   ]
 )
 

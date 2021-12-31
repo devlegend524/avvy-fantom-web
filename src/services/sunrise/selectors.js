@@ -3,7 +3,8 @@ import { reducerName } from './reducer'
 const root = (state) => state[reducerName]
 
 const selectors = {
-  //auctionPhases: (state) => root(state).auctionPhases,
+  bids: (state) => root(state).bids,
+  nameData: (state) => root(state).nameData,
 }
 
 export default selectors

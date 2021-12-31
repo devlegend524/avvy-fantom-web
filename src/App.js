@@ -11,6 +11,7 @@ import views from 'views'
 import services from 'services'
 
 
+
 function Inner() {
   const location = useLocation()
   React.useEffect(() => {
@@ -24,6 +25,7 @@ function Inner() {
         <Route path={services.linking.path('MyDomains')} element={<views.MyDomains />} />
         <Route path={services.linking.path('Register')} element={<views.Register />} />
         <Route path={services.linking.path('SunriseAuction')} element={<views.SunriseAuction />} />
+        <Route path={services.linking.path('SunriseAuctionMyBids')} element={<views.SunriseAuction.MyBids />} />
       </Routes>
     </views.Wrapper>
   );

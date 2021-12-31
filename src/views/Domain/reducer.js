@@ -5,6 +5,7 @@ export const reducerName = 'myDomainsView'
 export const initialState = {
   isLoading: false,
   domain: null,
+  auctionPhases: null,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -19,6 +20,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         domain: action.domain
+      }
+
+    case constants.SET_AUCTION_PHASES:
+      return {
+        ...state,
+        auctionPhases: action.auctionPhases
       }
 
     default:
