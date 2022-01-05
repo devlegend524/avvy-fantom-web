@@ -1,31 +1,37 @@
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import { InformationCircleIcon } from '@heroicons/react/outline'
 
-function Information(props) {
+function Label(props) {
+  const iconSize = {
+    'md': 'w-6',
+    'xs': 'w-4',
+  }[props.size || 'md']
+  const iconMargin = {
+    'md': 'ml-2',
+    'xs': 'ml-1',
+  }[props.size || 'md']
+  const textSize = {
+    'md': '',
+    'xs': 'text-xs',
+  }[props.size || 'md']
   return (
     <div className='flex items-start justify-center'>
-      <InformationCircleIcon className='w-6 text-gray-400 mr-2 flex-shrink-0' />
-      <div className='text-gray-400'>{props.text}</div>
+      <props.icon className={`${iconSize} ${props.color} flex-shrink-0 ${props.extraIconClass}`} />
+      <div className={`${props.color} ${iconMargin} ${textSize} ${props.extraTextClass}`}>{props.text}</div>
     </div>
   )
+}
+
+function Information(props) {
+  return <Label icon={InformationCircleIcon} color='text-gray-400' {...props}  />
 }
 
 function Error(props) {
-  return (
-    <div className='flex items-start justify-center'>
-      <InformationCircleIcon className='w-6 text-alert-red mr-2 flex-shrink-0' />
-      <div className='text-alert-red'>{props.text}</div>
-    </div>
-  )
+  return <Label icon={InformationCircleIcon} color='text-alert-red' {...props} />
 }
 
 function Success(props) {
-  return (
-    <div className='flex items-start justify-center'>
-      <CheckCircleIcon className='w-6 text-alert-blue mr-2 flex-shrink-0' />
-      <div className='text-alert-blue'>{props.text}</div>
-    </div>
-  )
+  return <Label icon={CheckCircleIcon} color='text-alert-blue' {...props} />
 }
 
 const exports = {

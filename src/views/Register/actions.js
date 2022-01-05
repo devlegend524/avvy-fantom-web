@@ -76,6 +76,16 @@ const actions = {
     }
   },
 
+  reset: () => {
+    return (dispatch, getState) => {
+      dispatch(actions.setIsComplete(false))
+      dispatch(actions.setHasCommit(false))
+      dispatch(actions.setIsFinalizing(false))
+      dispatch(actions.setIsCommitting(false))
+      dispatch(actions.setProgress(0))
+    }
+  },
+
   generateProofs: (names) => {
     return async (dispatch, getState) => {
       try {

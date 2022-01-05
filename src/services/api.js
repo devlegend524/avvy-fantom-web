@@ -259,6 +259,11 @@ class AvvyClient {
     this._auctionPhasesCachedAt = now
     return phases
   }
+
+  async bid(hash) {
+    const tx = await this.contracts.SunriseAuctionV1.bid(hash)
+    await tx.wait()
+  }
 }
 
 export default AvvyClient
