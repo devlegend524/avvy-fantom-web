@@ -264,6 +264,11 @@ class AvvyClient {
     const tx = await this.contracts.SunriseAuctionV1.bid(hash)
     await tx.wait()
   }
+
+  async reveal(names, amounts, salt) {
+    const tx = await this.contracts.SunriseAuctionV1.reveal(names, amounts, salt)
+    await tx.wait()
+  }
 }
 
 export default AvvyClient

@@ -10,6 +10,8 @@ const selectors = {
   hasBidError: (state) => root(state).hasBidError,
   biddingIsComplete: (state) => root(state).biddingIsComplete,
   biddingInProgress: (state) => root(state).biddingInProgress,
+  revealingBundle: (state) => root(state).revealingBundle,
+  hasRevealError: (state) => root(state).hasRevealError,
 }
 
 export default selectors

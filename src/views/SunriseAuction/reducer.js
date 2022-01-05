@@ -12,6 +12,10 @@ export const initialState = {
   hasBidError: false,
   biddingIsComplete: false,
   biddingInProgress: false,
+
+  // bid reveal
+  revealingBundle: {},
+  hasRevealError: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -63,6 +67,21 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         auctionPhases: action.auctionPhases
+      }
+
+    case constants.SET_REVEALING_BUNDLE:
+      return {
+        ...state,
+        revealingBundle: {
+          ...state.revealingBundle,
+          [action.bundleKey]: action.value
+        }
+      }
+
+    case constants.SET_HAS_REVEAL_ERROR:
+      return {
+        ...state,
+        hasRevealError: action.value
       }
 
     default:
