@@ -4,6 +4,8 @@ export const reducerName = 'SunriseAuctionView'
 
 export const initialState = {
   auctionPhases: null,
+  availableWavax: null,
+  approvedWavax: null,
   
   // bid placement
   pricingProofs: null,
@@ -16,6 +18,10 @@ export const initialState = {
   // bid reveal
   revealingBundle: {},
   hasRevealError: false,
+
+  // claim
+  auctionResults: {},
+  loadingWinningBids: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -82,6 +88,33 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         hasRevealError: action.value
+      }
+
+    case constants.SET_AUCTION_RESULT:
+      return {
+        ...state,
+        auctionResults: {
+          ...state.auctionResults,
+          [action.domain]: action.result
+        }
+      }
+    
+    case constants.SET_LOADING_WINNING_BIDS:
+      return {
+        ...state,
+        loadingWinningBids: action.isLoading
+      }
+
+    case constants.SET_AVAILABLE_WAVAX:
+      return {
+        ...state,
+        availableWavax: action.amount
+      }
+
+    case constants.SET_APPROVED_WAVAX:
+      return {
+        ...state,
+        approvedWavax: action.amount
       }
 
     default:

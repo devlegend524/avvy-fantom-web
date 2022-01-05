@@ -21,6 +21,11 @@ const money = {
     return `$${dollars}.${cents} USD`
   },
 
+  renderWAVAX: (amount) => {
+    const amt = ethers.utils.formatEther(amount)
+    return (+amt).toFixed(4) + ' WAVAX'
+  },
+
   renderAVAX: (amount) => {
     const amt = ethers.utils.formatEther(amount)
     return (+amt).toFixed(4) + ' AVAX'
