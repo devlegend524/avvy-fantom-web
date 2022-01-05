@@ -15,7 +15,7 @@ function Label(props) {
     'xs': 'text-xs',
   }[props.size || 'md']
   return (
-    <div className='flex items-start justify-center'>
+    <div className={`flex items-start ${props.justify || 'justify-center'}`}>
       <props.icon className={`${iconSize} ${props.color} flex-shrink-0 ${props.extraIconClass}`} />
       <div className={`${props.color} ${iconMargin} ${textSize} ${props.extraTextClass}`}>{props.text}</div>
     </div>

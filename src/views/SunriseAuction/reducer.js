@@ -6,6 +6,7 @@ export const initialState = {
   auctionPhases: null,
   availableWavax: null,
   approvedWavax: null,
+  isApprovingWavax: false,
   
   // bid placement
   pricingProofs: null,
@@ -115,6 +116,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         approvedWavax: action.amount
+      }
+
+    case constants.SET_IS_APPROVING_WAVAX:
+      return {
+        ...state,
+        isApprovingWavax: action.value
       }
 
     default:

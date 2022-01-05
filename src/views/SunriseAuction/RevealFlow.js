@@ -7,12 +7,15 @@ import services from 'services'
 import actions from './actions'
 import selectors from './selectors'
 
+import Summary from './Summary'
+
 
 class RevealFlow extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
       connected: services.provider.isConnected(),
+      wavax: false,
     }
   }
 
@@ -43,6 +46,18 @@ class RevealFlow extends React.PureComponent {
 
   revealBundle(bundleKey) {
     this.props.revealBundle(bundleKey)
+  }
+
+  renderWavax() {
+    return (
+      <>
+        <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Approve WAVAX'}</div>
+        <div className='text-gray-500'>{'During the claim period, any bids that are not covered by WAVAX are considered invalid. To have valid bids, you must (1) have enough WAVAX in your wallet to cover the bids and (2) approve spending for the Sunrise Auction contract'}</div>
+        <div className='max-w-sm m-auto'>
+          <Summary.WavaxSummary bidTotal={this.props.bidTotal} onSuccess={() => this.setState({ wavax: true })} />
+        </div>
+      </>
+    )
   }
 
   renderReveal() {
@@ -102,6 +117,7 @@ class RevealFlow extends React.PureComponent {
     if (this.props.hasError) return this.renderHasError()
     if (!this.state.connected) return this.renderConnect()
     if (Object.keys(this.props.bundles).length !== Object.keys(this.props.revealedBundles).length) return this.renderReveal()
+    if (!this.state.wavax) return this.renderWavax()
     return this.renderComplete()
   }
 }
