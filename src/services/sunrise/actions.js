@@ -25,6 +25,29 @@ const actions = {
     }
   },
 
+  addBundle: (bundleHash, bundle) => {
+    return {
+      type: constants.ADD_BUNDLE,
+      bundleHash,
+      bundle,
+    }
+  },
+
+  setBidBundle: (name, bundleHash) => {
+    return {
+      type: constants.SET_BID_BUNDLE,
+      name,
+      bundleHash
+    }
+  },
+
+  revealBundle: (bundleHash) => {
+    return {
+      type: constants.REVEAL_BUNDLE,
+      bundleHash
+    }
+  },
+
   setNameData: (name, data) => {
     return {
       type: constants.SET_NAME_DATA,

@@ -6,6 +6,9 @@ const constants = reduxService.prepareConstants(
     'ADD_BID',
     'DELETE_BID',
     'SET_NAME_DATA',
+    'ADD_BUNDLE',
+    'SET_BID_BUNDLE',
+    'REVEAL_BUNDLE',
   ]
 )
 

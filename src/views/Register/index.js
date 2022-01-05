@@ -62,6 +62,7 @@ class Register extends React.PureComponent {
   }
 
   startPurchase() {
+    this.props.resetRegistration()
     this.registrationModal.toggle()
   }
 
@@ -229,6 +230,7 @@ const mapDispatchToProps = (dispatch) => ({
   incrementQuantity: (name) => dispatch(services.cart.actions.incrementQuantity(name)),
   decrementQuantity: (name) => dispatch(services.cart.actions.decrementQuantity(name)),
   refreshNameData: () => dispatch(services.cart.actions.refreshAllNameData()),
+  resetRegistration: () => dispatch(actions.reset())
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Register)
