@@ -50,6 +50,8 @@ class MyBids extends React.PureComponent {
   }
 
   renderBidReveal() {
+    const claimStartsAt = this.props.auctionPhases[2] * 1000
+    const claimEndsAt = this.props.auctionPhases[3] * 1000
     const isSubmitted = (name) => this.props.unsubmittedBidNames.indexOf(name) === -1
     const isRevealed = (name) => this.props.revealedBidNames.indexOf(name) > -1
     const bids = this.props.bids
@@ -158,7 +160,12 @@ class MyBids extends React.PureComponent {
           <div className='my-8'>
             <components.labels.Information text={'Please ensure that you have enough to cover bids & registration fees if you win every auction. All amounts will be payable in WAVAX. Final amounts will be calculated based on USD-AVAX exchange rate when auctions are settled.'} />
           </div>
-          {allRevealed ? null : (
+          {allRevealed ? 
+            <div>
+              <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
+              <AuctionPhase name='Claim' startsAt={claimStartsAt} endsAt={claimEndsAt} />
+            </div>
+          : (
             <components.buttons.Button text={'Reveal Bids'} onClick={() => this.revealModal.toggle()} />
           )}
         </div>

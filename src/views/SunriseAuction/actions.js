@@ -153,6 +153,40 @@ const actions = {
       dispatch(actions.setBiddingIsComplete(true))
     }
   },
+
+  setRevealingBundle: (bundleKey, value) => {
+    return {
+      type: constants.SET_REVEALING_BUNDLE,
+      bundleKey,
+      value
+    }
+  },
+
+  setHasRevealError: (value) => {
+    return {
+      type: constants.SET_HAS_REVEAL_ERROR,
+      value
+    }
+  },
+
+  revealBundle: (bundleKey) => {
+    return async (dispatch, getState) => {
+      dispatch(actions.setRevealingBundle(bundleKey, true))
+      const api = services.provider.buildAPI()
+      const state = getState()
+      const bundles = services.sunrise.selectors.bundles(state)
+      const bundle = bundles[bundleKey]
+      try { 
+        await api.reveal(bundle.payload.names, bundle.payload.amounts, bundle.payload.salt)
+      } catch (err) {
+        console.log(err)
+        dispatch(actions.setRevealingBundle(bundleKey, false))
+        return dispatch(actions.setHasRevealError(true))
+      }
+      dispatch(actions.setRevealingBundle(bundleKey, false))
+      dispatch(services.sunrise.actions.revealBundle(bundleKey))
+    }
+  },
 }
 
 export default actions
