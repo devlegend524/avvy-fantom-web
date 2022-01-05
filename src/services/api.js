@@ -13,6 +13,7 @@ import services from 'services'
 
 class AvvyClient {
   constructor(chainId, account, signer) {
+    this.chainId = chainId
     const contracts = artifacts.contracts[chainId]
     this.contracts = {}
     for (let key in contracts) {
@@ -268,6 +269,39 @@ class AvvyClient {
   async reveal(names, amounts, salt) {
     const tx = await this.contracts.SunriseAuctionV1.reveal(names, amounts, salt)
     await tx.wait()
+  }
+
+  async getWinningBid(name) {
+    const hash = await client.nameHash(name)
+    const conversionRate = await this.getAVAXConversionRate()
+    const price = await this.getNamePriceAVAX(name, conversionRate)
+    const output = await this.contracts.SunriseAuctionV1.getWinningBid(hash.toString(), price)
+  }
+
+  getWavaxContract() {
+    let contract
+    if (this.chainId === 31337) {
+      contract = this.contracts.MockWavax
+    } else {
+    }
+    return contract
+  }
+
+  async getWavaxBalance() {
+    const contract = this.getWavaxContract()
+    const balance = await contract.balanceOf(this.account)
+    return balance.toString()
+  }
+
+  async getAuctionWavax() {
+    const contract = this.getWavaxContract()
+    const allowance = await contract.allowance(this.account, this.contracts.SunriseAuctionV1.address)
+    return allowance.toString()
+  }
+
+  async approveWavaxForAuction(amount) {
+    const contract = this.getWavaxContract()
+    await contract.approve(this.contracts.SunriseAuctionV1.address, amount) 
   }
 }
 

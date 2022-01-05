@@ -13,8 +13,7 @@ const actions = {
     }
   },
 
-  loadAuctionPhases: () => {
-    return async (dispatch, getState) => {
+  loadAuctionPhases: () => { return async (dispatch, getState) => {
       const api = services.provider.buildAPI()
       const auctionPhases = await api.getAuctionPhases()
       dispatch(actions.setAuctionPhases(auctionPhases))
@@ -187,6 +186,81 @@ const actions = {
       dispatch(services.sunrise.actions.revealBundle(bundleKey))
     }
   },
+
+  setAuctionResult: (domain, result) => {
+    return {
+      type: constants.SET_AUCTION_RESULT,
+      domain,
+      result
+    }
+  },
+
+  setLoadingWinningBids: (isLoading) => {
+    return {
+      type: constants.SET_LOADING_WINNING_BIDS,
+      isLoading
+    }
+  },
+
+  loadWinningBids: () => {
+    return async (dispatch, getState) => {
+      const state = getState()
+      const isLoading = selectors.isLoadingWinningBids(state)
+      if (isLoading) return
+      dispatch(actions.setLoadingWinningBids(true))
+      const api = services.provider.buildAPI()
+      const bids = services.sunrise.selectors.bids(state)
+      const bidBundles = services.sunrise.selectors.bidBundles(state)
+      const revealedBundles = services.sunrise.selectors.revealedBundles(state)
+      const names = []
+      for (let domain in bidBundles) {
+        if (revealedBundles[bidBundles[domain]]) {
+          try {
+            await api.getWinningBid(domain)
+          } catch (err) {
+            dispatch(actions.setAuctionResult(domain, 'NO_WINNER'))
+            console.log(err)
+          }
+          names.push(domain)
+        }
+      }
+      console.log(names)
+      setTimeout(() => {
+        dispatch(actions.setLoadingWinningBids(false))
+      }, 60000)
+    }
+  },
+
+  setAvailableWavax: (amount) => {
+    return {
+      type: constants.SET_AVAILABLE_WAVAX,
+      amount
+    }
+  },
+
+  setApprovedWavax: (amount) => {
+    return {
+      type: constants.SET_APPROVED_WAVAX,
+      amount
+    }
+  },
+
+  checkAvailableWAVAX: () => {
+    return async (dispatch, getState) => {
+      const api = services.provider.buildAPI()
+      const wavax = await api.getAuctionWavax()
+      const balance = await api.getWavaxBalance()
+      dispatch(actions.setAvailableWavax(balance))
+      dispatch(actions.setApprovedWavax(wavax))
+    }
+  },
+
+  approveWavax: (total) => {
+    return async (dispatch, getState) => {
+      const api = services.provider.buildAPI()
+      api.approveWavaxForAuction(total)
+    }
+  }
 }
 
 export default actions
