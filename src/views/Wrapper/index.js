@@ -116,7 +116,7 @@ class Wrapper extends React.PureComponent {
         {/* Content */}
         <div className="h-16 md:h-24"></div>
         <components.ContinueRegistration />
-        <div className='max-w-screen-md m-auto p-4'>
+        <div className='max-w-screen-lg m-auto p-4'>
           {this.props.children}
         </div>
 

@@ -16,6 +16,7 @@ const selectors = {
   isLoadingWinningBids: (state) => root(state).loadingWinningBids,
   availableWavax: (state) => root(state).availableWavax,
   approvedWavax: (state) => root(state).approvedWavax,
+  isApprovingWavax: (state) => root(state).isApprovingWavax,
 }
 
 export default selectors

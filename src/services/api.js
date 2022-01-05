@@ -301,7 +301,8 @@ class AvvyClient {
 
   async approveWavaxForAuction(amount) {
     const contract = this.getWavaxContract()
-    await contract.approve(this.contracts.SunriseAuctionV1.address, amount) 
+    const tx = await contract.approve(this.contracts.SunriseAuctionV1.address, amount) 
+    await tx.wait()
   }
 }
 

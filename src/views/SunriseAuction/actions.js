@@ -255,10 +255,23 @@ const actions = {
     }
   },
 
+  isApprovingWavax: (value) => {
+    return {
+      type: constants.SET_IS_APPROVING_WAVAX,
+      value
+    }
+  },
+
   approveWavax: (total) => {
     return async (dispatch, getState) => {
+      dispatch(actions.isApprovingWavax(true))
       const api = services.provider.buildAPI()
-      api.approveWavaxForAuction(total)
+      try {
+        await api.approveWavaxForAuction(total)
+      } catch (err) {
+      }
+      dispatch(actions.checkAvailableWAVAX())
+      dispatch(actions.isApprovingWavax(false))
     }
   }
 }
