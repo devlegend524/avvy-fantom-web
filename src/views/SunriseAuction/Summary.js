@@ -28,7 +28,9 @@ class _WavaxSummary extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.props.checkAvailableWAVAX()
+    if (this.state.connected) {
+      this.props.checkAvailableWAVAX()
+    }
     services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
   }
 

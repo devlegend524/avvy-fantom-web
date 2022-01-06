@@ -49,7 +49,7 @@ class SunriseAuction extends React.PureComponent {
 
   render() {
     return (
-      <div>
+      <div className='max-w-screen-md m-auto'>
         <div className='font-bold text-center mt-4 text-lg'>{'Sunrise Auction'}</div>
         <div className='max-w-sm m-auto mt-4'>{'Welcome to the sunrise auction. During the auction, you may select & bid on the domains you wish to acquire. You can update your bids at any time during the bid placement phase.'}</div>
         <div className='mt-8'>
