@@ -29,7 +29,6 @@ class SunriseAuction extends React.PureComponent {
     return (
       <div className='mt-4 bg-gray-100 rounded-lg p-4'>
         <div className='font-bold mb-4'>{'Auction Phases'}</div>
-        <div className='underline mb-8 text-sm text-gray-700'>{'Read more about the Sunrise Auction here'}</div>
         <div className='mt-2'>
           <AuctionPhase name='Bid placement' startsAt={bidPlacementStartsAt} endsAt={bidRevealStartsAt} />
         </div>
