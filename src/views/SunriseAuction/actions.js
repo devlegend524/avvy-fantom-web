@@ -179,6 +179,13 @@ const actions = {
     }
   },
 
+  winningBidsLoaded: (loaded) => {
+    return {
+      type: constants.WINNING_BIDS_LOADED,
+      loaded
+    }
+  },
+
   loadWinningBids: (force) => {
     return async (dispatch, getState) => {
       const state = getState()
@@ -195,6 +202,7 @@ const actions = {
           dispatch(actions.setAuctionResult(domain, result))
         }
       }
+      dispatch(actions.winningBidsLoaded(true))
       setTimeout(() => {
         dispatch(actions.setLoadingWinningBids(false))
       }, 60000)
