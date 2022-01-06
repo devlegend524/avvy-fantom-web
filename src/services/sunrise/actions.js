@@ -72,6 +72,21 @@ const actions = {
       })
     }
   },
+
+  setConstraintsProof: (domain, proof) => {
+    return {
+      type: constants.SET_CONSTRAINTS_PROOF,
+      domain,
+      proof,
+    }
+  },
+
+  setClaimed: (name) => {
+    return {
+      type: constants.SET_CLAIMED,
+      name,
+    }
+  },
 }
 
 export default actions

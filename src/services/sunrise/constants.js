@@ -9,6 +9,8 @@ const constants = reduxService.prepareConstants(
     'ADD_BUNDLE',
     'SET_BID_BUNDLE',
     'REVEAL_BUNDLE',
+    'SET_CONSTRAINTS_PROOF',
+    'SET_CLAIMED',
   ]
 )
 

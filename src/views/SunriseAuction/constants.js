@@ -5,8 +5,6 @@ const constants = reduxService.prepareConstants(
   [
     'SET_AUCTION_PHASES',
     'SET_PROOF_PROGRESS',
-    'SET_PRICING_PROOF',
-    'SET_CONSTRAINTS_PROOF',
     'SET_HAS_BID_ERROR',
     'SET_BIDDING_IS_COMPLETE',
     'SET_BIDDING_IN_PROGRESS',
@@ -17,6 +15,7 @@ const constants = reduxService.prepareConstants(
     'SET_AVAILABLE_WAVAX',
     'SET_APPROVED_WAVAX',
     'SET_IS_APPROVING_WAVAX',
+    'SET_IS_CLAIMING_DOMAINS',
   ]
 )
 

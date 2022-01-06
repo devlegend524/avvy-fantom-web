@@ -273,9 +273,22 @@ class AvvyClient {
 
   async getWinningBid(name) {
     const hash = await client.nameHash(name)
-    const conversionRate = await this.getAVAXConversionRate()
-    const price = await this.getNamePriceAVAX(name, conversionRate)
-    const output = await this.contracts.SunriseAuctionV1.getWinningBid(hash.toString(), price)
+    let result
+    try {
+      const output = await this.contracts.SunriseAuctionV1.getWinningBid(hash.toString())
+      result = {
+        type: 'HAS_WINNER',
+        winner: output.winner,
+        auctionPrice: output.auctionPrice.toString(),
+        isWinner: output.winner.toLowerCase() === this.account
+      }
+    } catch (err) {
+      result = {
+        type: 'NO_WINNER'
+      }
+      console.log(err)
+    }
+    return result
   }
 
   getWavaxContract() {
@@ -303,6 +316,15 @@ class AvvyClient {
     const contract = this.getWavaxContract()
     const tx = await contract.approve(this.contracts.SunriseAuctionV1.address, amount) 
     await tx.wait()
+  }
+
+  async sunriseClaim(names, constraintsData) {
+    const hashes = []
+    for (let i = 0; i < names.length; i += 1) {
+      let hash = await client.nameHash(names[i])
+      hashes.push(hash.toString())
+    }
+    await this.contracts.SunriseAuctionV1.claim(hashes, constraintsData)
   }
 }
 

@@ -89,7 +89,7 @@ class RevealFlow extends React.PureComponent {
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Bid reveal complete'}</div>
         <components.labels.Success text={"All of your bids have been revealed! DO NOT forget the final step of claiming any auctions that have been won."} />
         <div className='mt-8 max-w-sm m-auto'>
-          <div className='my-8'>
+          <div className='mt-8'>
             <components.buttons.Button text={'View my bids'} onClick={(navigate) => {
               this.props.onComplete()
               services.linking.navigate(navigate, 'SunriseAuctionMyBids')

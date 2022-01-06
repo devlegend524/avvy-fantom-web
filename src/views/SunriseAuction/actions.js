@@ -27,22 +27,6 @@ const actions = {
     }
   },
 
-  setPricingProof: (domain, proof) => {
-    return {
-      type: constants.SET_PRICING_PROOF,
-      domain,
-      proof,
-    }
-  },
-
-  setConstraintsProof: (domain, proof) => {
-    return {
-      type: constants.SET_CONSTRAINTS_PROOF,
-      domain,
-      proof,
-    }
-  },
-
   setHasBidError: (hasError) => {
     return {
       type: constants.SET_HAS_BID_ERROR,
@@ -71,22 +55,15 @@ const actions = {
         const names = services.sunrise.selectors.unsubmittedBidNames(state)
         const api = services.provider.buildAPI()
         let j = 0;
-        const numSteps = names.length * 2
+        const numSteps = names.length
         for (let i = 0; i < names.length; i += 1) {
           let name = names[i]
           dispatch(actions.setProofProgress({
-            message: `Generating pricing proof for ${name} (${j+1}/${numSteps})`,
-            percent: parseInt((j / numSteps) * 100)
-          }))
-          let pricingRes = await api.generateDomainPriceProof(name)
-          dispatch(actions.setPricingProof(name, pricingRes.calldata))
-          j += 1
-          dispatch(actions.setProofProgress({
-            message: `Generating constraints proof for ${name} (${j+1}/${numSteps})`,
+            message: `Generating constraints proof for ${name} (${j}/${numSteps})`,
             percent: parseInt((j / numSteps) * 100),
           }))
           let constraintsRes = await api.generateConstraintsProof(name)
-          dispatch(actions.setConstraintsProof(name, constraintsRes.calldata))
+          dispatch(services.sunrise.actions.setConstraintsProof(name, constraintsRes.calldata))
           j += 1
         }
         dispatch(actions.setProofProgress({
@@ -202,29 +179,22 @@ const actions = {
     }
   },
 
-  loadWinningBids: () => {
+  loadWinningBids: (force) => {
     return async (dispatch, getState) => {
       const state = getState()
       const isLoading = selectors.isLoadingWinningBids(state)
-      if (isLoading) return
+      if (isLoading && !force) return
       dispatch(actions.setLoadingWinningBids(true))
       const api = services.provider.buildAPI()
       const bids = services.sunrise.selectors.bids(state)
       const bidBundles = services.sunrise.selectors.bidBundles(state)
       const revealedBundles = services.sunrise.selectors.revealedBundles(state)
-      const names = []
       for (let domain in bidBundles) {
         if (revealedBundles[bidBundles[domain]]) {
-          try {
-            await api.getWinningBid(domain)
-          } catch (err) {
-            dispatch(actions.setAuctionResult(domain, 'NO_WINNER'))
-            console.log(err)
-          }
-          names.push(domain)
+          let result = await api.getWinningBid(domain)
+          dispatch(actions.setAuctionResult(domain, result))
         }
       }
-      console.log(names)
       setTimeout(() => {
         dispatch(actions.setLoadingWinningBids(false))
       }, 60000)
@@ -273,7 +243,41 @@ const actions = {
       dispatch(actions.checkAvailableWAVAX())
       dispatch(actions.isApprovingWavax(false))
     }
-  }
+  },
+
+  isClaimingDomains: (value) => {
+    return {
+      type: constants.SET_IS_CLAIMING_DOMAINS,
+      value
+    }
+  },
+
+  claimAll: () => {
+    return async (dispatch, getState) => {
+      dispatch(actions.isClaimingDomains(true))
+      const api = services.provider.buildAPI()
+      const state = getState()
+      const auctionResults = selectors.auctionResults(state)
+      const constraintsProofs = services.sunrise.selectors.constraintsProofs(state)
+      const names = []
+      const constraintsData = []
+      Object.keys(auctionResults).forEach((name) => {
+        if (auctionResults[name].isWinner) {
+          names.push(name)
+          constraintsData.push(constraintsProofs[name])
+        }
+      })
+      try {
+        await api.sunriseClaim(names, constraintsData)
+        names.forEach(name => {
+          dispatch(services.sunrise.actions.setClaimed(name))
+        })
+      } catch (err) {
+        console.log(err)
+      }
+      dispatch(actions.isClaimingDomains(false))
+    }
+  },
 }
 
 export default actions

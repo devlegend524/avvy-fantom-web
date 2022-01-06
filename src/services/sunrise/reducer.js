@@ -8,6 +8,8 @@ export const initialState = {
   bundles: {}, // these are how the bids get submitted to the chain
   nameData: {},
   revealedBundles: {},
+  constraintsProofs: {},
+  claimedNames: {},
 }
 
 const rehydrate = (action, state) => {
@@ -25,6 +27,15 @@ export const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "persist/REHYDRATE":
       return rehydrate(action, state)
+
+    case constants.SET_CONSTRAINTS_PROOF:
+      return {
+        ...state,
+        constraintsProofs: {
+          ...state.constraintsProofs,
+          [action.domain]: action.proof
+        }
+      }
       
     case constants.ADD_BID:
       return {
@@ -77,6 +88,15 @@ export const reducer = (state = initialState, action) => {
         revealedBundles: {
           ...state.revealedBundles,
           [action.bundleHash]: true
+        }
+      }
+
+    case constants.SET_CLAIMED:
+      return {
+        ...state,
+        claimedNames: {
+          ...state.claimedNames,
+          [action.name]: true
         }
       }
 
