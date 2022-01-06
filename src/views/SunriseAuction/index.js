@@ -21,7 +21,6 @@ class SunriseAuction extends React.PureComponent {
   }
 
   renderAuctionPhases() {
-    if (!this.props.auctionPhases) return null
     const bidPlacementStartsAt = this.props.auctionPhases[0] * 1000
     const bidRevealStartsAt = this.props.auctionPhases[1] * 1000
     const claimStartsAt = this.props.auctionPhases[2] * 1000
@@ -48,18 +47,23 @@ class SunriseAuction extends React.PureComponent {
   }
 
   render() {
+    if (!this.props.auctionPhases) return null
+    const claimEndsAt = this.props.auctionPhases[3] * 1000
+    const now = parseInt(Date.now())
     return (
       <div className='max-w-screen-md m-auto'>
         <div className='font-bold text-center mt-4 text-lg'>{'Sunrise Auction'}</div>
-        <div className='max-w-sm m-auto mt-4'>{'Welcome to the sunrise auction. During the auction, you may select & bid on the domains you wish to acquire. You can update your bids at any time during the bid placement phase.'}</div>
-        <div className='mt-8'>
-          <Link to={services.linking.path('SunriseAuctionMyBids')}>
-            <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold'>
-              <div>{'My Bids'}</div>
-              <ArrowRightIcon className="h-6" />
-            </div>
-          </Link>
-        </div>
+        <div className='max-w-sm m-auto mt-4 mb-8'>{'Welcome to the sunrise auction. During the auction, you may select & bid on the domains you wish to acquire.'}</div>
+        {now < claimEndsAt ? (
+          <div>
+            <Link to={services.linking.path('SunriseAuctionMyBids')}>
+              <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold'>
+                <div>{'My Bids'}</div>
+                <ArrowRightIcon className="h-6" />
+              </div>
+            </Link>
+          </div>
+        ) : null}
         {this.renderAuctionPhases()}
       </div>
     )

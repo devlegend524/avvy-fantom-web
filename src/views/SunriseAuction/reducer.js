@@ -22,6 +22,7 @@ export const initialState = {
   auctionResults: {},
   loadingWinningBids: false,
   isClaimingDomains: false,
+  winningBidsLoaded: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -109,6 +110,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         isClaimingDomains: action.value
+      }
+
+    case constants.WINNING_BIDS_LOADED:
+      return {
+        ...state,
+        winningBidsLoaded: action.loaded
       }
 
     default:

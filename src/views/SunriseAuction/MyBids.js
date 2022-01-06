@@ -73,7 +73,16 @@ class MyBids extends React.PureComponent {
 
   renderOver() {
     return (
-      <div>Auction is over</div>
+      <div className='max-w-screen-md m-auto mt-4'>
+        <div className='text-center font-bold text-lg'>{'The Sunrise Auction is over'}</div>
+        <div className='text-center'>{'You may now register any domains that are still available.'}</div>
+        <div className='max-w-sm m-auto mt-8'>
+          <components.buttons.Button text={'View My Domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
+        </div>
+        <div className='max-w-sm m-auto mt-4'>
+          <components.DomainSearch />
+        </div>
+      </div>
     )
   }
 
@@ -90,15 +99,21 @@ class MyBids extends React.PureComponent {
     let hasAllKeys = true
     let allClaimed = true
     let auctionResults = this.props.auctionResults
-    if (!auctionResults) return null
     keys.forEach(key => {
-      bidTotal = bidTotal.add(ethers.BigNumber.from(bids[key]))
+      if (this.props.winningBidsLoaded && this.state.isConnected) {
+        if (auctionResults[key].isWinner) {
+          bidTotal = bidTotal.add(ethers.BigNumber.from(auctionResults[key].auctionPrice))
+          registrationTotal = registrationTotal.add(ethers.BigNumber.from(nameData[key].priceUSDCents))
+        }
+      } else {
+        bidTotal = bidTotal.add(ethers.BigNumber.from(bids[key]))
+        registrationTotal = registrationTotal.add(ethers.BigNumber.from(nameData[key].priceUSDCents))
+      }
       if (!nameData[key]) {
         hasAllKeys = false
         return
       }
       if (this.props.claimedNames && !this.props.claimedNames[key]) allClaimed = false
-      registrationTotal = registrationTotal.add(ethers.BigNumber.from(nameData[key].priceUSDCents))
     })
 
     if (!hasAllKeys) return null
@@ -153,7 +168,7 @@ class MyBids extends React.PureComponent {
           </div>
           <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
             <Summary.FullSummary  
-              subtitle={'(Totals for auctions that you won)'}
+              subtitle={this.props.winningBidsLoaded && this.state.isConnected ? '(Totals for auctions that you won)' : null}
               bidTotal={bidTotal} 
               registrationTotal={registrationTotal} 
               showAvailable={!(this.state.isConnected && allClaimed)} 
@@ -167,12 +182,12 @@ class MyBids extends React.PureComponent {
                     <AuctionPhase name='Claim period over' startsAt={claimEndsAt} endsAt={later} />
                   </div>
                 )}
-                <div className='mt-8 max-w-sm m-auto'>
+                <div className='mt-4 max-w-sm m-auto'>
                   {allClaimed ? (
                     <>
                       <components.labels.Success text={'You have claimed all of the auctions you won. Congratulations!'} />
                       <div className='mt-4'>
-                        <components.buttons.Button text={'View My Domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
+                        <components.buttons.Button text={'View Domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
                       </div>
                     </>
                   ) : (
@@ -404,6 +419,7 @@ const mapStateToProps = (state) => ({
   auctionResults: selectors.auctionResults(state),
   isClaimingDomains: selectors.isClaimingDomains(state),
   claimedNames: services.sunrise.selectors.claimedNames(state),
+  winningBidsLoaded: selectors.winningBidsLoaded(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
