@@ -53,7 +53,7 @@ class RevealFlow extends React.PureComponent {
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Approve WAVAX'}</div>
         <div className='text-gray-500'>{'During the claim period, any bids that are not covered by WAVAX are considered invalid. To have valid bids, you must (1) have enough WAVAX in your wallet to cover the bids and (2) approve spending for the Sunrise Auction contract'}</div>
-        <div className='max-w-sm m-auto'>
+        <div className='max-w-sm m-auto my-4'>
           <Summary.WavaxSummary bidTotal={this.props.bidTotal} onSuccess={() => this.setState({ wavax: true })} />
         </div>
       </>
@@ -70,11 +70,11 @@ class RevealFlow extends React.PureComponent {
         ) : (
           <components.labels.Information text={"Reveal your bids to continue."} />
         )}
-        <div className='mt-4 max-w-sm m-auto'>
+        <div className='mt-8 max-w-sm m-auto'>
           {bundleKeys.length === 1 ? (
             <components.buttons.Button text={'Reveal Bids'} onClick={() => this.revealBundle(bundleKeys[0])} loading={this.props.revealingBundle[bundleKeys[0]]} />
           ) : bundleKeys.map((bundle, index) => (
-            <div key={index}>
+            <div key={index} className='mb-4'>
               <components.buttons.Button text={`Reveal Bid Transaction #${index + 1}`} onClick={() => this.revealBundle(bundle)} loading={this.props.revealingBundle[bundle]} disabled={this.props.revealedBundles[bundle]} />
             </div>
           ))}
@@ -89,7 +89,7 @@ class RevealFlow extends React.PureComponent {
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Bid reveal complete'}</div>
         <components.labels.Success text={"All of your bids have been revealed! DO NOT forget the final step of claiming any auctions that have been won."} />
         <div className='mt-8 max-w-sm m-auto'>
-          <div className='mt-4'>
+          <div className='my-8'>
             <components.buttons.Button text={'View my bids'} onClick={(navigate) => {
               this.props.onComplete()
               services.linking.navigate(navigate, 'SunriseAuctionMyBids')

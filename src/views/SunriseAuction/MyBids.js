@@ -204,8 +204,8 @@ class MyBids extends React.PureComponent {
             this.disableRevealModalWarning = false
           }} bidTotal={bidTotal} registrationTotal={registrationTotal} />
         </components.Modal>
-        <div className='md:flex md:mt-8'>
-          <div className='w-full md:mr-4'>
+        <div className='md:flex md:mt-2 md:mx-4'>
+          <div className='w-full md:mr-8'>
             <div>
               <div className='mt-4 text-lg text-center font-bold md:text-left md:mt-0 md:text-xl'>{'My Bids - Bid Reveal'}</div>
               <div className='text-md text-left text-gray-500 mb-4 max-w-sm m-auto md:text-left md:m-0'>{'During this stage you must reveal your submitted bids & authorize payment in WAVAX.'}</div>
@@ -283,9 +283,9 @@ class MyBids extends React.PureComponent {
     if (keys.length === 0) return this.renderNoBids()
 
     return (
-      <div className='md:flex'>
-        <div className='w-full md:mr-4'>
-          <div className='mt-4 text-lg text-center font-bold md:text-left md:text-lg'>{'My Bids - Bid Placement'}</div>
+      <div className='md:flex md:px-4 md:mt-2'>
+        <div className='w-full md:mr-8'>
+          <div className='mt-4 text-lg text-center font-bold md:text-left md:text-lg md:mt-0'>{'My Bids - Bid Placement'}</div>
           <div className='text-md text-left text-gray-500 mb-4 max-w-sm m-auto md:text-left md:m-0'>{'During this stage, you must place your sealed bids. No one will know the domain or price of your bid.'}</div>
           <div className='mb-8 mt-4'>
             {allSubmitted ? (
