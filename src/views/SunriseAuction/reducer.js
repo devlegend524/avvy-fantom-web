@@ -8,9 +8,7 @@ export const initialState = {
   approvedWavax: null,
   isApprovingWavax: false,
   
-  // bid placement
-  pricingProofs: null,
-  constraintsProofs: null,
+  // bid placement 
   proofProgress: {},
   hasBidError: false,
   biddingIsComplete: false,
@@ -23,6 +21,7 @@ export const initialState = {
   // claim
   auctionResults: {},
   loadingWinningBids: false,
+  isClaimingDomains: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -32,24 +31,6 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         proofProgress: action.proofProgress
-      }
-
-    case constants.SET_PRICING_PROOF:
-      return {
-        ...state,
-        pricingProofs: {
-          ...state.pricingProofs,
-          [action.domain]: action.proof
-        }
-      }
-
-    case constants.SET_CONSTRAINTS_PROOF:
-      return {
-        ...state,
-        constraintsProofs: {
-          ...state.constraintsProofs,
-          [action.domain]: action.proof
-        }
       }
 
     case constants.SET_HAS_BID_ERROR:
@@ -122,6 +103,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         isApprovingWavax: action.value
+      }
+
+    case constants.SET_IS_CLAIMING_DOMAINS:
+      return {
+        ...state,
+        isClaimingDomains: action.value
       }
 
     default:

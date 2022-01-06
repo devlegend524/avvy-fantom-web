@@ -149,8 +149,6 @@ const mapStateToProps = (state) => ({
   names: services.sunrise.selectors.names(state),
   bids: services.sunrise.selectors.bids(state),
   progress: selectors.proofProgress(state),
-  pricingProofs: selectors.pricingProofs(state),
-  constraintsProofs: selectors.constraintsProofs(state),
   hasError: selectors.hasBidError(state),
   isBidding: selectors.biddingInProgress(state),
   isComplete: selectors.biddingIsComplete(state),
@@ -159,11 +157,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   generateProofs: (names) => dispatch(actions.generateProofs(names)),
   submitBid: () => dispatch(actions.submitBid()),
-  /*
-  resetProofs: () => dispatch(actions.resetProofs()),
-  commitTransaction: () => dispatch(actions.commit()),
-  finalizeTransaction: () => dispatch(actions.finalize()),
-  */
 })
 
 

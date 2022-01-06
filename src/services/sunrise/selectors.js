@@ -39,6 +39,8 @@ const selectors = {
     })
     return names
   },
+  constraintsProofs: (state) => root(state).constraintsProofs,
+  claimedNames: (state) => root(state).claimedNames,
 }
 
 export default selectors

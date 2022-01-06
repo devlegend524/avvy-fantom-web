@@ -17,8 +17,29 @@ import Summary from './Summary'
 
 
 class MyBids extends React.PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isConnected: services.provider.isConnected()
+    }
+  }
+
+  onConnect() {
+    setTimeout(() => {
+      this.setState({
+        isConnected: services.provider.isConnected(),
+      })
+      this.props.loadWinningBids(true)
+    }, 1)
+  }
+
   componentDidMount() {
     this.props.loadAuctionPhases()
+    services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
+  }
+
+  componentWillUnmount() {
+    services.provider.removeEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
   }
 
   onCompleteBidFlow() {
@@ -63,21 +84,20 @@ class MyBids extends React.PureComponent {
     const isRevealed = (name) => this.props.revealedBidNames.indexOf(name) > -1
     const bids = this.props.bids
     const keys = Object.keys(bids).sort().filter(name => isSubmitted(name))
-    const allRevealed = keys.reduce((sum, curr) => {
-      if (!sum) return false
-      if (!isRevealed(curr)) return false
-      return true
-    }, true)
     const nameData = this.props.nameData
     let bidTotal = ethers.BigNumber.from('0')
     let registrationTotal = ethers.BigNumber.from('0')
     let hasAllKeys = true
+    let allClaimed = true
+    let auctionResults = this.props.auctionResults
+    if (!auctionResults) return null
     keys.forEach(key => {
       bidTotal = bidTotal.add(ethers.BigNumber.from(bids[key]))
       if (!nameData[key]) {
         hasAllKeys = false
         return
       }
+      if (this.props.claimedNames && !this.props.claimedNames[key]) allClaimed = false
       registrationTotal = registrationTotal.add(ethers.BigNumber.from(nameData[key].priceUSDCents))
     })
 
@@ -87,73 +107,81 @@ class MyBids extends React.PureComponent {
 
     return (
       <>
-        <components.Modal ref={(ref) => {
-          this.revealModal = ref
-        }} onClose={() => {
-          if (this.disableRevealModalWarning) return true
-          const answer = window.confirm('Closing this window will abandon your bid reveal. Are you sure you want to proceed?')
-          return answer
-        }}> 
-          <RevealFlow onComplete={() => {
-            this.disableRevealModalWarning = true
-            this.revealModal.toggle()
-            this.disableRevealModalWarning = false
-          }} />
-        </components.Modal>
-        <div className='mt-4 text-lg text-center font-bold'>{'My Bids - Claim'}</div>
-        <div className='text-md text-left max-w-md m-auto text-gray-500 mb-4'>{'During this stage you must claim the auctions you have won.'}</div>
-        <div className='mb-8'>
-          {allRevealed ? (
-            <components.labels.Success text={'All of your bids have been revealed.'} />
-          ) : (
-            <components.labels.Information text={'Some of your bids are not revealed.'} />
-          )}
-        </div>
-        <components.Modal ref={(ref) => {
-          this.bidModal = ref
-        }} onClose={() => {
-          if (this.disableBidModalWarning) return true
-          const answer = window.confirm('Closing this window will cancel your bids. Are you sure you want to proceed?')
-          return answer
-        }}> 
-          <BidFlow onComplete={() => {
-            this.disableBidModalWarning = true
-            this.bidModal.toggle()
-            this.disableBidModalWarning = false
-          }} />
-        </components.Modal>
-        {keys.map((key, index) => {
-          const result = this.props.auctionResults[key]
-          return (
-            <div className='bg-gray-100 rounded-lg p-4 mb-4' key={index}>
-              <div className='font-bold'>{key}</div>
-              <div className=''>Your Bid: {services.money.renderAVAX(bids[key])}</div>
-              <div className=''>Yearly registration fee: {services.money.renderUSD(nameData[key].priceUSDCents)}</div>
-              <div className='flex mt-2'>
-                <div className='mr-2'>
-                  {result === 'NO_WINNER' ? (
-                    <components.labels.Error text={'No participants have enough WAVAX to claim'} size={'xs'} />
+        <div className='md:flex md:mt-2 md:mx-4'>
+          <div className='w-full md:mr-8'>
+            <div>
+              <div className='mt-4 text-lg text-center font-bold md:text-left md:mt-0 md:text-xl'>{'My Bids - Claim'}</div>
+              <div className='text-md text-left text-gray-500 mb-4 max-w-sm m-auto md:text-left md:m-0'>{'During this stage you must claim the auctions you have won.'}</div>
+              <div className='mb-8 mt-4'></div>
+            </div>
+            <div className='mb-8'>
+              {this.state.isConnected ? null : (
+                <>
+                  <components.labels.Error text={'Connect your wallet to see auction results & claim domains'} justify='justify-flex-start' />
+                  <div className='mt-4 max-w-sm md:hidden'>
+                    <components.buttons.Button text={'Connect wallet'} />
+                  </div>
+                </>
+              )}
+            </div>
+            {keys.map((key, index) => {
+              const result = this.props.auctionResults[key]
+              if (!result) return null
+              return (
+                <div className='bg-gray-100 rounded-lg p-4 mb-4' key={index}>
+                  <div className='font-bold'>{key}</div>
+                  <div className=''>Your Bid: {services.money.renderWAVAX(bids[key])}</div>
+                  <div className=''>Yearly registration fee: {services.money.renderUSD(nameData[key].priceUSDCents)}</div>
+                  {this.state.isConnected ? (
+                    <div className='flex mt-2'>
+                      <div className='mr-2'>
+                        {result.type === 'NO_WINNER' ? (
+                          <components.labels.Error text={'No participants have enough WAVAX to claim'} size={'xs'} />
+                        ) : this.props.claimedNames[key] ? (
+                          <components.labels.Success text={'You have claimed this name'} />
+                        ) : result.isWinner ? (
+                          <components.labels.Information text={'You have won this auction'} />
+                        ) : (
+                          <components.labels.Error text={'You lost this auction'} />
+                        )}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              )
+            })}
+          </div>
+          <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
+            <Summary.FullSummary  
+              subtitle={'(Totals for auctions that you won)'}
+              bidTotal={bidTotal} 
+              registrationTotal={registrationTotal} 
+              showAvailable={!(this.state.isConnected && allClaimed)} 
+              notConnectedLabel={'Connect your wallet to see auction results & claim domains'}
+            />
+            {this.state.isConnected ? (
+              <>
+                {allClaimed ? null : (
+                  <div className='mt-8'>
+                    <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
+                    <AuctionPhase name='Claim period over' startsAt={claimEndsAt} endsAt={later} />
+                  </div>
+                )}
+                <div className='mt-8 max-w-sm m-auto'>
+                  {allClaimed ? (
+                    <>
+                      <components.labels.Success text={'You have claimed all of the auctions you won. Congratulations!'} />
+                      <div className='mt-4'>
+                        <components.buttons.Button text={'View My Domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
+                      </div>
+                    </>
                   ) : (
-                    <components.labels.Error text={'Bid not revealed'} size={'xs'} />
+                    <components.buttons.Button text={'Claim All'} onClick={() => this.props.claimAll()} loading={this.props.isClaimingDomains} />
                   )}
                 </div>
-              </div>
-            </div>
-          )
-        })}
-        <div className='max-w-md m-auto mt-8'>
-          <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} showAvailable={true} />
-          <div className='my-8'>
-            <components.labels.Information text={'Please ensure that you have enough to cover bids & registration fees if you win every auction. All amounts will be payable in WAVAX. Final amounts will be calculated based on USD-AVAX exchange rate when auctions are settled.'} />
+              </>
+            ) : null}
           </div>
-          {allRevealed ? 
-            <div>
-              <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
-              <AuctionPhase name='Auction over' startsAt={claimEndsAt} endsAt={later} />
-            </div>
-          : (
-            <components.buttons.Button text={'Reveal Bids'} onClick={() => this.revealModal.toggle()} />
-          )}
         </div>
       </>
     )
@@ -223,7 +251,7 @@ class MyBids extends React.PureComponent {
               return (
                 <div className='bg-gray-100 rounded-lg p-4 mb-4' key={index}>
                   <div className='font-bold'>{key}</div>
-                  <div className=''>Your Bid: {services.money.renderAVAX(bids[key])}</div>
+                  <div className=''>Your Bid: {services.money.renderWAVAX(bids[key])}</div>
                   <div className=''>Yearly registration fee: {services.money.renderUSD(nameData[key].priceUSDCents)}</div>
                   <div className='flex mt-2'>
                     <div className='mr-2'>
@@ -239,7 +267,9 @@ class MyBids extends React.PureComponent {
             })}
           </div>
           <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
-            <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} showAvailable={allRevealed} />
+            <div className='mb-8'>
+              <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} showAvailable={allRevealed} />
+            </div>
             {allRevealed ? 
               <div>
                 <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
@@ -334,7 +364,9 @@ class MyBids extends React.PureComponent {
           })}
         </div>
         <div className='max-w-sm w-full m-auto mt-8 md:flex-shrink-0 md:ml-4 md:pl-4 md:mt-0 md:bg-gray-100 md:rounded-lg md:p-4'>
-          <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} />
+          <div className='mb-8'>
+            <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} />
+          </div>
           {allSubmitted ? (
             <div>
               <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
@@ -370,12 +402,15 @@ const mapStateToProps = (state) => ({
   unsubmittedBidNames: services.sunrise.selectors.unsubmittedBidNames(state),
   revealedBidNames: services.sunrise.selectors.revealedBidNames(state),
   auctionResults: selectors.auctionResults(state),
+  isClaimingDomains: selectors.isClaimingDomains(state),
+  claimedNames: services.sunrise.selectors.claimedNames(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   loadAuctionPhases: () => dispatch(actions.loadAuctionPhases()),
   deleteBid: (key) => dispatch(services.sunrise.actions.deleteBid(key)),
-  loadWinningBids: () => dispatch(actions.loadWinningBids()),
+  loadWinningBids: (force) => dispatch(actions.loadWinningBids(force)),
+  claimAll: () => dispatch(actions.claimAll()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyBids)

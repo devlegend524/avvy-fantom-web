@@ -88,7 +88,7 @@ class _WavaxSummary extends React.PureComponent {
         <components.Modal ref={(ref) => this.connect = ref} title='Connect Wallet'>
           <components.ConnectWallet />
         </components.Modal>
-        <components.labels.Error text={'Connect your wallet to see whether your bids are covered'} />
+        <components.labels.Information text={this.props.notConnectedLabel || 'Connect your wallet to see whether your bids are covered'} />
         <div className='mt-4'>
           <components.buttons.Button text={'Connect wallet'} onClick={() => this.connect.toggle()} />
         </div>
@@ -118,10 +118,10 @@ class FullSummary extends React.PureComponent {
 
     return (
       <>
-        <div className='m-auto mb-8 max-w-xs'>
+        <div className='m-auto max-w-xs'>
           <div className='border-b border-gray-400 pb-4 mb-4'>
             <div className='text-lg text-center font-bold'>{'Summary'}</div>
-            <div className='text-md text-center text-gray-500'>{'(Totals if all auctions are won)'}</div>
+            <div className='text-md text-center text-gray-500'>{this.props.subtitle || '(Totals if all auctions are won)'}</div>
           </div>
           <div className='flex justify-between'>
             <div className='font-bold mr-2'>
@@ -139,7 +139,7 @@ class FullSummary extends React.PureComponent {
               {services.money.renderUSD(registrationTotal)} /year
             </div>
           </div>
-          {!this.props.showAvailable ? null : <WavaxSummary bidTotal={bidTotal} />}
+          {!this.props.showAvailable ? null : <WavaxSummary notConnectedLabel={this.props.notConnectedLabel} bidTotal={bidTotal} />}
         </div>
       </>
     )

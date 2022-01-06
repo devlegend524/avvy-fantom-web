@@ -93,7 +93,7 @@ class MyDomains extends React.PureComponent {
 
   render() {
     return ( 
-      <div>
+      <div className='max-w-screen-md m-auto'>
         <components.Modal ref={(ref) => this.connectModal = ref} title={'Connect your wallet'}> 
           <components.ConnectWallet />
         </components.Modal>
