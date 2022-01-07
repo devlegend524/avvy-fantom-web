@@ -483,6 +483,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   position: relative;
 }
 
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
 .right-0 {
   right: 0px;
 }
@@ -701,6 +706,10 @@ Ensure the default browser behavior of the `hidden` attribute.
           user-select: none;
 }
 
+.list-decimal {
+  list-style-type: decimal;
+}
+
 .flex-col {
   flex-direction: column;
 }
@@ -851,6 +860,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding-right: 2rem;
 }
 
+.pl-4 {
+  padding-left: 1rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -888,6 +901,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .uppercase {
   text-transform: uppercase;
+}
+
+.italic {
+  font-style: italic;
 }
 
 .text-white {

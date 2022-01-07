@@ -52,11 +52,30 @@ class MyDomains extends React.PureComponent {
     )
   }
 
+  renderHiddenDomainsNotice(domainCount) {
+    return (
+      <div className='mb-4'>
+        <components.labels.Information text={`You have ${domainCount} private ${domainCount === 1 ? 'domain' : 'domains'} in your wallet.`} />
+        <div className='max-w-md m-auto'>
+          <div className='mt-4 text-gray-700'>
+            {"Domains are stored privately on the blockchain so that an observer cannot know which domains you have registered. To reveal your domains, search for them below."}
+          </div>
+          <div className='mt-4'>
+            <components.DomainSearch placeholder={'Reveal private domains'} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderDomains() {
     const reverseLookups = this.props.reverseLookups
+    const domains = this.props.domainIds.filter(domain => reverseLookups[domain])
+    const hiddenDomainCount = this.props.domainIds.length - domains.length
     return (
       <div className='mt-8'>
-        {this.props.domainIds.map((domain, index) => reverseLookups[domain] ? this.renderRevealedDomain(domain, index) : this.renderSealedDomain(domain, index))}
+        {hiddenDomainCount > 0 ? this.renderHiddenDomainsNotice(hiddenDomainCount) : null}
+        {domains.map((domain, index) => this.renderRevealedDomain(domain, index))}
       </div>
     )
   }

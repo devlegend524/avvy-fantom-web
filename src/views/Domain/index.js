@@ -170,6 +170,9 @@ class Domain extends React.PureComponent {
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />
         </div>
+        <div className='mt-4'>
+          <components.buttons.Button text={'View my domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
+        </div>
         {this.renderOwnershipDetails()}
       </div>
     )
