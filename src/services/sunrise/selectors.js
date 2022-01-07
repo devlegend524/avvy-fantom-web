@@ -1,13 +1,19 @@
 import { reducerName } from './reducer'
+import services from 'services'
 
 const root = (state) => state[reducerName]
 
+const account = (subState) => {
+  const acc = services.provider.getAccount()
+  return subState[acc] || {}
+}
+
 const selectors = {
-  bids: (state) => root(state).bids,
+  bids: (state) => account(root(state).bids),
   names: (state) => Object.keys(selectors.bids(state)),
-  nameData: (state) => root(state).nameData,
-  bidBundles: (state) => root(state).bidBundles,
-  bundles: (state) => root(state).bundles,
+  nameData: (state) => account(root(state).nameData),
+  bidBundles: (state) => account(root(state).bidBundles),
+  bundles: (state) => account(root(state).bundles),
   unsubmittedBidNames: (state) => {
 
     // all names which have bids which are not reflected
@@ -29,7 +35,7 @@ const selectors = {
     return names
   },
 
-  revealedBundles: (state) => root(state).revealedBundles,
+  revealedBundles: (state) => account(root(state).revealedBundles),
   revealedBidNames: (state) => {
     const revealedBundles = selectors.revealedBundles(state)
     const bidBundles = selectors.bidBundles(state)
@@ -39,8 +45,8 @@ const selectors = {
     })
     return names
   },
-  constraintsProofs: (state) => root(state).constraintsProofs,
-  claimedNames: (state) => root(state).claimedNames,
+  constraintsProofs: (state) => account(root(state).constraintsProofs),
+  claimedNames: (state) => account(root(state).claimedNames),
 }
 
 export default selectors

@@ -49,6 +49,19 @@ const provider = {
         new Event(EVENTS.CONNECTED)
       )
     }, 1)
+
+    window.ethereum.on('accountsChanged', () => {
+      window.location.reload()
+    })
+
+    window.ethereum.on('chainChanged', () => {
+      window.location.reload()
+    })
+  },
+
+  // get the account
+  getAccount: () => {
+    return _account
   },
 
   // get api client

@@ -1,5 +1,7 @@
 import constants from './constants'
 
+import services from 'services'
+
 export const reducerName = 'sunriseService'
 
 export const initialState = {
@@ -24,6 +26,10 @@ const rehydrate = (action, state) => {
 }
 
 export const reducer = (state = initialState, action) => {
+
+  // everything for this reducer is under a subkey for the wallet
+  const account = services.provider.getAccount()
+
   switch (action.type) {
     case "persist/REHYDRATE":
       return rehydrate(action, state)
@@ -33,7 +39,10 @@ export const reducer = (state = initialState, action) => {
         ...state,
         constraintsProofs: {
           ...state.constraintsProofs,
-          [action.domain]: action.proof
+          [account]: {
+            ...state.constraintsProofs[account],
+            [action.domain]: action.proof
+          }
         }
       }
       
@@ -42,17 +51,24 @@ export const reducer = (state = initialState, action) => {
         ...state,
         bids: {
           ...state.bids,
-          [action.domain]: action.amount
+          [account]: {
+            ...state.bids[account],
+            [action.domain]: action.amount
+          }
         }
       }
 
     case constants.DELETE_BID:
       return {
         ...state,
-        bids: Object.fromEntries(
-          Object.entries(state.bids)
-          .filter(([key, val]) => key !== action.domain)
-        )
+        bids: {
+          ...state.bids,
+          [account]: Object.fromEntries(
+            Object
+              .entries(state.bids[account])
+              .filter(([key, val]) => key !== action.domain)
+          )
+        }
       }
 
     case constants.SET_NAME_DATA:
@@ -60,7 +76,10 @@ export const reducer = (state = initialState, action) => {
         ...state,
         nameData: {
           ...state.nameData,
-          [action.name]: action.data
+          [account]: {
+            ...state.nameData[account],
+            [action.name]: action.data
+          }
         }
       }
 
@@ -69,7 +88,10 @@ export const reducer = (state = initialState, action) => {
         ...state,
         bundles: {
           ...state.bundles,
-          [action.bundleHash]: action.bundle
+          [account]: {
+            ...state.bundles[account],
+            [action.bundleHash]: action.bundle
+          }
         }
       }
 
@@ -78,7 +100,10 @@ export const reducer = (state = initialState, action) => {
         ...state,
         bidBundles: {
           ...state.bidBundles,
-          [action.name]: action.bundleHash
+          [account]: {
+            ...state.bidBundles[account],
+            [action.name]: action.bundleHash
+          }
         }
       }
 
@@ -87,7 +112,10 @@ export const reducer = (state = initialState, action) => {
         ...state,
         revealedBundles: {
           ...state.revealedBundles,
-          [action.bundleHash]: true
+          [account]: {
+            ...state.revealedBundles[account],
+            [action.bundleHash]: true,
+          }
         }
       }
 
@@ -96,7 +124,10 @@ export const reducer = (state = initialState, action) => {
         ...state,
         claimedNames: {
           ...state.claimedNames,
-          [action.name]: true
+          [account]: {
+            ...state.claimedNames[account],
+            [action.name]: true
+          }
         }
       }
 

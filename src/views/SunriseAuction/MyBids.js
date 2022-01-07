@@ -100,8 +100,8 @@ class MyBids extends React.PureComponent {
     let allClaimed = true
     let auctionResults = this.props.auctionResults
     keys.forEach(key => {
-      if (this.props.winningBidsLoaded && this.state.isConnected) {
-        if (auctionResults[key].isWinner) {
+      if (this.props.winningBidsLoaded && this.state.isConnected && auctionResults) {
+        if (auctionResults[key] && auctionResults[key].isWinner) {
           bidTotal = bidTotal.add(ethers.BigNumber.from(auctionResults[key].auctionPrice))
           registrationTotal = registrationTotal.add(ethers.BigNumber.from(nameData[key].priceUSDCents))
         }
@@ -113,7 +113,7 @@ class MyBids extends React.PureComponent {
         hasAllKeys = false
         return
       }
-      if (this.props.claimedNames && !this.props.claimedNames[key]) allClaimed = false
+      if (this.props.claimedNames && !this.props.claimedNames[key] && auctionResults[key] && auctionResults[key].type !== 'IS_CLAIMED') allClaimed = false
     })
 
     if (!hasAllKeys) return null
@@ -141,9 +141,9 @@ class MyBids extends React.PureComponent {
             <div className='mb-8'>
               {this.state.isConnected ? null : (
                 <>
-                  <components.labels.Error text={'Connect your wallet to see auction results & claim domains'} justify='justify-flex-start' />
-                  <div className='mt-4 max-w-sm md:hidden'>
-                    <components.buttons.Button text={'Connect wallet'} />
+                  <components.labels.error text={'connect your wallet to see auction results & claim domains'} justify='justify-flex-start' />
+                  <div classname='mt-4 max-w-sm md:hidden'>
+                    <components.buttons.button text={'connect wallet'} />
                   </div>
                 </>
               )}
@@ -163,6 +163,8 @@ class MyBids extends React.PureComponent {
                           <components.labels.Error text={'No participants have enough WAVAX to claim'} size={'xs'} />
                         ) : this.props.claimedNames[key] ? (
                           <components.labels.Success text={'You have claimed this name'} />
+                        ) : result.type === 'IS_CLAIMED' ? (
+                          <components.labels.Error text={'You lost this auction'} />
                         ) : result.isWinner ? (
                           <components.labels.Information text={'You have won this auction'} />
                         ) : (
@@ -413,8 +415,26 @@ class MyBids extends React.PureComponent {
     )
   }
 
+  renderConnect() {
+    return ( 
+      <div className='max-w-screen-md m-auto'>
+        <components.Modal ref={(ref) => this.connectModal = ref} title={'Connect your wallet'}> 
+          <components.ConnectWallet />
+        </components.Modal>
+        <div className='mt-4 mb-4 text-lg text-center font-bold'>{"My Bids"}</div>
+        <div className='max-w-md m-auto'>
+          <components.labels.Information text={'You must be connected to a wallet to view your bids'} />
+          <div className='mt-8'>
+            <components.buttons.Button text={'Connect your wallet'} onClick={() => this.connectModal.toggle()} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     if (!this.props.auctionPhases) return null
+    if (!this.state.isConnected) return this.renderConnect()
     const bidPlacementStartsAt = this.props.auctionPhases[0] * 1000
     const bidRevealStartsAt = this.props.auctionPhases[1] * 1000
     const claimStartsAt = this.props.auctionPhases[2] * 1000
