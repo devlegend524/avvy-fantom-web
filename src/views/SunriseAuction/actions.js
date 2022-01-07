@@ -287,6 +287,25 @@ const actions = {
       dispatch(actions.isClaimingDomains(false))
     }
   },
+
+  addBulkBids: (bids) => {
+    return async (dispatch, getState) => {
+      const api = services.provider.buildAPI()
+      for (let _domain in bids) {
+        let domain = _domain.toLowerCase()
+        if (api.isSupported(domain)) {
+          try {
+            ethers.BigNumber.from(bids[domain])
+            const hash = await client.nameHash(domain)
+            dispatch(services.names.actions.addRecord(domain, hash.toString()))
+            dispatch(services.sunrise.actions.addBid(domain, bids[domain]))
+          } catch (err) {
+          }
+        } else {
+        }
+      }
+    }
+  },
 }
 
 export default actions
