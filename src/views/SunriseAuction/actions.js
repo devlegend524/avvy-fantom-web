@@ -270,11 +270,12 @@ const actions = {
       const names = []
       const constraintsData = []
       Object.keys(auctionResults).forEach((name) => {
-        if (auctionResults[name].isWinner) {
+        if (auctionResults[name].isWinner && auctionResults[name].type !== 'IS_CLAIMED') {
           names.push(name)
           constraintsData.push(constraintsProofs[name])
         }
       })
+      if (names.length === 0) return
       try {
         await api.sunriseClaim(names, constraintsData)
         names.forEach(name => {

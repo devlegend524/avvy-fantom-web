@@ -276,11 +276,22 @@ class AvvyClient {
     let result
     try {
       const output = await this.contracts.SunriseAuctionV1.getWinningBid(hash.toString())
-      result = {
-        type: 'HAS_WINNER',
-        winner: output.winner,
-        auctionPrice: output.auctionPrice.toString(),
-        isWinner: output.winner.toLowerCase() === this.account
+      try {
+        const owner = await this.ownerOf(hash.toString())
+        result = {
+          type: 'IS_CLAIMED',
+          owner,
+          winner: output.winner,
+          auctionPrice: output.auctionPrice.toString(),
+          isWinner: output.winner.toLowerCase() === this.account
+        }
+      } catch (err) {
+        result = {
+          type: 'HAS_WINNER',
+          winner: output.winner,
+          auctionPrice: output.auctionPrice.toString(),
+          isWinner: output.winner.toLowerCase() === this.account
+        }
       }
     } catch (err) {
       result = {
