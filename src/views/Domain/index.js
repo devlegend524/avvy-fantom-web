@@ -79,15 +79,24 @@ class Domain extends React.PureComponent {
   }
 
   renderAuctionAvailableBody() {
+    const hasBid = this.props.bids && this.props.bids[this.state.domain]
     return (
       <div className='max-w-md m-auto'>
-        <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
-          <CheckCircleIcon className='w-6 text-alert-blue mr-2' />
-          <div className='text-alert-blue'>{'Available for auction'}</div>
-        </div>
-        <div className='mt-8'>
-          <components.buttons.Button text={'Bid on this name'} onClick={this.bidOnName.bind(this)} />
-        </div>
+        {hasBid ? (
+          <>
+            <components.labels.Success text='You have placed a bid on this name' />
+            <div className='mt-8'>
+              <components.buttons.Button text={'View my bids'} onClick={(navigator) => services.linking.navigate(navigator, 'SunriseAuctionMyBids')} />
+            </div>
+          </>
+        ) : (
+          <>
+            <components.labels.Success text='Available for auction' />
+            <div className='mt-8'>
+              <components.buttons.Button text={'Bid on this name'} onClick={this.bidOnName.bind(this)} />
+            </div>
+          </>
+        )}
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />
         </div>
@@ -224,6 +233,7 @@ class Domain extends React.PureComponent {
 const mapStateToProps = (state) => ({
   isLoading: selectors.isLoading(state),
   domain: selectors.domain(state),
+  bids: services.sunrise.selectors.bids(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
