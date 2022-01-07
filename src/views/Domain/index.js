@@ -113,7 +113,7 @@ class Domain extends React.PureComponent {
         <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8'>
           <div className='font-bold'>{'Bidding period is over'}</div>
           <div>
-            {'This name is undergoing the Sunrise Auction process, however bidding is closed. If there are no winning bids, this name will be available for registration on Dec. 10.'}
+            {'This name is undergoing the Sunrise Auction process, however bidding is closed. If there are no winning bids, this name will be available for registration after the auction completes.'}
           </div>
         </div>
         <div className='mt-4'>
