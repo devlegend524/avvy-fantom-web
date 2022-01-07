@@ -118,7 +118,16 @@ class MyBids extends React.PureComponent {
 
     if (!hasAllKeys) return null
 
-    if (keys.length === 0) return this.renderNoBids()
+    if (keys.length === 0) return (
+      <>
+        <div className='mt-4 mb-4 text-lg text-center font-bold'>{'No valid bids.'}</div>
+        <div className='max-w-md m-auto'>
+          <div className='mb-8'>
+            <components.labels.Information text={"The bid placement phase of the auction is over. Unfortunately you cannot place a bid at this stage. Domains will be available for on-demand registration after the auction is complete."} />
+          </div>
+        </div>
+      </>
+    )
 
     return (
       <>
@@ -230,7 +239,16 @@ class MyBids extends React.PureComponent {
 
     if (!hasAllKeys) return null
 
-    if (keys.length === 0) return this.renderNoBids()
+    if (keys.length === 0) return (
+      <>
+        <div className='mt-4 mb-4 text-lg text-center font-bold'>{'No valid bids.'}</div>
+        <div className='max-w-md m-auto'>
+          <div className='mb-8'>
+            <components.labels.Information text={"The bid placement phase of the auction is over. Unfortunately you cannot place a bid at this stage. Domains will be available for on-demand registration after the auction is complete."} />
+          </div>
+        </div>
+      </>
+    )
 
     return (
       <>
