@@ -11,20 +11,15 @@ import client from '@avvy/client'
 
 import services from 'services'
 
+const chainlinkAbi = [{ "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "description", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint80", "name": "_roundId", "type": "uint80" }], "name": "getRoundData", "outputs": [{ "internalType": "uint80", "name": "roundId", "type": "uint80" }, { "internalType": "int256", "name": "answer", "type": "int256" }, { "internalType": "uint256", "name": "startedAt", "type": "uint256" }, { "internalType": "uint256", "name": "updatedAt", "type": "uint256" }, { "internalType": "uint80", "name": "answeredInRound", "type": "uint80" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "latestRoundData", "outputs": [{ "internalType": "uint80", "name": "roundId", "type": "uint80" }, { "internalType": "int256", "name": "answer", "type": "int256" }, { "internalType": "uint256", "name": "startedAt", "type": "uint256" }, { "internalType": "uint256", "name": "updatedAt", "type": "uint256" }, { "internalType": "uint80", "name": "answeredInRound", "type": "uint80" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "version", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }]
+
 class AvvyClient {
   constructor(chainId, account, signer) {
     this.chainId = chainId
-    const contracts = artifacts.contracts[chainId]
-    this.contracts = {}
-    for (let key in contracts) {
-      this.contracts[key] = new ethers.Contract(
-        contracts[key].address,
-        contracts[key].abi,
-        signer
-      )
-    }
+    this.contracts = artifacts.contracts.load(chainId, signer)
 
     this.account = account
+    this.signer = signer
     this.DOMAIN_STATUSES = [
       'AVAILABLE',
       'AUCTION_AVAILABLE',
@@ -83,13 +78,11 @@ class AvvyClient {
   // ESTIMATE
   async getNamePrice(domain) {
     const name = domain.split('.')[0]
-    let priceUSDCents = '1500'
+    let priceUSDCents = '500'
     if (name.length === 3) {
-      priceUSDCents = '50000'
+      priceUSDCents = '64000'
     } else if (name.length === 4) {
-      priceUSDCents = '15000'
-    } else if (name.length === 5) {
-      priceUSDCents = '5000'
+      priceUSDCents = '16000'
     }
     return priceUSDCents
   }
@@ -113,14 +106,27 @@ class AvvyClient {
     if (split[1] !== 'avax') return false
     if (split[0].length < 3) return false
     if (split[0].length > 62) return false
-    if (!split[0].match(/^[a-z0-9-]+$/)) return false
+    if (!split[0].match(/^[a-z0-9][a-z0-9-]+[a-z0-9]$/)) return false
     if (split[0].length >= 4 && split[0][2] === '-' && split[0][3] === '-') return false
     return true
   }
 
+  async getAVAXConversionRateFromChainlink(address) {
+    let oracle = new ethers.Contract(address, chainlinkAbi, this.signer)
+    let roundData = await oracle.latestRoundData()
+    return roundData[1].toString()
+  }
+
   async getAVAXConversionRate() {
     // this is just fixed price for now based on latestRound from oracle
-    const rate = ethers.BigNumber.from('10000000000')
+    let rate
+    if (this.chainId === 31337) {
+      rate = ethers.BigNumber.from('10000000000')
+    } else if (this.chainId === 43113) {
+      rate = await this.getAVAXConversionRateFromChainlink('0x5498BB86BC934c8D34FDA08E81D444153d0D06aD')
+    } else if (this.chainId === 43114) {
+      rate = await this.getAVAXConversionRateFromChainlink('0x0A77230d17318075983913bC2145DB16C7366156')
+    }
     return ethers.BigNumber.from('10').pow('24').div(rate)
   }
 

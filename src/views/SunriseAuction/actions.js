@@ -13,7 +13,8 @@ const actions = {
     }
   },
 
-  loadAuctionPhases: () => { return async (dispatch, getState) => {
+  loadAuctionPhases: () => { 
+    return async (dispatch, getState) => {
       const api = services.provider.buildAPI()
       const auctionPhases = await api.getAuctionPhases()
       dispatch(actions.setAuctionPhases(auctionPhases))
