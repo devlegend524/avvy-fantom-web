@@ -9,7 +9,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "ethers": "^5.5.2",
+    "ethers": "^5.5.4",
     "ffjavascript": "^0.2.46",
     "history": "^5.1.0",
     "immutable": "^4.0.0",
