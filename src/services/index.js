@@ -1,3 +1,4 @@
+import account from './account'
 import api from './api'
 import cart from './cart'
 import circuits from './circuits'
@@ -14,6 +15,7 @@ import time from './time'
 import user from './user'
 
 const services = {
+  account,
   api,
   cart,
   circuits,

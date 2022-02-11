@@ -4,15 +4,25 @@
 // a difficult task.
 //
 
+import environmentService from 'services/environment'
 import linkingService from 'services/linking'
 
 const paths = {
   Domain: '/domains/:domain',
   Landing: '/',
-  MyDomains: '/user/domains',
-  SunriseAuctionMyBids: '/sunrise/bids',
+  MyDomains: '/user/domains', SunriseAuctionMyBids: '/sunrise/bids',
   SunriseAuction: '/sunrise',
   Register: '/register',
+  SetPassword: '/set-password/:token',
+}
+
+const backendPaths = {
+  Login: '/account/api/auth/',
+  ResetPassword: '/account/api/reset-password/',
+  SetPassword: '/account/api/set-password/',
+  GetChallenge: '/account/api/get-challenge/',
+  ConnectAccount: '/account/verify-wallet/',
+  GetSignature: '/account/get-signature/',
 }
 
 const linkingEvents = new EventTarget()
@@ -77,7 +87,12 @@ const linking = {
   // returns the url for a static file
   static: (path) => {
     return `/${path}`
-  }
+  },
+
+  // returns the URL for a route on the backend server
+  backend: (routeName) => {
+    return environmentService.BACKEND_BASE_URL + backendPaths[routeName]
+  },
 }
 
 export default linking

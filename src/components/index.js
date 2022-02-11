@@ -1,3 +1,4 @@
+import ConnectAccount from './ConnectAccount'
 import ConnectWallet from './ConnectWallet'
 import ContinueRegistration from './ContinueRegistration'
 import DomainSearch from './DomainSearch'
@@ -12,6 +13,7 @@ const components = {
   buttons,
   labels,
 
+  ConnectAccount,
   ConnectWallet,
   ContinueRegistration,
   DomainSearch,

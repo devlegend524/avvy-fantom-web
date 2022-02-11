@@ -87,6 +87,17 @@ const provider = {
   removeEventListener: (eventName, callback) => {
     events.removeEventListener(eventName, callback)
   },
+
+  signMessage: async (message) => {
+    const sig = await window.ethereum.request({
+      method: 'personal_sign',
+      params: [
+        message,
+        _account
+      ]
+    })
+    return sig
+  }
 }
 
 export default provider

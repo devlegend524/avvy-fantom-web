@@ -343,6 +343,21 @@ class AvvyClient {
     }
     await this.contracts.SunriseAuctionV1.claim(hashes, constraintsData)
   }
+
+  async checkHasAccount() {
+    // check if there is an account on-chain
+    const hasAccount = await this.contracts.AccountGuardV1.addressHasAccount(this.account)
+    return hasAccount
+  }
+
+  async getAccountSignature() {
+    const res = fetch(services.linking.backend('GetSignature') + '?address=' + this.account)
+    let signature
+    if (res.status === 200) {
+      signature = (await res.json()).signature
+    }
+    return signature
+  }
 }
 
 export default AvvyClient
