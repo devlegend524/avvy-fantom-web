@@ -68,6 +68,15 @@ class RegistrationFlow extends React.PureComponent {
     )
   }
 
+  renderAccount() {
+    return (
+      <>
+        <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Connect Account'}</div>
+        <components.ConnectAccount />
+      </>
+    )
+  }
+
   renderProofs() {
     return (
       <>
@@ -142,6 +151,7 @@ class RegistrationFlow extends React.PureComponent {
   render() {
     if (this.props.hasError) return this.renderHasError()
     if (!this.state.connected) return this.renderConnect()
+    if (!this.props.hasAccount) return this.renderAccount()
     if (!this.state.hasProofs) return this.renderProofs()
     if (!this.props.isComplete) return this.renderFinalize()
     return this.renderComplete()
@@ -159,6 +169,7 @@ const mapStateToProps = (state) => ({
   isComplete: selectors.isComplete(state),
   isCommitting: selectors.isCommitting(state),
   isFinalizing: selectors.isFinalizing(state),
+  hasAccount: services.user.selectors.hasAccount(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
