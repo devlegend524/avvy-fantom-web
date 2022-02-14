@@ -72,7 +72,7 @@ class RegistrationFlow extends React.PureComponent {
     return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Connect Account'}</div>
-        <components.ConnectAccount />
+        <components.account.ConnectAccount />
       </>
     )
   }
