@@ -21,6 +21,7 @@ const backendPaths = {
   ResetPassword: '/account/api/reset-password/',
   SetPassword: '/account/api/set-password/',
   GetChallenge: '/account/api/get-challenge/',
+  CreateAccount: '/account/api/create-account/',
   ConnectAccount: '/account/verify-wallet/',
   GetSignature: '/account/get-signature/',
 }

@@ -10,6 +10,9 @@ const selectors = {
   setPasswordResult: (state) => root(state).setPasswordResult,
   setPasswordError: (state) => root(state).setPasswordError,
   setPasswordLoading: (state) => root(state).setPasswordLoading,
+  createAccountLoading: (state) => root(state).createAccountLoading,
+  createAccountError: (state) => root(state).createAccountError,
+  createAccountComplete: (state) => root(state).createAccountComplete,
 }
 
 export default selectors

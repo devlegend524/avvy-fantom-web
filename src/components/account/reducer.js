@@ -10,6 +10,9 @@ export const initialState = {
   setPasswordLoading: false,
   setPasswordError: null,
   setPasswordResult: null,
+  createAccountLoading: false,
+  createAccountError: null,
+  createAccountComplete: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -54,6 +57,24 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         setPasswordResult: action.result
+      }
+
+    case constants.SET_CREATE_ACCOUNT_LOADING:
+      return {
+        ...state,
+        createAccountLoading: action.loading
+      }
+
+    case constants.SET_CREATE_ACCOUNT_ERROR:
+      return {
+        ...state,
+        createAccountError: action.error
+      }
+
+    case constants.SET_CREATE_ACCOUNT_COMPLETE:
+      return {
+        ...state,
+        createAccountComplete: action.complete
       }
 
 

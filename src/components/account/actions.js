@@ -112,6 +112,48 @@ const actions = {
     }
   },
 
+  createAccount: (name, email) => {
+    return async (dispatch, getState) => {
+      dispatch(actions.setCreateAccountLoading(true))
+      dispatch(actions.setCreateAccountError(null))
+      const res = await services.account.createAccount(name, email)
+      if (res.error) {
+        dispatch(actions.setCreateAccountError(res.error))
+      } else {
+        dispatch(actions.setCreateAccountComplete(true))
+      }
+      dispatch(actions.setCreateAccountLoading(false))
+    }
+  },
+  
+  setCreateAccountLoading: (loading) => {
+    return {
+      type: constants.SET_CREATE_ACCOUNT_LOADING,
+      loading
+    }
+  },
+
+  setCreateAccountError: (error) => {
+    return {
+      type: constants.SET_CREATE_ACCOUNT_ERROR,
+      error
+    }
+  },
+  
+  setCreateAccountComplete: (complete) => {
+    return {
+      type: constants.SET_CREATE_ACCOUNT_COMPLETE,
+      complete
+    }
+  },
+
+  resetCreateAccount: () => {
+    return (dispatch, getState) => {
+      dispatch(actions.setCreateAccountLoading(false))
+      dispatch(actions.setCreateAccountError(null))
+      dispatch(actions.setCreateAccountComplete(false))
+    }
+  },
 }
 
 export default actions
