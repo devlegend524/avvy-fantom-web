@@ -43,6 +43,20 @@ const exports = {
     return (await res.json())
   },
 
+  createAccount: async (name, email) => {
+    const res = await fetch(linkingService.backend('CreateAccount'), {
+      method: 'post',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email
+      })
+    })
+    return (await res.json())
+  },
+
   getVerifyChallenge: async (token) => {
     const res = await fetch(linkingService.backend('GetChallenge'), {
       method: 'post',

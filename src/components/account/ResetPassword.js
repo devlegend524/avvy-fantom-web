@@ -35,7 +35,9 @@ function ResetPasswordForm(props) {
           <div className='mt-4'>
             <components.buttons.Button text='Reset Password' onClick={() => handleSubmit()} loading={props.loading} />
           </div>
-        ) : null}
+        ) : (
+          <div className='w-full h-1 bg-gray-100 py-2'></div>
+        )}
       </form>
     </>
   )

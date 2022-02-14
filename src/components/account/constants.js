@@ -12,6 +12,10 @@ const constants = reduxService.prepareConstants(
     'SET_SET_PASSWORD_RESULT',
     'SET_SET_PASSWORD_ERROR',
     'SET_SET_PASSWORD_LOADING',
+
+    'SET_CREATE_ACCOUNT_LOADING',
+    'SET_CREATE_ACCOUNT_ERROR',
+    'SET_CREATE_ACCOUNT_COMPLETE',
   ]
 )
 
