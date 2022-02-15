@@ -3,6 +3,9 @@ import constants from './constants'
 export const reducerName = 'accountComponent'
 
 export const initialState = {
+  hasAccount: null, // whether the user has linked an account on-chain
+  accountSignature: null, // the signature from account server for linking on-chain
+
   loginError: null,
   isLoggingIn: false,
   resetPasswordResult: null,
@@ -13,10 +16,28 @@ export const initialState = {
   createAccountLoading: false,
   createAccountError: null,
   createAccountComplete: false,
+
+  signChallengeLoading: false,
+  signChallengeComplete: false,
+  verifyWalletError: null,
+  submitWalletVerificationLoading: false,
+  submitWalletVerificationComplete: true,
 }
 
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case constants.SET_HAS_ACCOUNT:
+      return {
+        ...state,
+        hasAccount: action.hasAccount
+      }
+
+    case constants.SET_ACCOUNT_SIGNATURE:
+      return {
+        ...state,
+        accountSignature: action.signature
+      }
+
     case constants.SET_LOGIN_ERROR:
       return {
         ...state,
@@ -77,6 +98,35 @@ export const reducer = (state = initialState, action) => {
         createAccountComplete: action.complete
       }
 
+    case constants.SET_SIGN_CHALLENGE_LOADING:
+      return {
+        ...state,
+        signChallengeLoading: action.loading
+      }
+
+    case constants.SET_SIGN_CHALLENGE_COMPLETE:
+      return {
+        ...state,
+        signChallengeComplete: action.complete
+      }
+
+    case constants.SET_VERIFY_WALLET_ERROR:
+      return {
+        ...state,
+        verifyWalletError: action.error
+      }
+
+    case constants.SET_SUBMIT_WALLET_VERIFICATION_LOADING:
+      return {
+        ...state,
+        submitWalletVerificationLoading: action.loading
+      }
+
+    case constants.SET_SUBMIT_WALLET_VERIFICATION_COMPLETE:
+      return {
+        ...state,
+        submitWalletVerificationComplete: action.complete
+      }
 
     default:
       return state

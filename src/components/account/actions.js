@@ -3,6 +3,28 @@ import services from 'services'
 import constants from './constants'
 
 const actions = {
+  setHasAccount: (hasAccount) => {
+    return {
+      type: constants.SET_HAS_ACCOUNT,
+      hasAccount
+    }
+  },
+
+  checkHasAccount: () => {
+    return async (dispatch, getState) => {
+      const api = services.provider.buildAPI()
+      const hasAccount = await api.checkHasAccount()
+      dispatch(actions.setHasAccount(hasAccount))
+    }
+  },
+
+  setAccountSignature: (signature) => {
+    return {
+      type: constants.SET_ACCOUNT_SIGNATURE,
+      signature
+    }
+  },
+
   login: (username, password) => {
     return async (dispatch, getState) => {
       dispatch(actions.setIsLoggingIn(true))
@@ -152,6 +174,99 @@ const actions = {
       dispatch(actions.setCreateAccountLoading(false))
       dispatch(actions.setCreateAccountError(null))
       dispatch(actions.setCreateAccountComplete(false))
+    }
+  },
+
+  setSignChallengeLoading: (loading) => {
+    return {
+      type: constants.SET_SIGN_CHALLENGE_LOADING,
+      loading
+    }
+  },
+
+  setSignChallengeComplete: (complete) => {
+    return {
+      type: constants.SET_SIGN_CHALLENGE_COMPLETE,
+      complete
+    }
+  },
+
+  setVerifyWalletError: (error) => {
+    return {
+      type: constants.SET_VERIFY_WALLET_ERROR,
+      error
+    }
+  },
+
+  signChallenge: () => {
+    return async (dispatch, getState) => {
+      dispatch(actions.setSignChallengeLoading(true))
+      dispatch(actions.setVerifyWalletError(null))
+      const api = services.provider.buildAPI()
+      try {
+        const token = services.user.selectors.token(getState())
+        const challenge = await services.account.getVerifyChallenge(token)
+        const signature = await services.provider.signMessage(challenge)
+        const verifyRes = await services.account.submitVerifySignature(token, api.account, signature)
+        if (verifyRes) {
+          dispatch(actions.setSignChallengeComplete(true))
+        } else {
+          dispatch(actions.setVerifyWalletError('Failed to verify signature. Please try again.'))
+        }
+      } catch (err) {
+        dispatch(actions.setSignChallengeLoading(false))
+      }
+      dispatch(actions.setSignChallengeLoading(false))
+    }
+  },
+
+  setSubmitWalletVerificationLoading: (loading) => {
+    return {
+      type: constants.SET_SUBMIT_WALLET_VERIFICATION_LOADING,
+      loading
+    }
+  },
+
+  setSubmitWalletVerificationComplete: (complete) => {
+    return {
+      type: constants.SET_SUBMIT_WALLET_VERIFICATION_COMPLETE,
+      complete
+    }
+  },
+
+  submitWalletVerification: () => {
+    return async (dispatch, getState) => {
+      dispatch(actions.setSubmitWalletVerificationLoading(true))
+      dispatch(actions.setVerifyWalletError(null))
+      const api = services.provider.buildAPI()
+      try {
+        const token = services.user.selectors.token(getState())
+        const signature = await services.account.getSignature(token, api.account)
+        if (!signature) {
+          dispatch(actions.setVerifyWalletError('Failed to verify wallet. Please try again.'))
+        }
+        await api.submitAccountVerification(signature)
+        dispatch(actions.setHasAccount(true))
+      } catch (err) {
+        dispatch(actions.setVerifyWalletError('Failed to verify wallet. Please try again.'))
+      }
+      dispatch(actions.setSubmitWalletVerificationLoading(false))
+    }
+  },
+
+  resetVerifyWallet: () => {
+    return async (dispatch, getState) => {
+      dispatch(actions.setSignChallengeLoading(false))
+      dispatch(actions.setSignChallengeComplete(false))
+      dispatch(actions.setVerifyWalletError(null))
+      dispatch(actions.setSubmitWalletVerificationLoading(false))
+      dispatch(actions.setSubmitWalletVerificationComplete(false))
+    }
+  },
+
+  resetVerifyWallet: () => {
+    return async (dispatch, getState) => {
+      dispatch(actions.setVerifyWalletLoading(false))
     }
   },
 }

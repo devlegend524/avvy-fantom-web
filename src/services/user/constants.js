@@ -6,12 +6,7 @@ const constants = reduxService.prepareConstants(
     'SET_DOMAIN_IDS',
     'SET_DOMAIN_COUNT',
 
-    'SET_HAS_ACCOUNT',
-    'SET_ACCOUNT_SIGNATURE',
-
     'SET_TOKEN', 
-
-    'SET_VERIFY_WALLET_LOADING',
   ]
 )
 
