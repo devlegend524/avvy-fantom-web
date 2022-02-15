@@ -22,8 +22,8 @@ const backendPaths = {
   SetPassword: '/account/api/set-password/',
   GetChallenge: '/account/api/get-challenge/',
   CreateAccount: '/account/api/create-account/',
-  ConnectAccount: '/account/verify-wallet/',
-  GetSignature: '/account/get-signature/',
+  VerifyWallet: '/account/api/verify-wallet/',
+  GetSignature: '/account/api/get-signature/',
 }
 
 const linkingEvents = new EventTarget()

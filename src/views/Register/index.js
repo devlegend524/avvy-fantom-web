@@ -206,7 +206,7 @@ class Register extends React.PureComponent {
   render() {
     return (
       <div>
-        <components.Modal open={true} ref={(ref) => this.registrationModal = ref} onClose={() => {
+        <components.Modal ref={(ref) => this.registrationModal = ref} onClose={() => {
           const answer = window.confirm('Closing this window will cancel your registration. Are you sure you want to proceed?')
           return answer
         }}> 

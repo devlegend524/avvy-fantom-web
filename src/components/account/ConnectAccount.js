@@ -4,9 +4,12 @@ import { connect } from 'react-redux'
 import services from 'services'
 import components from 'components'
 
+import actions from './actions'
+import selectors from './selectors'
 import CreateAccount from './CreateAccount'
 import Login from './Login'
 import ResetPassword from './ResetPassword'
+import VerifyWallet from './VerifyWallet'
 
 
 const LOGIN_STATES = {
@@ -44,16 +47,7 @@ class ConnectAccount extends React.PureComponent {
   }
 
   renderAccountSignature() {
-    return (
-      <>
-        <div className='max-w-md m-auto'>
-          <div className='mb-4'>
-            <components.labels.Information text={'Verify your wallet to continue with your registration.'} />
-          </div>
-          <components.buttons.Button text={'Verify my wallet'} onClick={() => this.props.verifyWallet()} loading={this.props.verifyWalletLoading} />
-        </div>
-      </>
-    )
+    return <VerifyWallet />
   }
 
   renderNeedToken() {
@@ -91,6 +85,7 @@ class ConnectAccount extends React.PureComponent {
   }
 
   render() {
+    // (login token)
     if (!this.props.token) return this.renderNeedToken()
     if (!this.props.accountSignature) return this.renderAccountSignature()
     return (
@@ -112,18 +107,14 @@ class ConnectAccount extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  hasAccount: services.user.selectors.hasAccount(state),
-  accountSignature: services.user.selectors.accountSignature(state),
+  hasAccount: selectors.hasAccount(state),
+  accountSignature: selectors.accountSignature(state),
   token: services.user.selectors.token(state),
-  verifyWalletLoading: services.user.selectors.verifyWalletLoading(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  reset: () => {
-  },
-  checkHasAccount: () => dispatch(services.user.actions.checkHasAccount()),
-  login: (email, password) => dispatch(services.user.actions.login(email, password)),
-  verifyWallet: () => dispatch(services.user.actions.verifyWallet()),
+  checkHasAccount: () => dispatch(actions.checkHasAccount()),
+  reset: () => null,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConnectAccount)

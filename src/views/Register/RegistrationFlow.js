@@ -169,7 +169,7 @@ const mapStateToProps = (state) => ({
   isComplete: selectors.isComplete(state),
   isCommitting: selectors.isCommitting(state),
   isFinalizing: selectors.isFinalizing(state),
-  hasAccount: services.user.selectors.hasAccount(state),
+  hasAccount: components.account.selectors.hasAccount(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({

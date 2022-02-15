@@ -33,6 +33,7 @@ const persistedReducer = persistReducer({
       services.cart.reducer.reducerName,
       services.names.reducer.reducerName,
       services.sunrise.reducer.reducerName,
+      services.user.reducer.reducerName,
     ]
   },
   combineReducers(reducerMap)

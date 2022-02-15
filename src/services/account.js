@@ -68,16 +68,36 @@ const exports = {
     return (await res.json()).challenge
   },
 
-  submitVerifySignature: async (token, account, signature) => {
-    const res = await fetch(linkingService.backend('VerifySignature'), {
+  submitVerifySignature: async (token, wallet, signature) => {
+    const res = await fetch(linkingService.backend('VerifyWallet'), {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Token ${token}`
       },
+      body: JSON.stringify({
+        wallet,
+        signature
+      })
     })
-    return (await res.json()).challenge
+    if (res.status !== 200) throw Error("Failed to verify signature")
+    return (await res.json()).success
   },
+
+  getSignature: async (token, address) => {
+    const res = await fetch(linkingService.backend('GetSignature'), {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`
+      },
+      body: JSON.stringify({
+        address,
+      })
+    })
+    if (res.status !== 200) throw Error("Failed to retrieve signature")
+    return (await res.json()).signature
+  }
 }
 
 export default exports
