@@ -28,34 +28,79 @@ const provider = {
   EVENTS,
 
   // connect to web3 via metamask
-  connectMetamask: async () => {
-    if (typeof window.ethereum === 'undefined') {
-      throw new Error('NO_PROVIDER')
-    }
-    if (!window.ethereum.isMetaMask) {
-      throw new Error('NOT_METAMASK')
-    }
-    const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts'
-    })
+  connectMetamask: () => {
+    return new Promise(async (resolve, reject) => {
+      console.log(services.environment)
+      if (typeof window.ethereum === 'undefined') {
+        return reject('NO_PROVIDER')
+      }
+      if (!window.ethereum.isMetaMask) {
+        return reject('NOT_METAMASK')
+      }
 
-    _account = accounts[0]
-    _isConnected = true
-    
-    // we put a timeout here to let react
-    // components digest the connection first
-    setTimeout(() => {
-      events.dispatchEvent(
-        new Event(EVENTS.CONNECTED)
-      )
-    }, 1)
+      // verify they connected to the right chain
+      const chainId = parseInt(window.ethereum.chainId, 16)
+      const expectedChainId = parseInt(services.environment.DEFAULT_CHAIN_ID)
+      if (chainId !== expectedChainId) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{
+              chainId: '0x' + expectedChainId.toString(16)
+            }]
+          })
+          window.ethereum.on('chainChanged', continueInitialization)
+        } catch (err) {
+          if (err.code === 4902) {
+            try {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainId: '0x' + expectedChainId.toString(16),
+                    chainName: services.environment.DEFAULT_CHAIN_NAME,
+                    rpcUrls: [services.environment.DEFAULT_PROVIDER_URL],
+                  }
+                ]
+              })
+              window.ethereum.on('chainChanged', continueInitialization)
+            } catch (err) {
+              return reject('WRONG_CHAIN')
+            }
+          } else {
+            return reject('WRONG_CHAIN')
+          }
+        }
+      } else {
+        continueInitialization()
+      }
 
-    window.ethereum.on('accountsChanged', () => {
-      window.location.reload()
-    })
+      async function continueInitialization() {
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts'
+        })
 
-    window.ethereum.on('chainChanged', () => {
-      window.location.reload()
+        _account = accounts[0]
+        _isConnected = true
+        
+        // we put a timeout here to let react
+        // components digest the connection first
+        setTimeout(() => {
+          events.dispatchEvent(
+            new Event(EVENTS.CONNECTED)
+          )
+        }, 1)
+
+        window.ethereum.on('accountsChanged', () => {
+          window.location.reload()
+        })
+
+        window.ethereum.on('chainChanged', () => {
+          window.location.reload()
+        })
+
+        resolve()
+      }
     })
   },
 
