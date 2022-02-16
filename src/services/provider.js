@@ -70,12 +70,14 @@ const provider = {
       _chainId = window.ethereum.chainId ? parseInt(window.ethereum.chainId, 16) : parseInt(services.environment.DEFAULT_CHAIN_ID, 16) 
       _provider = new ethers.providers.Web3Provider(window.ethereum)
       _signer = _provider.getSigner()
+      return new API(_chainId, _account, _signer);
     } else {
       _chainId = services.environment.DEFAULT_CHAIN_ID
+      console.log(services.environment.DEFAULT_PROVIDER_URL)
       _provider = new ethers.providers.JsonRpcProvider(services.environment.DEFAULT_PROVIDER_URL)
-      _signer = _provider.getSigner(ethers.Wallet.createRandom().address)
+      //_signer = _provider.getSigner(ethers.Wallet.createRandom().address)
+      return new API(_chainId, _account, _provider)
     }
-    return new API(_chainId, _account, _signer);
   },
 
   // listen for changes 
