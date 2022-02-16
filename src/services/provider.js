@@ -118,7 +118,6 @@ const provider = {
       return new API(_chainId, _account, _signer);
     } else {
       _chainId = services.environment.DEFAULT_CHAIN_ID
-      console.log(services.environment.DEFAULT_PROVIDER_URL)
       _provider = new ethers.providers.JsonRpcProvider(services.environment.DEFAULT_PROVIDER_URL)
       //_signer = _provider.getSigner(ethers.Wallet.createRandom().address)
       return new API(_chainId, _account, _provider)
