@@ -103,6 +103,7 @@ class SunriseAuction extends React.PureComponent {
 
   render() {
     if (!this.props.auctionPhases) return null
+    const bidPlacementStartsAt = this.props.auctionPhases[0] * 1000
     const bidRevealStartsAt = this.props.auctionPhases[1] * 1000
     const claimEndsAt = this.props.auctionPhases[3] * 1000
     const now = parseInt(Date.now())
@@ -128,7 +129,7 @@ class SunriseAuction extends React.PureComponent {
         </components.Modal>
         <div className='font-bold text-center mt-4 text-lg'>{'Sunrise Auction'}</div>
         <div className='max-w-sm m-auto mt-4 mb-8'>{'Welcome to the sunrise auction. During the auction, you may select & bid on the domains you wish to acquire.'}</div>
-        {now < claimEndsAt ? (
+        {now >= bidPlacementStartsAt && now < claimEndsAt ? (
           <div>
             <Link to={services.linking.path('SunriseAuctionMyBids')}>
               <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold'>
@@ -139,7 +140,7 @@ class SunriseAuction extends React.PureComponent {
           </div>
         ) : null}
         {this.renderAuctionPhases()}
-        {now < bidRevealStartsAt ? (
+        {now < bidRevealStartsAt && now >= bidPlacementStartsAt ? (
           <div className='mt-4 text-center text-gray-500 text-sm'>
             <div className='underline cursor-pointer' onClick={() => this.bulkBidModal.toggle()}>{'Want to place bids in bulk?'}</div>
           </div>
