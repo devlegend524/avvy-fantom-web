@@ -45,6 +45,7 @@ class RegistrationFlow extends React.PureComponent {
 
   componentDidMount() {
     services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
+    this.props.checkHasAccount()
   }
 
   componentWillUnmount() {
@@ -177,6 +178,7 @@ const mapDispatchToProps = (dispatch) => ({
   resetProofs: () => dispatch(actions.resetProofs()),
   commitTransaction: () => dispatch(actions.commit()),
   finalizeTransaction: () => dispatch(actions.finalize()),
+  checkHasAccount: () => dispatch(components.account.actions.checkHasAccount()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegistrationFlow)
