@@ -5,6 +5,7 @@ import circuits from './circuits'
 import darkmode from './darkmode'
 import environment from './environment'
 import linking from './linking'
+import logger from './logger'
 import money from './money'
 import names from './names'
 import provider from './provider'
@@ -22,6 +23,7 @@ const services = {
   darkmode,
   environment,
   linking,
+  logger,
   money,
   names,
   provider,

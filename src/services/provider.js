@@ -30,11 +30,12 @@ const provider = {
   // connect to web3 via metamask
   connectMetamask: () => {
     return new Promise(async (resolve, reject) => {
-      console.log(services.environment)
       if (typeof window.ethereum === 'undefined') {
+        services.logger.error('No window.ethereum provider')
         return reject('NO_PROVIDER')
       }
       if (!window.ethereum.isMetaMask) {
+        services.logger.error('Attempted to connect Metamask when provider is not Metamask')
         return reject('NOT_METAMASK')
       }
 
@@ -43,31 +44,42 @@ const provider = {
       const expectedChainId = parseInt(services.environment.DEFAULT_CHAIN_ID)
       if (chainId !== expectedChainId) {
         try {
+          services.logger.info('Attempting to switch chains')
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
             params: [{
               chainId: '0x' + expectedChainId.toString(16)
             }]
           })
-          window.ethereum.on('chainChanged', continueInitialization)
+          waitForChainChanged(expectedChainId)
         } catch (err) {
           if (err.code === 4902) {
+            services.logger.info('Chain not found')
             try {
+              services.logger.info('Attempting to add chain')
               await window.ethereum.request({
                 method: 'wallet_addEthereumChain',
                 params: [
                   {
                     chainId: '0x' + expectedChainId.toString(16),
                     chainName: services.environment.DEFAULT_CHAIN_NAME,
+                    nativeCurrency: {
+                      name: 'AVAX',
+                      symbol: 'AVAX',
+                      decimals: 18,
+                    },
                     rpcUrls: [services.environment.DEFAULT_PROVIDER_URL],
+                    blockExplorerUrls: [services.environment.DEFAULT_BLOCK_EXPLORER_URL],
                   }
                 ]
               })
-              window.ethereum.on('chainChanged', continueInitialization)
+              waitForChainChanged(expectedChainId)
             } catch (err) {
+              services.logger.error(err)
               return reject('WRONG_CHAIN')
             }
           } else {
+            services.logger.error(err)
             return reject('WRONG_CHAIN')
           }
         }
@@ -75,7 +87,19 @@ const provider = {
         continueInitialization()
       }
 
+      async function waitForChainChanged(expectedChainId) {
+        const chainId = parseInt(window.ethereum.chainId, 16)
+        services.logger.info('Waiting for chain to change')
+        if (chainId === expectedChainId) {
+          continueInitialization()
+        } else {
+          window.ethereum.on('chainChanged', continueInitialization)
+        }
+      }
+
       async function continueInitialization() {
+        services.logger.info('Chain has changed')
+        services.logger.info('Initializing accounts')
         const accounts = await window.ethereum.request({
           method: 'eth_requestAccounts'
         })
@@ -92,10 +116,12 @@ const provider = {
         }, 1)
 
         window.ethereum.on('accountsChanged', () => {
+          services.logger.info('Metamask accounts changed; reloading page')
           window.location.reload()
         })
 
         window.ethereum.on('chainChanged', () => {
+          services.logger.info('Metamask chain changed; reloading page')
           window.location.reload()
         })
 
