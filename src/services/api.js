@@ -342,7 +342,8 @@ class AvvyClient {
       let hash = await client.nameHash(names[i])
       hashes.push(hash.toString())
     }
-    await this.contracts.SunriseAuctionV1.claim(hashes, constraintsData)
+    const tx = await this.contracts.SunriseAuctionV1.claim(hashes, constraintsData)
+    await tx.wait()
   }
 
   async checkHasAccount() {
@@ -363,7 +364,8 @@ class AvvyClient {
     const sig = signature
     const recoveredAddress = ethers.utils.recoverAddress(hash, sig)
 
-    await this.contracts.AccountGuardV1.verify(ethers.utils.getAddress(this.account), signature)
+    const tx = await this.contracts.AccountGuardV1.verify(ethers.utils.getAddress(this.account), signature)
+    await tx.wait()
   }
 }
 

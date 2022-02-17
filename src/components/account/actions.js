@@ -138,11 +138,15 @@ const actions = {
     return async (dispatch, getState) => {
       dispatch(actions.setCreateAccountLoading(true))
       dispatch(actions.setCreateAccountError(null))
-      const res = await services.account.createAccount(name, email)
-      if (res.error) {
-        dispatch(actions.setCreateAccountError(res.error))
-      } else {
-        dispatch(actions.setCreateAccountComplete(true))
+      try {
+        const res = await services.account.createAccount(name, email)
+        if (res.error) {
+          dispatch(actions.setCreateAccountError(res.error))
+        } else {
+          dispatch(actions.setCreateAccountComplete(true))
+        }
+      } catch (err) {
+        dispatch(actions.setCreateAccountError('Failed to create account'))
       }
       dispatch(actions.setCreateAccountLoading(false))
     }
