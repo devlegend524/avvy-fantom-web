@@ -27,6 +27,7 @@ function Inner() {
         <Route path={services.linking.path('SunriseAuction')} element={<views.SunriseAuction />} />
         <Route path={services.linking.path('SunriseAuctionMyBids')} element={<views.SunriseAuction.MyBids />} />
         <Route path={services.linking.path('SetPassword')} element={<views.SetPassword />} />
+        <Route path={services.linking.path('Settings')} element={<views.Settings />} />
       </Routes>
     </views.Wrapper>
   );

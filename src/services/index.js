@@ -3,7 +3,9 @@ import api from './api'
 import cart from './cart'
 import circuits from './circuits'
 import darkmode from './darkmode'
+import data from './data'
 import environment from './environment'
+import files from './files'
 import linking from './linking'
 import logger from './logger'
 import money from './money'
@@ -21,7 +23,9 @@ const services = {
   cart,
   circuits,
   darkmode,
+  data,
   environment,
+  files,
   linking,
   logger,
   money,
