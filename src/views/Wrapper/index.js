@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { ArrowRightIcon, SearchIcon } from '@heroicons/react/solid'
+import { CogIcon } from '@heroicons/react/outline'
 
 import components from 'components'
 import services from 'services'
@@ -67,6 +68,14 @@ class Wrapper extends React.PureComponent {
               <ArrowRightIcon className='w-6' />
             </Link>
             <div className='w-full h-1 bg-gray-100'></div>
+            <Link 
+              className='block text-lg p-2 w-full h-16 flex items-center justify-between' 
+              to={services.linking.path('SunriseAuction')}
+              onClick={this.toggleMenu.bind(this)}>
+              <div>Settings</div>
+              <ArrowRightIcon className='w-6' />
+            </Link>
+            <div className='w-full h-1 bg-gray-100'></div>
 						<div className="h-24"></div>
 					</div>
 					<div className="absolute bottom-0 mb-8 text-center w-full">
@@ -98,16 +107,21 @@ class Wrapper extends React.PureComponent {
 							</svg>
 						</div>
 						<div className="pr-8 hidden md:flex items-center">
-							<div className="font-poppins ml-8 text-md">
-                <div className="p-8 cursor-pointer" onClick={() => this.searchModal.toggle()}>
-                  <SearchIcon className='w-6' />
-                </div>
-							</div>
 							<div className="font-poppins text-md">
 								<Link to={services.linking.path('SunriseAuction')}>Sunrise Auction</Link>
 							</div>
 							<div className="font-poppins ml-8 text-md">
         				<Link to={services.linking.path('MyDomains')}>My Domains</Link>
+							</div>
+							<div className="font-poppins ml-4 text-md">
+                <div className="py-8 px-4 cursor-pointer" onClick={() => this.searchModal.toggle()}>
+                  <SearchIcon className='w-6' />
+                </div>
+							</div>
+							<div className="font-poppins text-md">
+                <Link className='py-8 px-4 cursor-pointer' to={services.linking.path('Settings')}>
+                  <CogIcon className='w-6' />
+                </Link>
 							</div>
 						</div>
 					</div>

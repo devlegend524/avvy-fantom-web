@@ -12,7 +12,7 @@ function DomainSearch(props) {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (onBeforeSubmit) onBeforeSubmit()
-    let domain = textInput.current.value
+    let domain = textInput.current.value.toLowerCase()
     textInput.current.value = ''
     const domainSplit = domain.split('.')
     if (domainSplit.length === 1) {

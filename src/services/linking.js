@@ -14,6 +14,7 @@ const paths = {
   SunriseAuction: '/sunrise',
   Register: '/register',
   SetPassword: '/set-password/:token',
+  Settings: '/settings',
 }
 
 const backendPaths = {

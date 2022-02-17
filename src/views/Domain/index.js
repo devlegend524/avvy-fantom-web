@@ -16,19 +16,21 @@ class Domain extends React.PureComponent {
   constructor(props) {
     super(props)
     const params = services.linking.getParams('Domain')
+    const domain = params.domain ? params.domain.toLowerCase() : null
     this.state = {
-      domain: params.domain,
+      domain: domain,
     }
     this.searchPlaceholder = 'Search for another name'
-    this.loadDomain(params.domain)
+    this.loadDomain(domain)
   }
 
   updateParams = () => {
     const params = services.linking.getParams('Domain')
+    const domain = params.domain ? params.domain.toLowerCase() : null
     this.setState({
-      domain: params.domain
+      domain: domain
     }, () => {
-      this.loadDomain(params.domain)
+      this.loadDomain(domain)
     })
   }
 

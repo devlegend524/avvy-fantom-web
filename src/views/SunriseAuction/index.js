@@ -67,38 +67,25 @@ class SunriseAuction extends React.PureComponent {
   }
 
   downloadBulkBidTemplate() {
-    const element = document.createElement("a");
-    const file = new Blob(['Domain Name,Bid Amount (wei)\navvydomains.avax,1000000000000000000'], {type: 'text/csv'});
-    element.href = URL.createObjectURL(file);
-    element.download = "avvy-bid-template.csv";
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-    document.body.removeChild(element)
+    services.files.download(
+      'Domain Name,Bid Amount (wei)\navvydomains.avax,1000000000000000000',
+      'text/csv',
+      'avvy-bid-template.csv',
+    )
   }
 
-  uploadBulkBidTemplate(navigator) {
-    const element = document.createElement('input')
-    element.type = 'file'
-    element.addEventListener('change', (e) => {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const res = e.target.result
-        const lines = res.replace('\r\n', '\n').replace('\r', '\n').split('\n')
-        const bids = {}
-        for (let i = 0; i < lines.length; i += 1) {
-          if (i > 0) {
-            let split = lines[i].split(',')
-            bids[split[0]] = split[1]
-          }
-        }
-        this.props.addBulkBids(bids)
-        services.linking.navigate(navigator, 'SunriseAuctionMyBids')
+  async uploadBulkBidTemplate(navigator) {
+    const data = await services.files.upload()
+    const lines = data.replace('\r\n', '\n').replace('\r', '\n').split('\n')
+    const bids = {}
+    for (let i = 0; i < lines.length; i += 1) {
+      if (i > 0) {
+        let split = lines[i].split(',')
+        bids[split[0]] = split[1]
       }
-      reader.readAsText(element.files[0])
-    })
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
+    }
+    this.props.addBulkBids(bids)
+    services.linking.navigate(navigator, 'SunriseAuctionMyBids')
   }
 
   render() {
