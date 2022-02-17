@@ -17,15 +17,15 @@ class Landing extends React.PureComponent {
           <components.DomainSearch />
         </div>
         <Link
-          to={services.linking.path('SunriseAuction')}
-          className="flex justify-between bg-gray-100 font-bold p-4 rounded mb-2">
-          <div>{'Sunrise Auction'}</div>
-          <ArrowRightIcon className="h-6" />
-        </Link>
-        <Link
           to={services.linking.path('MyDomains')}
           className="flex justify-between bg-gray-100 font-bold p-4 rounded mb-2">
           <div>{'My Domains'}</div>
+          <ArrowRightIcon className="h-6" />
+        </Link>
+        <Link
+          to={services.linking.path('SunriseAuction')}
+          className="flex justify-between bg-gray-100 font-bold p-4 rounded mb-2">
+          <div>{'Sunrise Auction'}</div>
           <ArrowRightIcon className="h-6" />
         </Link>
       </div>
