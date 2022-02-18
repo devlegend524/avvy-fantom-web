@@ -11,6 +11,7 @@ const data = {
     if (window.confirm("Restoring data will overwrite any existing data. Please back up existing data before proceeding. Would you like to proceed?")) {
       const data = await files.upload()
       window.localStorage.setItem('persist:root', data)
+      alert('Data has been restored')
       window.location.reload()
     }
   },

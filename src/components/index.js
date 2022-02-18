@@ -1,3 +1,4 @@
+import Checkbox from './Checkbox'
 import ConnectWallet from './ConnectWallet'
 import ContinueRegistration from './ContinueRegistration'
 import DomainSearch from './DomainSearch'
@@ -14,6 +15,7 @@ const components = {
   buttons,
   labels,
 
+  Checkbox,
   ConnectWallet,
   ContinueRegistration,
   DomainSearch,

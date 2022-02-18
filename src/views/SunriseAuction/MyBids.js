@@ -98,6 +98,7 @@ class MyBids extends React.PureComponent {
     let registrationTotal = ethers.BigNumber.from('0')
     let hasAllKeys = true
     let allClaimed = true
+    let anyRevealed = false
     let auctionResults = this.props.auctionResults
     keys.forEach(key => {
       if (this.props.winningBidsLoaded && this.state.isConnected && auctionResults) {
@@ -109,6 +110,7 @@ class MyBids extends React.PureComponent {
         bidTotal = bidTotal.add(ethers.BigNumber.from(bids[key]))
         registrationTotal = registrationTotal.add(ethers.BigNumber.from(nameData[key].priceUSDCents))
       }
+      if (isRevealed(key)) anyRevealed = true
       if (!nameData[key]) {
         hasAllKeys = false
         return
@@ -118,7 +120,7 @@ class MyBids extends React.PureComponent {
 
     if (!hasAllKeys) return null
 
-    if (keys.length === 0) return (
+    if (keys.length === 0 || !anyRevealed) return (
       <>
         <div className='mt-4 mb-4 text-lg text-center font-bold'>{'No valid bids.'}</div>
         <div className='max-w-md m-auto'>

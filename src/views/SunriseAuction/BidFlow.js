@@ -15,7 +15,26 @@ class BidFlow extends React.PureComponent {
       connected: services.provider.isConnected(),
       needsProofs: true,
       hasProofs: false,
+      revealBidsConfirm: false,
+      dataBackupConfirm: false,
+      hasBackedUp: false,
     }
+  }
+
+  checkRevealBidsConfirm = () => {
+    this.setState((currState) => {
+      return {
+        revealBidsConfirm: !currState.revealBidsConfirm
+      }
+    })
+  }
+
+  checkDataBackupConfirm = () => {
+    this.setState((currState) => {
+      return {
+        dataBackupConfirm: !currState.dataBackupConfirm
+      }
+    })
   }
 
   generateProofs() {
@@ -28,6 +47,13 @@ class BidFlow extends React.PureComponent {
 
   submitBid() {
     this.props.submitBid()
+  }
+
+  backupData = () => {
+    services.data.backup()
+    this.setState({
+      hasBackedUp: true
+    })
   }
 
   onConnect() {
@@ -98,8 +124,14 @@ class BidFlow extends React.PureComponent {
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Place Bids'}</div>
         <components.labels.Information text={"In this step we submit your bids to the blockchain. You MUST return to reveal your bids & to claim any won auctions; otherwise your bids will be disqualified."} />
         <div className='mt-8 max-w-sm m-auto'>
+          <div className='mb-4'>
+              <components.Checkbox onCheck={this.checkRevealBidsConfirm} checked={this.state.revealBidsConfirm} text={'I understand that I must return to reveal my bids during the Bid Reveal phase or my bids will be disqualified.'} />
+          </div>
+          <div className='mb-4'>
+            <components.Checkbox onCheck={this.checkDataBackupConfirm} checked={this.state.dataBackupConfirm} text={'I understand that my bid details are stored in my web browser and if that data is lost, I will not be able to reveal my bids.'} />
+          </div>
           <div className='mt-4'>
-            <components.buttons.Button text={'Submit bid'} onClick={this.submitBid.bind(this)} loading={this.props.isBidding && !this.props.isComplete} />
+            <components.buttons.Button disabled={!this.state.dataBackupConfirm || !this.state.revealBidsConfirm} text={'Submit bid'} onClick={this.submitBid.bind(this)} loading={this.props.isBidding && !this.props.isComplete} />
           </div>
         </div>
       </>
@@ -113,7 +145,10 @@ class BidFlow extends React.PureComponent {
         <components.labels.Success text={"Your sealed bids were successfully submitted. DO NOT forget that there are more steps to complete. Failure to complete additional steps will result in your bids being disqualified."} />
         <div className='mt-8 max-w-sm m-auto'>
           <div className='mt-4'>
-            <components.buttons.Button text={'View my bids'} onClick={(navigate) => {
+            <components.buttons.Button disabled={this.state.hasBackedUp} text={'Backup data'} onClick={this.backupData} />
+          </div>
+          <div className='mt-4'>
+            <components.buttons.Button disabled={!this.state.hasBackedUp} text={'View my bids'} onClick={(navigate) => {
               this.props.onComplete()
               services.linking.navigate(navigate, 'SunriseAuctionMyBids')
             }} />
