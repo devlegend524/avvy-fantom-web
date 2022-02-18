@@ -10,6 +10,7 @@ const environment = {
   DEFAULT_CHAIN_NAME: process.env.REACT_APP_DEFAULT_CHAIN_NAME,
   BACKEND_BASE_URL: process.env.REACT_APP_BACKEND_BASE_URL,
   MAX_REGISTRATION_QUANTITY: 5,
+  SENTRY_DSN: process.env.REACT_APP_SENTRY_DSN,
 }
 
 export default environment

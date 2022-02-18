@@ -247,11 +247,13 @@ const actions = {
         const token = services.user.selectors.token(getState())
         const signature = await services.account.getSignature(token, api.account)
         if (!signature) {
+          services.logger.error('Missing signature')
           dispatch(actions.setVerifyWalletError('Failed to verify wallet. Please try again.'))
         }
         await api.submitAccountVerification(signature)
         dispatch(actions.setHasAccount(true))
       } catch (err) {
+        services.logger.error(err)
         dispatch(actions.setVerifyWalletError('Failed to verify wallet. Please try again.'))
       }
       dispatch(actions.setSubmitWalletVerificationLoading(false))
