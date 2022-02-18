@@ -1,6 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
-
+import { connect } from 'react-redux' 
 import components from 'components'
 import services from 'services'
 
@@ -16,7 +15,44 @@ class RevealFlow extends React.PureComponent {
     this.state = {
       connected: services.provider.isConnected(),
       wavax: false,
+      claimConfirm: false,
+      dataBackupConfirm: false,
+      checkedDisclaimers: false,
+      hasBackedUp: false,
     }
+  }
+
+  backup = () => {
+    services.data.backup()
+    this.setState({
+      hasBackedUp: true
+    })
+  }
+
+  checkClaimConfirm = () => {
+    this.setState((currState) => {
+      return {
+        claimConfirm: !currState.claimConfirm
+      }
+    })
+  }
+
+  checkDataBackupConfirm = () => {
+    this.setState((currState) => {
+      return {
+        dataBackupConfirm: !currState.dataBackupConfirm
+      }
+    })
+  }
+
+  checkDisclaimers = () => {
+    this.setState((currState) => {
+      return {
+        checkedDisclaimers: true
+      }
+    }, () => {
+      console.log(this.state)
+    })
   }
 
   onConnect() {
@@ -62,6 +98,22 @@ class RevealFlow extends React.PureComponent {
 
   renderReveal() {
     const bundleKeys = Object.keys(this.props.bundles)
+    if (!this.state.checkedDisclaimers) return (
+      <>
+        <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Reveal Bids'}</div>
+        <div className='max-w-md m-auto'>
+          <div className='mb-4'>
+              <components.Checkbox onCheck={this.checkClaimConfirm} checked={this.state.claimConfirm} text={'I understand that I must return during the Domain Claiming phase to claim any auctions I have won.'} />
+          </div>
+          <div className='mb-4'>
+            <components.Checkbox onCheck={this.checkDataBackupConfirm} checked={this.state.dataBackupConfirm} text={'I understand that my revealed bid details are stored in my web browser and if that data is lost, I may not be able to claim my domains. I will back up my data.'} />
+          </div>
+          <div className='mb-4'>
+            <components.buttons.Button text={'Continue'} disabled={!this.state.claimConfirm || !this.state.dataBackupConfirm} onClick={this.checkDisclaimers} />
+          </div>
+        </div>
+      </>
+    )
     return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Reveal Bids'}</div>
@@ -90,7 +142,10 @@ class RevealFlow extends React.PureComponent {
         <components.labels.Success text={"All of your bids have been revealed! DO NOT forget the final step of claiming any auctions that have been won."} />
         <div className='mt-8 max-w-sm m-auto'>
           <div className='mt-8'>
-            <components.buttons.Button text={'View my bids'} onClick={(navigate) => {
+            <components.buttons.Button text={'Backup my data'} onClick={this.backup} disabled={this.state.hasBackedUp} />
+          </div>
+          <div className='mt-4'>
+            <components.buttons.Button text={'View my bids'} disabled={!this.state.hasBackedUp} onClick={(navigate) => {
               this.props.onComplete()
               services.linking.navigate(navigate, 'SunriseAuctionMyBids')
             }} />
