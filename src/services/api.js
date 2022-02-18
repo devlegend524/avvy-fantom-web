@@ -11,9 +11,6 @@ import client from '@avvy/client'
 
 import services from 'services'
 
-
-const chainlinkAbi = [{ "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "description", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint80", "name": "_roundId", "type": "uint80" }], "name": "getRoundData", "outputs": [{ "internalType": "uint80", "name": "roundId", "type": "uint80" }, { "internalType": "int256", "name": "answer", "type": "int256" }, { "internalType": "uint256", "name": "startedAt", "type": "uint256" }, { "internalType": "uint256", "name": "updatedAt", "type": "uint256" }, { "internalType": "uint80", "name": "answeredInRound", "type": "uint80" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "latestRoundData", "outputs": [{ "internalType": "uint80", "name": "roundId", "type": "uint80" }, { "internalType": "int256", "name": "answer", "type": "int256" }, { "internalType": "uint256", "name": "startedAt", "type": "uint256" }, { "internalType": "uint256", "name": "updatedAt", "type": "uint256" }, { "internalType": "uint80", "name": "answeredInRound", "type": "uint80" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "version", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }]
-
 class AvvyClient {
   constructor(chainId, account, signerOrProvider) {
     this.chainId = parseInt(chainId)
@@ -113,7 +110,7 @@ class AvvyClient {
   }
 
   async getAVAXConversionRateFromChainlink(address) {
-    let oracle = new ethers.Contract(address, chainlinkAbi, this.signer)
+    let oracle = new ethers.Contract(address, services.abi.chainlink, this.signer)
     let roundData = await oracle.latestRoundData()
     return roundData[1].toString()
   }
@@ -313,7 +310,10 @@ class AvvyClient {
     let contract
     if (this.chainId === 31337) {
       contract = this.contracts.MockWavax
-    } else {
+    } else if (this.chainId === 43113) {
+      contract = new ethers.Contract('0xd00ae08403B9bbb9124bB305C09058E32C39A48c', services.abi.erc20, this.signer)
+    } else if (this.chainId === 43114) {
+      contract = new ethers.Contract('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', services.abi.erc20, this.signer)
     }
     return contract
   }
@@ -361,9 +361,6 @@ class AvvyClient {
       );
     }
     const hash = getMessage(address)
-    const sig = signature
-    const recoveredAddress = ethers.utils.recoverAddress(hash, sig)
-
     const tx = await this.contracts.AccountGuardV1.verify(ethers.utils.getAddress(this.account), signature)
     await tx.wait()
   }
