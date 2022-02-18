@@ -11,6 +11,7 @@ const environment = {
   BACKEND_BASE_URL: process.env.REACT_APP_BACKEND_BASE_URL,
   MAX_REGISTRATION_QUANTITY: 5,
   SENTRY_DSN: process.env.REACT_APP_SENTRY_DSN,
+  SENTRY_ENVIRONMENT: process.env.REACT_APP_SENTRY_ENVIRONMENT,
 }
 
 export default environment

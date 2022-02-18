@@ -16,6 +16,7 @@ import services from 'services'
 Sentry.init({
   dsn: services.environment.SENTRY_DSN,
   integrations: [new BrowserTracing()],
+  environment: services.environment.SENTRY_ENVIRONMENT,
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.

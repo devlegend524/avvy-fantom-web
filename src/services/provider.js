@@ -5,6 +5,7 @@
 
 import API from 'services/api'
 import { ethers } from 'ethers'
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 import services from 'services'
 
@@ -27,9 +28,76 @@ const provider = {
 
   EVENTS,
 
-  _getChainId: async () => {
-    const raw = await window.ethereum.request({ method: 'eth_chainId' })
-    return parseInt(raw, 16)
+  connectWalletConnect: () => {
+    return new Promise(async (resolve, reject) => {
+      _provider =  new WalletConnectProvider({
+        rpc: {
+          31337: 'http://localhost:8545',
+          43113: 'https://api.avax-test.network/ext/bc/C/rpc',
+          43114: 'https://api.avax.network/ext/bc/C/rpc',
+        }
+      })
+      await _provider.enable().catch(reject)
+      const web3Provider = new ethers.providers.Web3Provider(_provider)
+      _signer = web3Provider.getSigner()
+
+      const _getChainId = async () => {
+        const id = await _provider.request({
+          method: 'eth_chainId'
+        })
+        return id
+      }
+
+      const chainId = await _getChainId()
+      const expectedChainId = parseInt(services.environment.DEFAULT_CHAIN_ID)
+      if (chainId !== expectedChainId) {
+        return reject('WRONG_CHAIN')
+      } else {
+        continueInitialization()
+      }
+
+      async function waitForChainChanged(expectedChainId) {
+        const chainId = await _getChainId()
+        services.logger.info('Waiting for chain to change')
+        if (chainId === expectedChainId) {
+          continueInitialization()
+        } else {
+          window.ethereum.on('chainChanged', continueInitialization)
+        }
+      }
+
+      async function continueInitialization() {
+        _chainId = await _getChainId()
+        services.logger.info('Chain has changed')
+        services.logger.info('Initializing accounts')
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts'
+        })
+
+        _account = accounts[0]
+        _isConnected = true
+        
+        // we put a timeout here to let react
+        // components digest the connection first
+        setTimeout(() => {
+          events.dispatchEvent(
+            new Event(EVENTS.CONNECTED)
+          )
+        }, 1)
+
+        window.ethereum.on('accountsChanged', () => {
+          services.logger.info('Metamask accounts changed; reloading page')
+          window.location.reload()
+        })
+
+        window.ethereum.on('chainChanged', () => {
+          services.logger.info('Metamask chain changed; reloading page')
+          window.location.reload()
+        })
+
+        resolve()
+      }
+    })
   },
 
   // connect to web3 via metamask
@@ -44,8 +112,13 @@ const provider = {
         return reject('NOT_METAMASK')
       }
 
+      const _getChainId = async () => {
+        const raw = await window.ethereum.request({ method: 'eth_chainId' })
+        return parseInt(raw, 16)
+      }
+
       // verify they connected to the right chain
-      const chainId = await provider._getChainId()
+      const chainId = await _getChainId()
       const expectedChainId = parseInt(services.environment.DEFAULT_CHAIN_ID)
       if (chainId !== expectedChainId) {
         try {
@@ -88,7 +161,7 @@ const provider = {
       }
 
       async function waitForChainChanged(expectedChainId) {
-        const chainId = await provider._getChainId()
+        const chainId = await _getChainId()
         services.logger.info('Waiting for chain to change')
         if (chainId === expectedChainId) {
           continueInitialization()
@@ -98,7 +171,7 @@ const provider = {
       }
 
       async function continueInitialization() {
-        _chainId = await provider._getChainId()
+        _chainId = await _getChainId()
         services.logger.info('Chain has changed')
         services.logger.info('Initializing accounts')
         const accounts = await window.ethereum.request({
@@ -107,6 +180,8 @@ const provider = {
 
         _account = accounts[0]
         _isConnected = true
+        _provider = new ethers.providers.Web3Provider(window.ethereum)
+        _signer = _provider.getSigner()
         
         // we put a timeout here to let react
         // components digest the connection first
@@ -140,8 +215,8 @@ const provider = {
   buildAPI: () => {
     if (_isConnected) {
       // _chainId set when we connect
-      _provider = new ethers.providers.Web3Provider(window.ethereum)
-      _signer = _provider.getSigner()
+      // _account set when we connect
+      // _signer set when we connect
       return new API(_chainId, _account, _signer);
     } else {
       _chainId = parseInt(services.environment.DEFAULT_CHAIN_ID)
