@@ -14,6 +14,11 @@ let _chainId;
 let _account;
 let _provider;
 let _signer;
+let _providerType; // METAMASK or WALLETCONNECT
+const PROVIDER_TYPES = {
+  METAMASK: 1,
+  WALLETCONNECT: 2,
+}
 
 const events = new EventTarget()
 
@@ -40,6 +45,7 @@ const provider = {
       await _provider.enable().catch(reject)
       const web3Provider = new ethers.providers.Web3Provider(_provider)
       _signer = web3Provider.getSigner()
+      _providerType = PROVIDER_TYPES.WALLETCONNECT
 
       const _getChainId = async () => {
         const id = await _provider.request({
@@ -56,25 +62,12 @@ const provider = {
         continueInitialization()
       }
 
-      async function waitForChainChanged(expectedChainId) {
-        const chainId = await _getChainId()
-        services.logger.info('Waiting for chain to change')
-        if (chainId === expectedChainId) {
-          continueInitialization()
-        } else {
-          window.ethereum.on('chainChanged', continueInitialization)
-        }
-      }
-
       async function continueInitialization() {
         _chainId = await _getChainId()
         services.logger.info('Chain has changed')
         services.logger.info('Initializing accounts')
-        const accounts = await window.ethereum.request({
-          method: 'eth_requestAccounts'
-        })
 
-        _account = accounts[0]
+        _account = await _signer.getAddress()
         _isConnected = true
         
         // we put a timeout here to let react
@@ -85,12 +78,12 @@ const provider = {
           )
         }, 1)
 
-        window.ethereum.on('accountsChanged', () => {
+        _provider.on('accountsChanged', () => {
           services.logger.info('Metamask accounts changed; reloading page')
           window.location.reload()
         })
 
-        window.ethereum.on('chainChanged', () => {
+        _provider.on('chainChanged', () => {
           services.logger.info('Metamask chain changed; reloading page')
           window.location.reload()
         })
@@ -182,6 +175,7 @@ const provider = {
         _isConnected = true
         _provider = new ethers.providers.Web3Provider(window.ethereum)
         _signer = _provider.getSigner()
+        _providerType = PROVIDER_TYPES.METAMASK
         
         // we put a timeout here to let react
         // components digest the connection first
@@ -237,13 +231,24 @@ const provider = {
   },
 
   signMessage: async (message) => {
-    const sig = await window.ethereum.request({
-      method: 'personal_sign',
-      params: [
-        message,
-        _account
-      ]
-    })
+    let sig
+    if (_providerType === PROVIDER_TYPES.METAMASK) {
+      sig = await window.ethereum.request({
+        method: 'personal_sign',
+        params: [
+          message,
+          _account
+        ]
+      })
+    } else if (_providerType === PROVIDER_TYPES.WALLETCONNECT) {
+      //sig = await _signer.signMessage(message)
+			sig = await new ethers.providers.Web3Provider(_provider).send(
+        'personal_sign',
+        [ ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), _account.toLowerCase() ]
+    	)
+    } else {
+      throw "Unknown provider type for signMessage"
+    }
     return sig
   }
 }

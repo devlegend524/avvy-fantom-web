@@ -42,10 +42,6 @@ class MyBids extends React.PureComponent {
     services.provider.removeEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
   }
 
-  onCompleteBidFlow() {
-    this.bidModal.toggle()
-  }
-
   componentDidUpdate(prevProps, prevState) {
     if (this.props.auctionPhases) {
       const claimStartsAt = this.props.auctionPhases[2] * 1000
@@ -368,8 +364,9 @@ class MyBids extends React.PureComponent {
             const answer = window.confirm('Closing this window will abandon your bid placement. Are you sure you want to proceed?')
             return answer
           }}> 
-            <BidFlow onComplete={() => {
+            <BidFlow ref={(ref) => {alert(1); this.bidFlow = ref}} onComplete={() => {
               this.disableBidModalWarning = true
+              this.props.resetBidFlow()
               this.bidModal.toggle()
               this.disableBidModalWarning = false
             }} />
@@ -467,6 +464,7 @@ const mapDispatchToProps = (dispatch) => ({
   deleteBid: (key) => dispatch(services.sunrise.actions.deleteBid(key)),
   loadWinningBids: (force) => dispatch(actions.loadWinningBids(force)),
   claimAll: () => dispatch(actions.claimAll()),
+  resetBidFlow: () => dispatch(actions.resetBidding()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyBids)
