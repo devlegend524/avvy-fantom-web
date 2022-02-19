@@ -49,6 +49,13 @@ const actions = {
     }
   },
 
+  resetBidding: () => {
+    return (dispatch, getState) => {
+      debugger
+      dispatch(actions.setBiddingIsComplete(false))
+    }
+  },
+
   generateProofs: (names) => {
     return async (dispatch, getState) => {
       try {

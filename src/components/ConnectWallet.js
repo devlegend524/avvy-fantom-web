@@ -72,7 +72,7 @@ class ConnectWallet extends React.PureComponent {
             </div>
             <div onClick={this.connectMetamask.bind(this)} className={`cursor-pointer max-w-xs h-24 mt-4 flex items-center justify-center border border-gray-300 rounded-xl m-auto ${this.state.connecting ? 'blur' : ''}`}>
               <div>
-                <img src={services.linking.static('images/vendor/metamask.svg')} alt="Metamask" className='h-20' />
+                <img src={services.linking.static('images/vendor/metamask.svg')} alt="Metamask" className='w-full h-20' />
               </div>
             </div>
           </div>
