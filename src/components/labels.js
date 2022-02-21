@@ -26,6 +26,10 @@ function Information(props) {
   return <Label icon={InformationCircleIcon} color='text-gray-400' {...props}  />
 }
 
+function Warning(props) {
+  return <Label icon={InformationCircleIcon} color='text-alert-orange' {...props} />
+}
+
 function Error(props) {
   return <Label icon={InformationCircleIcon} color='text-alert-red' {...props} />
 }
@@ -38,6 +42,7 @@ const exports = {
   Information,
   Error,
   Success,
+  Warning,
 }
 
 export default exports

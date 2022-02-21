@@ -15,6 +15,7 @@ let _account;
 let _provider;
 let _signer;
 let _providerType; // METAMASK or WALLETCONNECT
+
 const PROVIDER_TYPES = {
   METAMASK: 1,
   WALLETCONNECT: 2,
@@ -32,6 +33,11 @@ const provider = {
   isConnected: () => _isConnected,
 
   EVENTS,
+  PROVIDER_TYPES,
+
+  providerType: () => {
+    return _providerType
+  },
 
   connectWalletConnect: () => {
     return new Promise(async (resolve, reject) => {

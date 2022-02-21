@@ -10,6 +10,7 @@ module.exports = {
         'grayish-300': '#3D3D3D',
         'alert-blue': '#009BCC',
         'alert-red': '#E00000',
+        'alert-orange': '#ff9966',
       },
       fontFamily: {
         'poppins': ["'Poppins'", 'sans-serif'],
