@@ -5,6 +5,7 @@ import cart from './cart'
 import circuits from './circuits'
 import darkmode from './darkmode'
 import data from './data'
+import device from './device'
 import environment from './environment'
 import files from './files'
 import linking from './linking'
@@ -26,6 +27,7 @@ const services = {
   circuits,
   darkmode,
   data,
+  device,
   environment,
   files,
   linking,

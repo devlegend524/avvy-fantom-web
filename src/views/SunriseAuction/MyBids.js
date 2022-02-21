@@ -364,7 +364,7 @@ class MyBids extends React.PureComponent {
             const answer = window.confirm('Closing this window will abandon your bid placement. Are you sure you want to proceed?')
             return answer
           }}> 
-            <BidFlow ref={(ref) => {alert(1); this.bidFlow = ref}} onComplete={() => {
+            <BidFlow onComplete={() => {
               this.disableBidModalWarning = true
               this.props.resetBidFlow()
               this.bidModal.toggle()

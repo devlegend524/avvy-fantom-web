@@ -91,6 +91,22 @@ class BidFlow extends React.PureComponent {
   }
 
   renderProofs() {
+    if (services.provider.providerType() === services.provider.PROVIDER_TYPES.METAMASK && services.device.isMobile() && !this.state.ignoreMobileWarning) {
+      return (
+        <>
+          <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Generate Proofs'}</div>
+          <div className='m-auto mt-4'>
+            <components.labels.Error text={'Metamask Mobile Browser will likely fail to generate proofs for registration. To participate in the auction with Metamask Mobile, use the website on a computer and use WalletConnect to connect to Metamask Mobile.'} />
+          </div>
+          <div className='max-w-sm m-auto mt-4'>
+            <components.Checkbox text={'I understand it might not work. I will continue & try regardless.'} onCheck={() => this.setState({ understandMobileWarning: true })} checked={this.state.understandMobileWarning} />
+          </div>
+          <div className='mt-4 max-w-sm m-auto'>
+            <components.buttons.Button text={'Continue'} onClick={() => this.setState({ ignoreMobileWarning: true })} disabled={!this.state.understandMobileWarning} />
+          </div>
+        </>
+      )
+    }
     return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Generate Proofs'}</div>
