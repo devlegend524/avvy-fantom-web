@@ -6,6 +6,7 @@
 import API from 'services/api'
 import { ethers } from 'ethers'
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import detectEthereumProvider from '@metamask/detect-provider'
 
 import services from 'services'
 
@@ -102,17 +103,19 @@ const provider = {
   // connect to web3 via metamask
   connectMetamask: () => {
     return new Promise(async (resolve, reject) => {
-      if (typeof window.ethereum === 'undefined') {
+      const provider = await detectEthereumProvider()
+
+      if (!provider) {
         services.logger.error('No window.ethereum provider')
         return reject('NO_PROVIDER')
       }
-      if (!window.ethereum.isMetaMask) {
+      if (!provider.isMetaMask) {
         services.logger.error('Attempted to connect Metamask when provider is not Metamask')
         return reject('NOT_METAMASK')
       }
 
       const _getChainId = async () => {
-        const raw = await window.ethereum.request({ method: 'eth_chainId' })
+        const raw = await provider.request({ method: 'eth_chainId' })
         return parseInt(raw, 16)
       }
 
@@ -122,7 +125,7 @@ const provider = {
       if (chainId !== expectedChainId) {
         try {
           services.logger.info('Attempting to switch chains')
-          await window.ethereum.request({
+          await provider.request({
             method: 'wallet_switchEthereumChain',
             params: [{
               chainId: '0x' + expectedChainId.toString(16)
@@ -133,7 +136,7 @@ const provider = {
           services.logger.info('Chain not found')
           try {
             services.logger.info('Attempting to add chain')
-            await window.ethereum.request({
+            await provider.request({
               method: 'wallet_addEthereumChain',
               params: [
                 {
@@ -165,7 +168,7 @@ const provider = {
         if (chainId === expectedChainId) {
           continueInitialization()
         } else {
-          window.ethereum.on('chainChanged', continueInitialization)
+          provider.on('chainChanged', continueInitialization)
         }
       }
 
@@ -173,13 +176,13 @@ const provider = {
         _chainId = await _getChainId()
         services.logger.info('Chain has changed')
         services.logger.info('Initializing accounts')
-        const accounts = await window.ethereum.request({
+        const accounts = await provider.request({
           method: 'eth_requestAccounts'
         })
 
         _account = accounts[0]
         _isConnected = true
-        _provider = new ethers.providers.Web3Provider(window.ethereum)
+        _provider = new ethers.providers.Web3Provider(provider)
         _signer = _provider.getSigner()
         _providerType = PROVIDER_TYPES.METAMASK
         
