@@ -17,6 +17,7 @@ const constants = reduxService.prepareConstants(
     'SET_IS_APPROVING_WAVAX',
     'SET_IS_CLAIMING_DOMAINS',
     'WINNING_BIDS_LOADED',
+    'SET_GETTING_WAVAX',
   ]
 )
 

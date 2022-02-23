@@ -51,7 +51,6 @@ const actions = {
 
   resetBidding: () => {
     return (dispatch, getState) => {
-      debugger
       dispatch(actions.setBiddingIsComplete(false))
     }
   },
@@ -238,6 +237,26 @@ const actions = {
       const balance = await api.getWavaxBalance()
       dispatch(actions.setAvailableWavax(balance))
       dispatch(actions.setApprovedWavax(wavax))
+    }
+  },
+
+  gettingWAVAX: (getting) => {
+    return {
+      type: constants.SET_GETTING_WAVAX,
+      getting
+    }
+  },
+
+  getWAVAX: (amount) => {
+    return async (dispatch, getState) => {
+      dispatch(actions.gettingWAVAX(true))
+      try {
+        const api = services.provider.buildAPI()
+        await api.wrapAvax(amount)
+        dispatch(actions.checkAvailableWAVAX())
+      } catch (err) {
+      }
+      dispatch(actions.gettingWAVAX(false))
     }
   },
 

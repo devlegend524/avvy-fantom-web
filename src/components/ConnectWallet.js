@@ -18,18 +18,26 @@ class ConnectWallet extends React.PureComponent {
   }
 
   async connectMetamask() {
-    this.setState({
-      connecting: true
-    }, async () => {
-      try {
-        await services.provider.connectMetamask()
-      } catch (err) {
-        alert('Failed to connect')
-        this.setState({
-          connecting: false
-        })
-      }
-    })
+    const func = async () => {
+      this.setState({
+        connecting: true
+      }, async () => {
+        try {
+          await services.provider.connectMetamask()
+        } catch (err) {
+          alert('Failed to connect')
+          this.setState({
+            connecting: false
+          })
+        }
+      })
+    }
+    if (services.device.isAndroid()) {
+      alert('Metamask Mobile on Android will randomly fail to connect. In general, we recommend using a computer to access Avvy, and connecting to Metamask Mobile via WalletConnect.')
+      await func()
+    } else {
+      await func()
+    }
   }
 
   async walletConnect() {
