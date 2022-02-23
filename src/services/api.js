@@ -311,9 +311,9 @@ class AvvyClient {
     if (this.chainId === 31337) {
       contract = this.contracts.MockWavax
     } else if (this.chainId === 43113) {
-      contract = new ethers.Contract('0xd00ae08403B9bbb9124bB305C09058E32C39A48c', services.abi.erc20, this.signer)
+      contract = new ethers.Contract('0xd00ae08403B9bbb9124bB305C09058E32C39A48c', services.abi.wavax, this.signer)
     } else if (this.chainId === 43114) {
-      contract = new ethers.Contract('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', services.abi.erc20, this.signer)
+      contract = new ethers.Contract('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', services.abi.wavax, this.signer)
     }
     return contract
   }
@@ -328,6 +328,14 @@ class AvvyClient {
     const contract = this.getWavaxContract()
     const allowance = await contract.allowance(this.account, this.contracts.SunriseAuctionV1.address)
     return allowance.toString()
+  }
+
+  async wrapAvax(amount) {
+    const contract = this.getWavaxContract()
+    const tx = await contract.deposit({
+      value: amount
+    })
+    await tx.wait()
   }
 
   async approveWavaxForAuction(amount) {

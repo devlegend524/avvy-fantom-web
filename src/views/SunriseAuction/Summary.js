@@ -58,11 +58,12 @@ class _WavaxSummary extends React.PureComponent {
     const approved = ethers.BigNumber.from(this.props.approvedWavax)
     const available = ethers.BigNumber.from(this.props.availableWavax)
     const bidTotal = ethers.BigNumber.from(this.props.bidTotal)
+    const required = bidTotal.sub(available)
     if (available.lt(bidTotal)) return (
       <div className='mt-4'>
-        <components.labels.Error text={`You do not have enough WAVAX to cover your bids. You need to acquire ${services.money.renderWAVAX(bidTotal.toString())}. You can use a DEX of your choice to swap AVAX for WAVAX.`} />
+        <components.labels.Error text={`You do not have enough WAVAX to cover your bids. You need to acquire a total of ${services.money.renderWAVAX(bidTotal.toString())}.`} />
         <div className='mt-4'>
-          <components.buttons.Button text={'Refresh'} onClick={() => this.props.checkAvailableWAVAX()} />
+          <components.buttons.Button loading={this.props.gettingWavax} text={`Swap ${services.money.renderAVAX(required)} for WAVAX`} onClick={() => this.props.getWAVAX(required)} />
         </div>
       </div>
     )
@@ -102,11 +103,13 @@ const mapStateToProps = (state) => ({
   availableWavax: selectors.availableWavax(state),
   approvedWavax: selectors.approvedWavax(state),
   isApprovingWavax: selectors.isApprovingWavax(state),
+  gettingWavax: selectors.gettingWAVAX(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   checkAvailableWAVAX: () => dispatch(actions.checkAvailableWAVAX()),
   approveWavax: (total) => dispatch(actions.approveWavax(total)),
+  getWAVAX: (amount) => dispatch(actions.getWAVAX(amount)),
 })
 
 const WavaxSummary = connect(mapStateToProps, mapDispatchToProps)(_WavaxSummary)

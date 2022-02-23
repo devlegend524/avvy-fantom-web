@@ -17,6 +17,7 @@ export const initialState = {
   // bid reveal
   revealingBundle: {},
   hasRevealError: false,
+  gettingWAVAX: false,
 
   // claim
   auctionResults: {},
@@ -71,6 +72,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         hasRevealError: action.value
+      }
+
+    case constants.SET_GETTING_WAVAX:
+      return {
+        ...state,
+        gettingWAVAX: action.getting
       }
 
     case constants.SET_AUCTION_RESULT:
