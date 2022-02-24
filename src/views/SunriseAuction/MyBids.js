@@ -90,17 +90,23 @@ class MyBids extends React.PureComponent {
     const bids = this.props.bids
     const keys = Object.keys(bids).sort().filter(name => isSubmitted(name))
     const nameData = this.props.nameData
-    let bidTotal = ethers.BigNumber.from('0')
+    let bidTotal = ethers.BigNumber.from('0') // total to pay to claim all
+    let fullBidTotal = ethers.BigNumber.from('0') // total of all bids
     let registrationTotal = ethers.BigNumber.from('0')
     let hasAllKeys = true
     let allClaimed = true
     let anyRevealed = false
     let auctionResults = this.props.auctionResults
+    let canClaim = false
     keys.forEach(key => {
       if (this.props.winningBidsLoaded && this.state.isConnected && auctionResults) {
+        fullBidTotal = fullBidTotal.add(ethers.BigNumber.from(bids[key]))
         if (auctionResults[key] && auctionResults[key].isWinner) {
           bidTotal = bidTotal.add(ethers.BigNumber.from(auctionResults[key].auctionPrice))
           registrationTotal = registrationTotal.add(ethers.BigNumber.from(nameData[key].priceUSDCents))
+          if (auctionResults[key].type !== 'IS_CLAIMED') {
+            canClaim = true
+          }
         }
       } else {
         bidTotal = bidTotal.add(ethers.BigNumber.from(bids[key]))
@@ -179,6 +185,7 @@ class MyBids extends React.PureComponent {
             <Summary.FullSummary  
               subtitle={this.props.winningBidsLoaded && this.state.isConnected ? '(Totals for auctions that you won)' : null}
               bidTotal={bidTotal} 
+              fullBidTotal={fullBidTotal}
               registrationTotal={registrationTotal} 
               showAvailable={!(this.state.isConnected && allClaimed)} 
               notConnectedLabel={'Connect your wallet to see auction results & claim domains'}
@@ -199,9 +206,9 @@ class MyBids extends React.PureComponent {
                         <components.buttons.Button text={'View Domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
                       </div>
                     </>
-                  ) : (
+                  ) : canClaim ? (
                     <components.buttons.Button text={'Claim All'} onClick={() => this.props.claimAll()} loading={this.props.isClaimingDomains} />
-                  )}
+                  ) : null}
                 </div>
               </>
             ) : null}

@@ -116,7 +116,8 @@ const WavaxSummary = connect(mapStateToProps, mapDispatchToProps)(_WavaxSummary)
 
 class FullSummary extends React.PureComponent {
   render() {
-    const bidTotal = this.props.bidTotal
+    const bidTotal = this.props.bidTotal // this is the amount they will pay for claiming
+    const fullBidTotal = this.props.fullBidTotal // this is the total of all their bids
     const registrationTotal = this.props.registrationTotal
 
     return (
@@ -142,7 +143,7 @@ class FullSummary extends React.PureComponent {
               {services.money.renderUSD(registrationTotal)} /year
             </div>
           </div>
-          {!this.props.showAvailable ? null : <WavaxSummary notConnectedLabel={this.props.notConnectedLabel} bidTotal={bidTotal} />}
+          {!this.props.showAvailable ? null : <WavaxSummary notConnectedLabel={this.props.notConnectedLabel} bidTotal={fullBidTotal} />}
         </div>
       </>
     )

@@ -276,6 +276,7 @@ const actions = {
       } catch (err) {
       }
       dispatch(actions.checkAvailableWAVAX())
+      dispatch(actions.loadWinningBids(true))
       dispatch(actions.isApprovingWavax(false))
     }
   },
@@ -302,7 +303,9 @@ const actions = {
           constraintsData.push(constraintsProofs[name])
         }
       })
-      if (names.length === 0) return
+      if (names.length === 0) {
+        dispatch(actions.isClaimingDomains(false))
+      }
       try {
         await api.sunriseClaim(names, constraintsData)
         names.forEach(name => {
@@ -310,6 +313,8 @@ const actions = {
         })
       } catch (err) {
         console.log(err)
+        alert('Failed to claim domains')
+        dispatch(actions.isClaimingDomains(false))
       }
       dispatch(actions.isClaimingDomains(false))
     }
