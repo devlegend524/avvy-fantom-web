@@ -59,22 +59,28 @@ class _WavaxSummary extends React.PureComponent {
     const available = ethers.BigNumber.from(this.props.availableWavax)
     const bidTotal = ethers.BigNumber.from(this.props.bidTotal)
     const required = bidTotal.sub(available)
-    if (available.lt(bidTotal)) return (
-      <div className='mt-4'>
-        <components.labels.Error text={`You do not have enough WAVAX to cover your bids. You need to acquire a total of ${services.money.renderWAVAX(bidTotal.toString())}.`} />
-        <div className='mt-4'>
-          <components.buttons.Button loading={this.props.gettingWavax} text={`Swap ${services.money.renderAVAX(required)} for WAVAX`} onClick={() => this.props.getWAVAX(required)} />
-        </div>
-      </div>
-    )
-    if (approved.lt(bidTotal)) return (
-      <div className='mt-4'>
-        <components.labels.Error text={'You have not approved enough WAVAX to cover your bids'} />
-        <div className='mt-4'>
-          <components.buttons.Button text={'Approve WAVAX'} onClick={() => this.props.approveWavax(bidTotal.toString())} loading={this.props.isApprovingWavax} />
-        </div>
-      </div>
-    )
+    if (available.lt(bidTotal) || approved.lt(bidTotal)) {
+      return (
+        <>
+          {available.lt(bidTotal) ? (
+            <div className='mt-4'>
+              <components.labels.Error text={`You do not have enough WAVAX to cover all of your bids. You need to acquire a total of ${services.money.renderWAVAX(bidTotal.toString())}.`} />
+              <div className='mt-4'>
+                <components.buttons.Button loading={this.props.gettingWavax} text={`Swap ${services.money.renderAVAX(required)} for WAVAX`} onClick={() => this.props.getWAVAX(required)} />
+              </div>
+            </div>
+          ) : null}
+          {approved.lt(bidTotal) ? (
+            <div className='mt-4'>
+              <components.labels.Error text={'You have not approved enough WAVAX to cover your bids'} />
+              <div className='mt-4'>
+                <components.buttons.Button text={'Approve WAVAX'} onClick={() => this.props.approveWavax(bidTotal.toString())} loading={this.props.isApprovingWavax} />
+              </div>
+            </div>
+          ) : null}
+        </>
+      )
+    }
     return (
       <div className='mt-4'>
         <components.labels.Success text={'You have approved enough WAVAX to cover your bids'} />

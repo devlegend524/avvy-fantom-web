@@ -45,7 +45,9 @@ class RegistrationFlow extends React.PureComponent {
 
   componentDidMount() {
     services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
-    this.props.checkHasAccount()
+    if (services.provider.isConnected()) {
+      this.props.checkHasAccount()
+    }
   }
 
   componentWillUnmount() {

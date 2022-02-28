@@ -177,6 +177,12 @@ class MyBids extends React.PureComponent {
                       </div>
                     </div>
                   ) : null}
+                  {result.isWinner && result.type != 'IS_CLAIMED' ? (
+
+                    <div className='w-32 mt-4'>
+                      <components.buttons.Button sm={true} text={'Claim'} onClick={() => this.props.claim(key)} loading={this.props.isClaimingDomain[key]} />
+                    </div>
+                  ) : null}
                 </div>
               )
             })}
@@ -462,6 +468,7 @@ const mapStateToProps = (state) => ({
   revealedBidNames: services.sunrise.selectors.revealedBidNames(state),
   auctionResults: selectors.auctionResults(state),
   isClaimingDomains: selectors.isClaimingDomains(state),
+  isClaimingDomain: selectors.isClaimingDomain(state),
   claimedNames: services.sunrise.selectors.claimedNames(state),
   winningBidsLoaded: selectors.winningBidsLoaded(state),
 })
@@ -471,6 +478,7 @@ const mapDispatchToProps = (dispatch) => ({
   deleteBid: (key) => dispatch(services.sunrise.actions.deleteBid(key)),
   loadWinningBids: (force) => dispatch(actions.loadWinningBids(force)),
   claimAll: () => dispatch(actions.claimAll()),
+  claim: (key) => dispatch(actions.claim(key)),
   resetBidFlow: () => dispatch(actions.resetBidding()),
 })
 

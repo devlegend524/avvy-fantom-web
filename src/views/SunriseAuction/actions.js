@@ -256,6 +256,7 @@ const actions = {
         dispatch(actions.checkAvailableWAVAX())
       } catch (err) {
       }
+      dispatch(actions.loadWinningBids(true))
       dispatch(actions.gettingWAVAX(false))
     }
   },
@@ -285,6 +286,47 @@ const actions = {
     return {
       type: constants.SET_IS_CLAIMING_DOMAINS,
       value
+    }
+  },
+
+  isClaimingDomain: (key, value) => {
+    return {
+      type: constants.SET_IS_CLAIMING_DOMAIN,
+      key,
+      value
+    }
+  },
+
+  claim: (key) => {
+    return async (dispatch, getState) => {
+      dispatch(actions.isClaimingDomain(key, true))
+      const api = services.provider.buildAPI()
+      const state = getState()
+      const auctionResults = selectors.auctionResults(state)
+      const constraintsProofs = services.sunrise.selectors.constraintsProofs(state)
+      const names = []
+      const constraintsData = []
+      Object.keys(auctionResults).forEach((name) => {
+        if (auctionResults[name].isWinner && auctionResults[name].type !== 'IS_CLAIMED' && name === key) {
+          names.push(name)
+          constraintsData.push(constraintsProofs[name])
+        }
+      })
+      if (names.length === 0) {
+        dispatch(actions.isClaimingDomain(key, false))
+      }
+      try {
+        await api.sunriseClaim(names, constraintsData)
+        names.forEach(name => {
+          dispatch(services.sunrise.actions.setClaimed(name))
+        })
+      } catch (err) {
+        console.log(err)
+        alert('Failed to claim domain')
+        dispatch(actions.isClaimingDomain(key, false))
+      }
+      dispatch(actions.loadWinningBids(true))
+      dispatch(actions.isClaimingDomain(key, false))
     }
   },
 

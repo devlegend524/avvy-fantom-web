@@ -17,6 +17,7 @@ const selectors = {
   approvedWavax: (state) => root(state).approvedWavax,
   isApprovingWavax: (state) => root(state).isApprovingWavax,
   isClaimingDomains: (state) => root(state).isClaimingDomains,
+  isClaimingDomain: (state) => root(state).isClaimingDomain,
   winningBidsLoaded: (state) => root(state).winningBidsLoaded,
 }
 

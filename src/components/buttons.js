@@ -13,7 +13,7 @@ function Button(props) {
   }
 
   return (
-    <div onClick={onClick} className={`relative rounded-xl p-4 ${props.disabled ? 'bg-gray-100 text-gray-300' : 'cursor-pointer bg-grayish-300 text-white'} font-bold text-center flex items-center justify-center ${props.className ? props.className : ''}`}>
+    <div onClick={onClick} className={`relative rounded-xl ${props.sm ? `p-2 text-sm` : `p-4`} ${props.disabled ? 'bg-gray-100 text-gray-300' : 'cursor-pointer bg-grayish-300 text-white'} font-bold text-center flex items-center justify-center ${props.className ? props.className : ''}`}>
       {props.loading ? (
         <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center'>
           <components.Spinner className='w-6'/>
