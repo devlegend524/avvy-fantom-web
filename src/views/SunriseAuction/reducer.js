@@ -23,6 +23,7 @@ export const initialState = {
   auctionResults: {},
   loadingWinningBids: false,
   isClaimingDomains: false,
+  isClaimingDomain: {},
   winningBidsLoaded: false,
 }
 
@@ -117,6 +118,15 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         isClaimingDomains: action.value
+      }
+
+    case constants.SET_IS_CLAIMING_DOMAIN:
+      return {
+        ...state,
+        isClaimingDomain: {
+          ...state.isClaimingDomain,
+          [action.key]: action.value
+        }
       }
 
     case constants.WINNING_BIDS_LOADED:

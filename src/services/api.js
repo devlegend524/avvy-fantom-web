@@ -28,6 +28,7 @@ class AvvyClient {
       sum[curr] = curr
       return sum
     }, {})
+    this.client = client
   }
 
   async tokenExists(hash) {
