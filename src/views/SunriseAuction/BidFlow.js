@@ -187,19 +187,9 @@ class BidFlow extends React.PureComponent {
     )
   }
 
-  renderAccount() {
-    return (
-      <>
-        <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Connect Account'}</div>
-        <components.account.ConnectAccount />
-      </>
-    )
-  }
-
   render() {
     if (this.props.hasError) return this.renderHasError()
     if (!this.state.connected) return this.renderConnect()
-    if (!this.props.hasAccount) return this.renderAccount()
     if (!this.state.hasProofs) return this.renderProofs()
     if (!this.props.isComplete) return this.renderFinalize()
     return this.renderComplete()
@@ -213,7 +203,6 @@ const mapStateToProps = (state) => ({
   hasError: selectors.hasBidError(state),
   isBidding: selectors.biddingInProgress(state),
   isComplete: selectors.biddingIsComplete(state),
-  hasAccount: components.account.selectors.hasAccount(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({

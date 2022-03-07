@@ -33,7 +33,7 @@ function Inner() {
 }
 
 function App() {
-  if (false && services.environment.ENVIRONMENT == 'staging') {
+  if (services.environment.ENVIRONMENT == 'staging') {
     return (
       <div className='flex items-center justify-center h-screen w-screen flex-col'>
         <div>
@@ -43,7 +43,7 @@ function App() {
           Thank you to everyone who participated in the testing. The test application is now closed. 
         </div>
         <div className='mt-4 max-w-sm text-center'>
-          <a className='underline' href="https://twitter.com/avvydomains">Follow us on Twitter to stay updated.</a>
+          <a className='underline' href="https://twitter.com/avvydomains">Follow us on Twitter to stay updated!</a>
         </div>
       </div>
     )
