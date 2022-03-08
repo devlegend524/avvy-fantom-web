@@ -8,17 +8,17 @@ class AuctionPhase extends React.PureComponent {
     const active = Date.now() >= this.props.startsAt && Date.now() < this.props.endsAt
     const past = Date.now() >= this.props.endsAt
     return (
-      <div className={`flex rounded-xl border-2 ${active ? 'border-grayish-300 bg-grayish-300' : 'bg-gray-300 border-gray-300'} overflow-hidden`}>
-        <div className={`${active ? 'bg-grayish-300' : 'bg-gray-300'} w-16 flex-shrink-0 flex items-center justify-center`}>
+      <div className={`flex rounded-xl border-2 ${active ? 'border-grayish-300 bg-grayish-300 dark:bg-gray-300 dark:border-gray-300' : 'bg-gray-300 border-gray-300 dark:bg-gray-700 dark:border-gray-700'} overflow-hidden`}>
+        <div className={`${active ? 'bg-grayish-300 dark:bg-gray-300' : 'bg-gray-300 dark:bg-gray-700'} w-16 flex-shrink-0 flex items-center justify-center`}>
           {active ? (
-            <ArrowRightIcon className='h-8 text-white' />
+            <ArrowRightIcon className='h-8 text-white dark:text-gray-800' />
           ) : past ? (
             <CheckIcon className='h-8 text-white' />
           ) : (
             <CalendarIcon className='h-8 text-white' />
           )}
         </div>
-        <div className='bg-white p-4 w-full'> 
+        <div className='bg-white p-4 w-full dark:bg-gray-900'> 
           <div className='font-bold'>{this.props.name}</div>
           <div className='text-sm'>
             {new Intl.DateTimeFormat(

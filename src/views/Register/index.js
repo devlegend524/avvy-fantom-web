@@ -83,14 +83,14 @@ class Register extends React.PureComponent {
       <div className='max-w-sm select-none'>
         <div className='flex items-center'>
           <div className='p-4 cursor-pointer' onClick={() => this.decrementQuantity(name)}>
-            <MinusCircleIcon className='w-8 text-gray-800' />
+            <MinusCircleIcon className='w-8 text-gray-800 dark:text-gray-300' />
           </div>
           <div className='text-center text-sm'>
             <div className='font-bold'>{quantity} {parseInt(quantity) === 1 ? 'year' : 'years'}</div>
             <div className=''>{services.money.renderUSD(itemTotal)}</div>
           </div>
           <div className='p-4 cursor-pointer' onClick={() => this.incrementQuantity(name)}>
-            <PlusCircleIcon className='w-8 text-gray-800' />
+            <PlusCircleIcon className='w-8 text-gray-800 dark:text-gray-300' />
           </div>
         </div>
         <div className='cursor-pointer text-gray-400 mt-4 text-xs text-center sm:mt-2' onClick={() => this.removeFromCart(name)}>
@@ -113,7 +113,7 @@ class Register extends React.PureComponent {
     if (!nameData) return null
     if (nameData.status !== nameData.constants.DOMAIN_STATUSES.AVAILABLE) return null
     return (
-      <div key={index} className='bg-gray-100 rounded-lg mb-4 p-4'>
+      <div key={index} className='bg-gray-100 rounded-lg mb-4 p-4 dark:bg-gray-800'>
         <div className='flex justify-between flex-col items-center sm:flex-row'>
           <div className='text-center sm:text-left'>
             <div className='font-bold sm:text-xl'>{name}</div>

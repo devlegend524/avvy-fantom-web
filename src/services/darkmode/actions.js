@@ -1,13 +1,9 @@
 import constants from './constants'
+import functions from './functions'
 
 const actions = {
   setDarkmode: (value) => {
-    const rootElem = document.documentElement
-    if (value) {
-      rootElem.classList.add('dark')
-    } else {
-      rootElem.classList.remove('dark')
-    }
+    functions.setDOMDarkmode(value)
     return {
       type: constants.SET_DARKMODE,
       value,

@@ -60,6 +60,18 @@ class ConnectWallet extends React.PureComponent {
   }
 
   render() {
+    const wallets = [
+      { 
+        name: 'MetaMask',
+        logo: services.linking.static('images/vendor/metamask.svg'),
+        connect: this.connectMetamask.bind(this)
+      },
+      {
+        name: 'WalletConnect',
+        logo: services.linking.static('images/vendor/walletconnect.svg'),
+        connect: this.walletConnect.bind(this)
+      }
+    ]
     return (
       <>
         {this.state.connecting ? (
@@ -72,17 +84,17 @@ class ConnectWallet extends React.PureComponent {
             </div>
           </div>
         ) : (
-          <div className='relative'>
-            <div onClick={this.walletConnect.bind(this)} className={`cursor-pointer max-w-xs h-24 flex items-center justify-center p-8 border border-gray-300 rounded-xl m-auto ${this.state.connecting ? 'blur' : ''}`}>
-              <div>
-                <img src={services.linking.static('images/vendor/walletconnect.svg')} className='h-20' />
+          <div className='relative grid grid-cols-2 md:grid-cols-4 gap-4 mt-4'>
+            {wallets.map((wal, index) => (
+              <div key={index} onClick={wal.connect} className={`cursor-pointer flex flex-col items-center justify-center rounded-xl m-auto bg-gray-100 dark:bg-gray-800 w-full h-32 ${this.state.connecting ? 'blur' : ''}`}>
+                <div className='w-12 h-12 flex items-center justify-center'>
+                  <img src={wal.logo} alt={wal.name} className='w-full' />
+                </div>
+                <div>
+                  {wal.name}
+                </div>
               </div>
-            </div>
-            <div onClick={this.connectMetamask.bind(this)} className={`cursor-pointer max-w-xs h-24 mt-4 flex items-center justify-center border border-gray-300 rounded-xl m-auto ${this.state.connecting ? 'blur' : ''}`}>
-              <div>
-                <img src={services.linking.static('images/vendor/metamask.svg')} alt="Metamask" className='w-full h-20' />
-              </div>
-            </div>
+            ))}
           </div>
         )}
       </>

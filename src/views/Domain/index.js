@@ -112,7 +112,7 @@ class Domain extends React.PureComponent {
         <div className='max-w-sm m-auto mt-4'>
           <components.labels.Information text={'This name is up for auction'} />
         </div>
-        <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8'>
+        <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8 dark:bg-gray-700'>
           <div className='font-bold'>{'Bidding period is over'}</div>
           <div>
             {'This name is undergoing the Sunrise Auction process, however bidding is closed. If there are no winning bids, this name will be available for registration after the auction completes.'}
@@ -140,7 +140,7 @@ class Domain extends React.PureComponent {
 
   renderOwnershipDetails() {
     return (
-      <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8'>
+      <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8 dark:bg-gray-800'>
         <div>
           <div className='font-bold'>{'Registrant'}</div>
           <div className='truncate'>

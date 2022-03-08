@@ -48,7 +48,7 @@ class SunriseAuction extends React.PureComponent {
     const claimEndsAt = this.props.auctionPhases[3] * 1000
     const end = new Date((claimEndsAt + 60 * 60 * 24 * 365 * 100) * 1000)
     return (
-      <div className='mt-4 bg-gray-100 rounded-lg p-4'>
+      <div className='mt-4 bg-gray-100 rounded-lg p-4 dark:bg-gray-800'>
         <div className='font-bold mb-4'>{'Auction Phases'}</div>
         <div className='mt-2'>
           <AuctionPhase name='Bid placement' startsAt={bidPlacementStartsAt} endsAt={bidRevealStartsAt} />
@@ -119,7 +119,7 @@ class SunriseAuction extends React.PureComponent {
         {now >= bidPlacementStartsAt && now < claimEndsAt ? (
           <div>
             <Link to={services.linking.path('SunriseAuctionMyBids')}>
-              <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold'>
+              <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold dark:bg-gray-800'>
                 <div>{'My Bids'}</div>
                 <ArrowRightIcon className="h-6" />
               </div>
