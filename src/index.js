@@ -28,7 +28,9 @@ Sentry.init({
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <div className='w-screen h-screen dark:bg-gray-900 dark:text-gray-300'>
+        <App />
+      </div>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

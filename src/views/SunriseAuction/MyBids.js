@@ -156,7 +156,7 @@ class MyBids extends React.PureComponent {
               const result = this.props.auctionResults[key]
               if (!result) return null
               return (
-                <div className='bg-gray-100 rounded-lg p-4 mb-4' key={index}>
+                <div className='bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4' key={index}>
                   <div className='font-bold'>{key}</div>
                   <div className=''>Your Bid: {services.money.renderWAVAX(bids[key])}</div>
                   <div className=''>Yearly registration fee: {services.money.renderUSD(nameData[key].priceUSDCents)}</div>
@@ -187,7 +187,7 @@ class MyBids extends React.PureComponent {
               )
             })}
           </div>
-          <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
+          <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 md:dark:bg-gray-800 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
             <Summary.FullSummary  
               subtitle={this.props.winningBidsLoaded && this.state.isConnected ? '(Totals for auctions that you won)' : null}
               bidTotal={bidTotal} 
@@ -295,7 +295,7 @@ class MyBids extends React.PureComponent {
             {keys.map((key, index) => {
               const _isRevealed = isRevealed(key)
               return (
-                <div className='bg-gray-100 rounded-lg p-4 mb-4' key={index}>
+                <div className='bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4' key={index}>
                   <div className='font-bold'>{key}</div>
                   <div className=''>Your Bid: {services.money.renderWAVAX(bids[key])}</div>
                   <div className=''>Yearly registration fee: {services.money.renderUSD(nameData[key].priceUSDCents)}</div>
@@ -312,7 +312,7 @@ class MyBids extends React.PureComponent {
               )
             })}
           </div>
-          <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
+          <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 dark:md:bg-gray-800 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
             <div className='mb-8'>
               <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} showAvailable={allRevealed} />
             </div>
@@ -387,7 +387,7 @@ class MyBids extends React.PureComponent {
           {keys.map((key, index) => {
             const _isSubmitted = isSubmitted(key)
             return (
-              <div className='bg-gray-100 rounded-lg p-4 mb-4' key={index}>
+              <div className='bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4' key={index}>
                 <div className='font-bold'>{key}</div>
                 <div className=''>Your Bid: {services.money.renderWAVAX(bids[key])}</div>
                 <div className=''>Yearly registration fee: {services.money.renderUSD(nameData[key].priceUSDCents)}</div>
@@ -410,7 +410,7 @@ class MyBids extends React.PureComponent {
             )
           })}
         </div>
-        <div className='max-w-sm w-full m-auto mt-8 md:flex-shrink-0 md:ml-4 md:pl-4 md:mt-0 md:bg-gray-100 md:rounded-lg md:p-4'>
+        <div className='max-w-sm w-full m-auto mt-8 md:flex-shrink-0 md:ml-4 md:pl-4 md:mt-0 md:bg-gray-100 md:dark:bg-gray-800 md:rounded-lg md:p-4'>
           <div className='mb-8'>
             <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} />
           </div>

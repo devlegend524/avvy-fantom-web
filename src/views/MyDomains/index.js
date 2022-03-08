@@ -45,7 +45,7 @@ class MyDomains extends React.PureComponent {
       <Link
         key={index}
         to={services.linking.path('Domain', { domain })}
-        className="flex justify-between bg-gray-100 font-bold p-4 rounded mb-2">
+        className="flex justify-between bg-gray-100 dark:bg-gray-800 font-bold p-4 rounded mb-2">
         <div>{domain}</div>
         <ArrowRightIcon className="h-6" />
       </Link>

@@ -31,6 +31,7 @@ const persistedReducer = persistReducer({
     storage,
     whitelist: [
       services.cart.reducer.reducerName,
+      services.darkmode.reducer.reducerName,
       services.names.reducer.reducerName,
       services.sunrise.reducer.reducerName,
       services.user.reducer.reducerName,
