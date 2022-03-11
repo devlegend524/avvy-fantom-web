@@ -98,8 +98,10 @@ class AvvyClient {
     return priceAVAX
   }
 
-  isSupported(name) {
+  async isSupported(name) {
     // checks whether a given name is supported by the system
+    const hash = await client.nameHash(name)
+    if (artifacts.blocklist.isBlocked(hash)) return false
     const split = name.split('.')
     if (split.length !== 2) return false
     if (split[1] !== 'avax') return false
@@ -163,7 +165,7 @@ class AvvyClient {
       constants: {
         DOMAIN_STATUSES: this.DOMAIN_STATUSES,
       },
-      supported: this.isSupported(domain),
+      supported: await this.isSupported(domain, hash),
       domain,
       hash: hash.toString(),
       owner,
