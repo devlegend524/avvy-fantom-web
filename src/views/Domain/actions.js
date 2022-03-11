@@ -21,7 +21,8 @@ const actions = {
       dispatch(actions.setLoading(true))
       const api = services.provider.buildAPI()
       let domain
-      if (api.isSupported(_domain)) {
+      let isSupported = await api.isSupported(_domain)
+      if (isSupported) {
         domain = await api.loadDomain(_domain)
         dispatch(services.names.actions.addRecord(_domain, domain.hash))
       } else {

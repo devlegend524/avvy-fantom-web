@@ -367,7 +367,8 @@ const actions = {
       const api = services.provider.buildAPI()
       for (let _domain in bids) {
         let domain = _domain.toLowerCase()
-        if (api.isSupported(domain)) {
+        let isSupported = await api.isSupported(domain)
+        if (isSupported) {
           try {
             ethers.BigNumber.from(bids[domain])
             const hash = await client.nameHash(domain)
