@@ -444,8 +444,16 @@ class MyBids extends React.PureComponent {
     )
   }
 
+  renderLoading() {
+    return (
+      <div className='text-center w-full mt-8'>
+        <components.Spinner size='md' color={this.props.isDarkmode ? '#eee' : '#555'} />
+      </div>
+    )
+  }
+
   render() {
-    if (!this.props.auctionPhases) return null
+    if (!this.props.auctionPhases) return this.renderLoading()
     if (!this.state.isConnected) return this.renderConnect()
     const bidPlacementStartsAt = this.props.auctionPhases[0] * 1000
     const bidRevealStartsAt = this.props.auctionPhases[1] * 1000
@@ -470,6 +478,7 @@ const mapStateToProps = (state) => ({
   isClaimingDomain: selectors.isClaimingDomain(state),
   claimedNames: services.sunrise.selectors.claimedNames(state),
   winningBidsLoaded: selectors.winningBidsLoaded(state),
+  isDarkmode: services.darkmode.selectors.isDarkmode(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({

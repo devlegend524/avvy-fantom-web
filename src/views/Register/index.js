@@ -20,7 +20,7 @@ class Register extends React.PureComponent {
     this.state = {
       domain: params.domain,
     }
-  }
+  } 
 
   updateParams = () => {
     const params = services.linking.getParams('Domain')

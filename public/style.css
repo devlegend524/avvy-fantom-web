@@ -510,11 +510,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-bottom: 2rem;
 }
 
-.mx-4 {
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
 .my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -626,14 +621,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .max-h-screen {
   max-height: 100vh;
-}
-
-.max-h-full {
-  max-height: 100%;
-}
-
-.min-h-full {
-  min-height: 100%;
 }
 
 .w-screen {
@@ -765,16 +752,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   overflow: hidden;
 }
 
-.overflow-scroll {
-  overflow: scroll;
-}
-
 .overflow-y-auto {
   overflow-y: auto;
-}
-
-.overflow-y-scroll {
-  overflow-y: scroll;
 }
 
 .truncate {
@@ -934,10 +913,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .pr-8 {
   padding-right: 2rem;
-}
-
-.pt-4 {
-  padding-top: 1rem;
 }
 
 .text-left {
@@ -1151,6 +1126,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 20px;
 }
 
+.lds-ring-md {
+  width: 40px;
+  height: 40px;
+}
+
 .lds-ring div {
   box-sizing: border-box;
   display: block;
@@ -1164,9 +1144,14 @@ Ensure the default browser behavior of the `hidden` attribute.
   border-color: #fff transparent transparent transparent;
 }
 
+.lds-ring-md div {
+  width: 32px;
+  height: 32px;
+}
+
 .lds-ring.lds-ring-dark div {
-  border: 2px solid #555;
-  border-color: #555 transparent transparent transparent;
+  border: 2px solid #aaa;
+  border-color: #aaa transparent transparent transparent;
 }
 
 .lds-ring div:nth-child(1) {
@@ -1219,14 +1204,14 @@ Ensure the default browser behavior of the `hidden` attribute.
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
 }
 
-.dark .dark\:bg-gray-900 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
-}
-
 .dark .dark\:bg-gray-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}
+
+.dark .dark\:bg-gray-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
 }
 
 .dark .dark\:bg-gray-700 {

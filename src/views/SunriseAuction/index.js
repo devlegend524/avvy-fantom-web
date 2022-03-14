@@ -87,13 +87,40 @@ class SunriseAuction extends React.PureComponent {
     this.props.addBulkBids(bids)
     services.linking.navigate(navigator, 'SunriseAuctionMyBids')
   }
-
-  render() {
-    if (!this.props.auctionPhases) return null
+  
+  renderSections() {
+    if (!this.props.auctionPhases) return (
+      <div className='m-auto text-center'>
+        <components.Spinner color={this.props.isDarkmode ? '#eee' : '#555'} size='md' />
+      </div>
+    )
     const bidPlacementStartsAt = this.props.auctionPhases[0] * 1000
     const bidRevealStartsAt = this.props.auctionPhases[1] * 1000
     const claimEndsAt = this.props.auctionPhases[3] * 1000
     const now = parseInt(Date.now())
+    return (
+      <>
+        {now >= bidPlacementStartsAt && now < claimEndsAt ? (
+          <div>
+            <Link to={services.linking.path('SunriseAuctionMyBids')}>
+              <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold dark:bg-gray-800'>
+                <div>{'My Bids'}</div>
+                <ArrowRightIcon className="h-6" />
+              </div>
+            </Link>
+          </div>
+        ) : null}
+        {this.renderAuctionPhases()}
+        {now < bidRevealStartsAt && now >= bidPlacementStartsAt ? (
+          <div className='mt-4 text-center text-gray-500 text-sm'>
+            <div className='underline cursor-pointer' onClick={() => this.bulkBidModal.toggle()}>{'Want to place bids in bulk?'}</div>
+          </div>
+        ) : null}
+      </>
+    )
+  }
+
+  render() {
     return (
       <div className='max-w-screen-md m-auto'>
         <components.Modal ref={(ref) => this.bulkBidModal = ref} title={this.state.isConnected ? 'Bulk bid' : 'Connect wallet'}>
@@ -116,22 +143,7 @@ class SunriseAuction extends React.PureComponent {
         </components.Modal>
         <div className='font-bold text-center mt-4 text-lg'>{'Sunrise Auction'}</div>
         <div className='max-w-sm m-auto mt-4 mb-8'>{'Welcome to the sunrise auction. During the auction, you may select & bid on the domains you wish to acquire.'}</div>
-        {now >= bidPlacementStartsAt && now < claimEndsAt ? (
-          <div>
-            <Link to={services.linking.path('SunriseAuctionMyBids')}>
-              <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold dark:bg-gray-800'>
-                <div>{'My Bids'}</div>
-                <ArrowRightIcon className="h-6" />
-              </div>
-            </Link>
-          </div>
-        ) : null}
-        {this.renderAuctionPhases()}
-        {now < bidRevealStartsAt && now >= bidPlacementStartsAt ? (
-          <div className='mt-4 text-center text-gray-500 text-sm'>
-            <div className='underline cursor-pointer' onClick={() => this.bulkBidModal.toggle()}>{'Want to place bids in bulk?'}</div>
-          </div>
-        ) : null}
+        {this.renderSections()}
       </div>
     )
   }
@@ -139,6 +151,7 @@ class SunriseAuction extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
   auctionPhases: selectors.auctionPhases(state),
+  isDarkmode: services.darkmode.selectors.isDarkmode(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
