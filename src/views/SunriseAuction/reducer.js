@@ -29,7 +29,6 @@ export const initialState = {
 }
 
 export const reducer = (state = initialState, action) => {
-  let index
   switch (action.type) {
     case constants.SET_PROOF_PROGRESS:
       return {

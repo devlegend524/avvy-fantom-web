@@ -1,7 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { ArrowRightIcon } from '@heroicons/react/solid'
-import { Link } from 'react-router-dom'
 
 import components from 'components'
 import services from 'services'

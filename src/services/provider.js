@@ -162,16 +162,6 @@ const provider = {
         continueInitialization()
       }
 
-      async function waitForChainChanged(expectedChainId) {
-        const chainId = await _getChainId()
-        services.logger.info('Waiting for chain to change')
-        if (chainId === expectedChainId) {
-          continueInitialization()
-        } else {
-          provider.on('chainChanged', continueInitialization)
-        }
-      }
-
       async function continueInitialization() {
         _chainId = await _getChainId()
         services.logger.info('Chain has changed')
@@ -257,7 +247,7 @@ const provider = {
         [ ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), _account.toLowerCase() ]
     	)
     } else {
-      throw "Unknown provider type for signMessage"
+      throw new Error("Unknown provider type for signMessage")
     }
     return sig
   }

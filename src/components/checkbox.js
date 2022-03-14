@@ -48,7 +48,9 @@ class Button extends React.PureComponent {
   }
 }
 
-export default {
+const exports = {
   Checkbox,
   Button,
 }
+
+export default exports

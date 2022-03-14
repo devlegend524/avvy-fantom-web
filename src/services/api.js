@@ -369,14 +369,6 @@ class AvvyClient {
   }
 
   async submitAccountVerification(signature) {
-    const _ethers = ethers
-    const address = this.account
-    function getMessage(address) {
-      return ethers.utils.arrayify(
-        ethers.utils.solidityKeccak256(["string", "address"], ["HAS-ACCOUNT-", address])
-      );
-    }
-    const hash = getMessage(address)
     const tx = await this.contracts.AccountGuardV1.verify(ethers.utils.getAddress(this.account), signature)
     await tx.wait()
   }

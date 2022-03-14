@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import services from 'services'
-import components from 'components'
 
 import actions from './actions'
 import selectors from './selectors'
