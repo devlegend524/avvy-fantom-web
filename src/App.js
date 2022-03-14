@@ -33,7 +33,7 @@ function Inner() {
 }
 
 function App() {
-  if (services.environment.ENVIRONMENT === 'staging') {
+  if (services.environment.ENVIRONMENT === 'staging' && window.location.search.indexOf('bypass') === -1) {
     return (
       <div className='flex items-center justify-center h-screen w-screen flex-col'>
         <div>

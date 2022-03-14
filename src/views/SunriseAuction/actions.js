@@ -78,6 +78,7 @@ const actions = {
           percent: 100,
         }))
       } catch (err) {
+        services.logger.error(err)
         console.log(err)
         return dispatch(actions.setHasBidError(true))
       }
