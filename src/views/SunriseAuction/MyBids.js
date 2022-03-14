@@ -177,7 +177,7 @@ class MyBids extends React.PureComponent {
                       </div>
                     </div>
                   ) : null}
-                  {result.isWinner && result.type != 'IS_CLAIMED' ? (
+                  {result.isWinner && result.type !== 'IS_CLAIMED' ? (
 
                     <div className='w-32 mt-4'>
                       <components.buttons.Button sm={true} text={'Claim'} onClick={() => this.props.claim(key)} loading={this.props.isClaimingDomain[key]} />
@@ -451,7 +451,6 @@ class MyBids extends React.PureComponent {
     const bidRevealStartsAt = this.props.auctionPhases[1] * 1000
     const claimStartsAt = this.props.auctionPhases[2] * 1000
     const claimEndsAt = this.props.auctionPhases[3] * 1000
-    const end = new Date((claimEndsAt + 60 * 60 * 24 * 365 * 100) * 1000)
     const now = parseInt(Date.now())
     if (now >= bidPlacementStartsAt && now < bidRevealStartsAt) return this.renderBidPlacement()
     if (now >= bidRevealStartsAt && now < claimStartsAt) return this.renderBidReveal()

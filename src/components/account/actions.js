@@ -269,12 +269,6 @@ const actions = {
       dispatch(actions.setSubmitWalletVerificationComplete(false))
     }
   },
-
-  resetVerifyWallet: () => {
-    return async (dispatch, getState) => {
-      dispatch(actions.setVerifyWalletLoading(false))
-    }
-  },
 }
 
 export default actions

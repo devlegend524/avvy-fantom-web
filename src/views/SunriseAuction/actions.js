@@ -216,7 +216,6 @@ const actions = {
       if (isLoading && !force) return
       dispatch(actions.setLoadingWinningBids(true))
       const api = services.provider.buildAPI()
-      const bids = services.sunrise.selectors.bids(state)
       const bidBundles = services.sunrise.selectors.bidBundles(state)
       const revealedBundles = services.sunrise.selectors.revealedBundles(state)
       for (let domain in bidBundles) {

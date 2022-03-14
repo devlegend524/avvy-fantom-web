@@ -156,7 +156,9 @@ class FullSummary extends React.PureComponent {
   }
 }
 
-export default {
+const exports = {
   WavaxSummary,
   FullSummary
 }
+
+export default exports

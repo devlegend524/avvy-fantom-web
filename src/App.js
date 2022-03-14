@@ -33,11 +33,11 @@ function Inner() {
 }
 
 function App() {
-  if (services.environment.ENVIRONMENT == 'staging') {
+  if (services.environment.ENVIRONMENT === 'staging') {
     return (
       <div className='flex items-center justify-center h-screen w-screen flex-col'>
         <div>
-          <img src="/images/logo.png" className='w-16 h-16'/>
+          <img src="/images/logo.png" className='w-16 h-16' alt="wat" />
         </div>
         <div className='mt-4 max-w-sm text-center'>
           Thank you to everyone who participated in the testing. The test application is now closed. 
