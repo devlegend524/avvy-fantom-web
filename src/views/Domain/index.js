@@ -204,8 +204,17 @@ class Domain extends React.PureComponent {
     )
   }
 
+  renderLoader() {
+    return (
+      <div className='m-auto max-w-sm text-center'>
+        <components.Spinner className='w-6' size='md' dark={true} />
+      </div>
+    )
+  }
+
   renderBody() {
-    if (this.props.isLoading || !this.props.domain) return null
+    if (this.props.isLoading) return this.renderLoader()
+    if (!this.props.domain) return null
     if (!this.props.domain.supported) return this.renderUnsupported()
 
     const statuses = this.props.domain.constants.DOMAIN_STATUSES
