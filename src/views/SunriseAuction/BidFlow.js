@@ -99,7 +99,7 @@ class BidFlow extends React.PureComponent {
             <components.labels.Error text={'Metamask Mobile Browser will likely fail to generate proofs for registration. To participate in the auction with Metamask Mobile, use the website on a computer and use WalletConnect to connect to Metamask Mobile.'} />
           </div>
           <div className='max-w-sm m-auto mt-4'>
-            <components.Checkbox text={'I understand it might not work. I will continue & try regardless.'} onCheck={() => this.setState({ understandMobileWarning: true })} checked={this.state.understandMobileWarning} />
+            <components.checkbox.Checkbox text={'I understand it might not work. I will continue & try regardless.'} onCheck={() => this.setState({ understandMobileWarning: true })} checked={this.state.understandMobileWarning} />
           </div>
           <div className='mt-4 max-w-sm m-auto'>
             <components.buttons.Button text={'Continue'} onClick={() => this.setState({ ignoreMobileWarning: true })} disabled={!this.state.understandMobileWarning} />
@@ -141,10 +141,10 @@ class BidFlow extends React.PureComponent {
         <components.labels.Information text={"In this step we submit your bids to the blockchain. You MUST return to reveal your bids & to claim any won auctions; otherwise your bids will be disqualified."} />
         <div className='mt-8 max-w-sm m-auto'>
           <div className='mb-4'>
-              <components.Checkbox onCheck={this.checkRevealBidsConfirm} checked={this.state.revealBidsConfirm} text={'I understand that I must return to reveal my bids during the Bid Reveal phase or my bids will be disqualified.'} />
+              <components.checkbox.Checkbox onCheck={this.checkRevealBidsConfirm} checked={this.state.revealBidsConfirm} text={'I understand that I must return to reveal my bids during the Bid Reveal phase or my bids will be disqualified.'} />
           </div>
           <div className='mb-4'>
-            <components.Checkbox onCheck={this.checkDataBackupConfirm} checked={this.state.dataBackupConfirm} text={'I understand that my bid details are stored in my web browser and if that data is lost, I will not be able to reveal my bids.'} />
+            <components.checkbox.Checkbox onCheck={this.checkDataBackupConfirm} checked={this.state.dataBackupConfirm} text={'I understand that my bid details are stored in my web browser and if that data is lost, I will not be able to reveal my bids.'} />
           </div>
           <div className='mt-4'>
             <components.buttons.Button disabled={!this.state.dataBackupConfirm || !this.state.revealBidsConfirm} text={'Submit bid'} onClick={this.submitBid.bind(this)} loading={this.props.isBidding && !this.props.isComplete} />

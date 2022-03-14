@@ -10,6 +10,7 @@ const selectors = {
   biddingInProgress: (state) => root(state).biddingInProgress,
   revealingBundle: (state) => root(state).revealingBundle,
   hasRevealError: (state) => root(state).hasRevealError,
+  enhancedPrivacy: (state) => root(state).enableEnhancedPrivacy,
   gettingWAVAX: (state) => root(state).gettingWAVAX,
   auctionResults: (state) => root(state).auctionResults,
   isLoadingWinningBids: (state) => root(state).loadingWinningBids,

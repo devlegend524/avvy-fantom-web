@@ -10,6 +10,7 @@ const constants = reduxService.prepareConstants(
     'SET_BIDDING_IN_PROGRESS',
     'SET_REVEALING_BUNDLE',
     'SET_HAS_REVEAL_ERROR',
+    'ENABLE_ENHANCED_PRIVACY',
     'SET_AUCTION_RESULT',
     'SET_LOADING_WINNING_BIDS',
     'SET_AVAILABLE_WAVAX',

@@ -278,6 +278,11 @@ class AvvyClient {
     await tx.wait()
   }
 
+  async revealWithPreimage(names, amounts, salt, preimages) {
+    const tx = await this.contracts.SunriseAuctionV1.revealWithPreimage(names, amounts, salt, preimages)
+    await tx.wait()
+  }
+
   async getWinningBid(name) {
     const hash = await client.nameHash(name)
     let result
@@ -374,6 +379,15 @@ class AvvyClient {
     const hash = getMessage(address)
     const tx = await this.contracts.AccountGuardV1.verify(ethers.utils.getAddress(this.account), signature)
     await tx.wait()
+  }
+
+  async buildPreimages(names) {
+    let signal = []
+    for (let i = 0; i < names.length; i += 1) {
+      let _sig = await client.encodeNameHashInputSignals(names[i])
+      signal = signal.concat(_sig)
+    }
+    return signal
   }
 }
 

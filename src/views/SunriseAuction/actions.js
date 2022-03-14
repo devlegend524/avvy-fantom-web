@@ -159,8 +159,17 @@ const actions = {
       const state = getState()
       const bundles = services.sunrise.selectors.bundles(state)
       const bundle = bundles[bundleKey]
+      const enhancedPrivacy = selectors.enhancedPrivacy(state)
+      const reverseLookups = services.names.selectors.reverseLookups(state)
       try { 
-        await api.reveal(bundle.payload.names, bundle.payload.amounts, bundle.payload.salt)
+        if (enhancedPrivacy) {
+          await api.reveal(bundle.payload.names, bundle.payload.amounts, bundle.payload.salt)
+        } else {
+          const names = bundle.payload.names.map(n => reverseLookups[n])
+          const preimages = await api.buildPreimages(names)
+          console.log(preimages)
+          await api.revealWithPreimage(bundle.payload.names, bundle.payload.amounts, bundle.payload.salt, preimages)
+        }
       } catch (err) {
         console.log(err)
         dispatch(actions.setRevealingBundle(bundleKey, false))
@@ -168,6 +177,13 @@ const actions = {
       }
       dispatch(actions.setRevealingBundle(bundleKey, false))
       dispatch(services.sunrise.actions.revealBundle(bundleKey))
+    }
+  },
+
+  enableEnhancedPrivacy: (value) => {
+    return {
+      type: constants.ENABLE_ENHANCED_PRIVACY, 
+      value
     }
   },
 
