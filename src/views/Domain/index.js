@@ -19,6 +19,7 @@ class Domain extends React.PureComponent {
     const domain = params.domain ? params.domain.toLowerCase() : null
     this.state = {
       domain: domain,
+      connected: services.provider.isConnected()
     }
     this.searchPlaceholder = 'Search for another name'
     this.loadDomain(domain)
@@ -38,12 +39,20 @@ class Domain extends React.PureComponent {
     this.props.loadDomain(domain)
   }
 
+  onConnect() {
+    this.setState({
+      connected: true
+    })
+  }
+
   componentDidMount() {
     services.linking.addEventListener('Domain', this.updateParams)
+    services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
   }
 
   componentWillUnmount() {
     services.linking.removeEventListener('Domain', this.updateParams)
+    services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
   }
 
   addToCart(navigator) {
@@ -226,7 +235,11 @@ class Domain extends React.PureComponent {
     return (
       <div>
         <components.Modal ref={(ref) => this.bidModal = ref} title={'Add a bid'}> 
-          <AddBid domain={this.state.domain} handleSubmit={(navigate, val) => this.handleAddBid(navigate, val)} />
+          {this.state.connected ? (
+            <AddBid domain={this.state.domain} handleSubmit={(navigate, val) => this.handleAddBid(navigate, val)} />
+          ) : (
+            <components.ConnectWallet />
+          )}
         </components.Modal>
         <div className='mt-4 mb-4 text-lg text-center font-bold'>{this.state.domain}</div>
         {this.renderBody()}
