@@ -19,6 +19,7 @@ class RevealFlow extends React.PureComponent {
       dataBackupConfirm: false,
       checkedDisclaimers: false,
       hasBackedUp: false,
+      privacySelectionComplete: false,
     }
   }
 
@@ -53,6 +54,19 @@ class RevealFlow extends React.PureComponent {
     }, () => {
       console.log(this.state)
     })
+  }
+
+  checkEnhancedPrivacy = () => {
+    this.setState((currState) => {
+      return {
+        enableEnhancedPrivacy: !currState.enableEnhancedPrivacy
+      }
+    })
+  }
+
+  revealDisclaimersComplete = () => {
+    if (this.props.enhancedPrivacy) return this.state.claimConfirm && this.state.dataBackupConfirm
+    else return this.state.claimConfirm
   }
 
   onConnect() {
@@ -98,25 +112,41 @@ class RevealFlow extends React.PureComponent {
 
   renderReveal() {
     const bundleKeys = Object.keys(this.props.bundles)
+    if (!this.state.privacySelectionComplete) return (
+      <>
+        <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Domain Privacy'}</div>
+        <div className=''>
+          <components.DomainPrivacy />
+        </div>
+        <div className='m-auto max-w-sm mb-4 mt-8 text-center'>
+          <components.checkbox.Button onCheck={() => this.props.enableEnhancedPrivacy(!this.props.enhancedPrivacy)} checked={this.props.enhancedPrivacy} text={'Enable Enhanced Privacy'} />
+        </div>
+        <div className='mt-4 m-auto max-w-sm'>
+          <components.buttons.Button text={'Continue'} onClick={() => this.setState({ privacySelectionComplete: true })} />
+        </div>
+      </>
+    )
     if (!this.state.checkedDisclaimers) return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Reveal Bids'}</div>
         <div className='max-w-md m-auto'>
           <div className='mb-4'>
-              <components.Checkbox onCheck={this.checkClaimConfirm} checked={this.state.claimConfirm} text={'I understand that I must return during the Domain Claiming phase to claim any auctions I have won.'} />
+              <components.checkbox.Checkbox onCheck={this.checkClaimConfirm} checked={this.state.claimConfirm} text={'I understand that I must return during the Domain Claiming phase to claim any auctions I have won.'} />
           </div>
-          <div className='mb-4'>
-            <components.Checkbox onCheck={this.checkDataBackupConfirm} checked={this.state.dataBackupConfirm} text={'I understand that my revealed bid details are stored in my web browser and if that data is lost, I may not be able to claim my domains. I will back up my data.'} />
-          </div>
-          <div className='mb-4'>
-            <components.buttons.Button text={'Continue'} disabled={!this.state.claimConfirm || !this.state.dataBackupConfirm} onClick={this.checkDisclaimers} />
+          {this.props.enhancedPrivacy ? (
+            <div className='mb-4'>
+              <components.checkbox.Checkbox onCheck={this.checkDataBackupConfirm} checked={this.state.dataBackupConfirm} text={'I understand that my revealed bid details are stored in my web browser and if that data is lost, I may not be able to claim my domains. I will back up my data.'} />
+            </div>
+          ) : null}
+          <div className='mt-4'>
+            <components.buttons.Button text={'Continue'} disabled={!this.revealDisclaimersComplete()} onClick={this.checkDisclaimers} />
           </div>
         </div>
       </>
     )
     return (
       <>
-        <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Reveal Bids'}</div>
+        <div className='font-bold border-b border-gray-400 pb-4 mb-8'>{'Reveal Bids'}</div>
         {bundleKeys.length > 1 ? (
           <components.labels.Information text={"You submitted your bids in multiple transactions, so they must be revealed in multiple transactions."} />
         ) : (
@@ -184,10 +214,12 @@ const mapStateToProps = (state) => ({
   revealedBundles: services.sunrise.selectors.revealedBundles(state),
   revealingBundle: selectors.revealingBundle(state),
   hasError: selectors.hasRevealError(state),
+  enhancedPrivacy: selectors.enhancedPrivacy(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  revealBundle: (bundleKey) => dispatch(actions.revealBundle(bundleKey))
+  revealBundle: (bundleKey) => dispatch(actions.revealBundle(bundleKey)),
+  enableEnhancedPrivacy: (value) => dispatch(actions.enableEnhancedPrivacy(value)),
 })
 
 

@@ -18,6 +18,7 @@ export const initialState = {
   revealingBundle: {},
   hasRevealError: false,
   gettingWAVAX: false,
+  enableEnhancedPrivacy: false,
 
   // claim
   auctionResults: {},
@@ -58,6 +59,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         auctionPhases: action.auctionPhases
+      }
+
+    case constants.ENABLE_ENHANCED_PRIVACY:
+      return {
+        ...state,
+        enableEnhancedPrivacy: action.value
       }
 
     case constants.SET_REVEALING_BUNDLE:
