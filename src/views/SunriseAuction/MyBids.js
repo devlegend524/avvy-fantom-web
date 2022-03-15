@@ -314,7 +314,7 @@ class MyBids extends React.PureComponent {
           </div>
           <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 dark:md:bg-gray-800 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
             <div className='mb-8'>
-              <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} showAvailable={allRevealed} />
+              <Summary.FullSummary fullBidTotal={bidTotal} bidTotal={bidTotal} registrationTotal={registrationTotal} showAvailable={allRevealed} />
             </div>
             {allRevealed ? 
               <div>
