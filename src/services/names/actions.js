@@ -1,4 +1,5 @@
 import constants from './constants'
+import services from 'services'
 
 const actions = {
   addRecord: (name, hash) => {
@@ -8,6 +9,17 @@ const actions = {
       hash
     }
   },
+
+  lookup: (hash) => {
+    return async (dispatch, getState) => {
+      const api = services.provider.buildAPI()
+      try {
+        const name = await api.lookupPreimage(hash)
+        dispatch(actions.addRecord(name, hash))
+      } catch (err) {
+      }
+    }
+  }
 }
 
 export default actions

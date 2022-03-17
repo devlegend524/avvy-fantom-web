@@ -381,6 +381,12 @@ class AvvyClient {
     }
     return signal
   }
+
+  async lookupPreimage(hash) {
+    const output = await this.contracts.RainbowTableV1.lookup(hash)
+    const name = await client.decodeNameHashInputSignals(output)
+    return name
+  }
 }
 
 export default AvvyClient
