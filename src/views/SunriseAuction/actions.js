@@ -210,6 +210,13 @@ const actions = {
     }
   },
 
+  setRevealedBids: (bids) => {
+    return {
+      type: constants.SET_REVEALED_BIDS,
+      bids
+    }
+  },
+
   loadWinningBids: (force) => {
     return async (dispatch, getState) => {
       const state = getState()
@@ -217,11 +224,14 @@ const actions = {
       if (isLoading && !force) return
       dispatch(actions.setLoadingWinningBids(true))
       const api = services.provider.buildAPI()
-      const bidBundles = services.sunrise.selectors.bidBundles(state)
-      const revealedBundles = services.sunrise.selectors.revealedBundles(state)
-      for (let domain in bidBundles) {
-        if (revealedBundles[bidBundles[domain]]) {
+      const revealedBids = await api.getRevealedBids()
+      // add in names that we are missing here
+      dispatch(actions.setRevealedBids(revealedBids))
+      for (let i = 0; i < revealedBids.length; i += 1) {
+        if (revealedBids[i].preimage) {
+          let domain = revealedBids[i].preimage
           let result = await api.getWinningBid(domain)
+          dispatch(services.sunrise.actions.refreshNameData(domain))
           dispatch(actions.setAuctionResult(domain, result))
         }
       }

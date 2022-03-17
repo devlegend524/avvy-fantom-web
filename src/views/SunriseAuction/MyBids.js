@@ -98,9 +98,14 @@ class MyBids extends React.PureComponent {
     let anyRevealed = false
     let auctionResults = this.props.auctionResults
     let canClaim = false
-    keys.forEach(key => {
+    this.props.revealedBids.forEach((bid, index) => {
+      let key = bid.preimage
+      if (!nameData[key]) {
+        hasAllKeys = false
+        return
+      }
       if (this.props.winningBidsLoaded && this.state.isConnected && auctionResults) {
-        fullBidTotal = fullBidTotal.add(ethers.BigNumber.from(bids[key]))
+        fullBidTotal = fullBidTotal.add(ethers.BigNumber.from(bid.amount))
         if (auctionResults[key] && auctionResults[key].isWinner) {
           bidTotal = bidTotal.add(ethers.BigNumber.from(auctionResults[key].auctionPrice))
           registrationTotal = registrationTotal.add(ethers.BigNumber.from(nameData[key].priceUSDCents))
@@ -122,6 +127,9 @@ class MyBids extends React.PureComponent {
 
     if (!hasAllKeys) return null
 
+    /*
+    if (!hasAllKeys) return null
+
     if (keys.length === 0 || !anyRevealed) return (
       <>
         <div className='mt-4 mb-4 text-lg text-center font-bold'>{'No valid bids.'}</div>
@@ -132,6 +140,7 @@ class MyBids extends React.PureComponent {
         </div>
       </>
     )
+    */
 
     return (
       <>
@@ -152,13 +161,14 @@ class MyBids extends React.PureComponent {
                 </>
               )}
             </div>
-            {keys.map((key, index) => {
+            {this.props.revealedBids.map((bid, index) => {
+              let key = bid.preimage
               const result = this.props.auctionResults[key]
               if (!result) return null
               return (
                 <div className='bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4' key={index}>
                   <div className='font-bold'>{key}</div>
-                  <div className=''>Your Bid: {services.money.renderWAVAX(bids[key])}</div>
+                  <div className=''>Your Bid: {services.money.renderWAVAX(bid.amount)}</div>
                   <div className=''>Yearly registration fee: {services.money.renderUSD(nameData[key].priceUSDCents)}</div>
                   {this.state.isConnected ? (
                     <div className='flex mt-2'>
@@ -479,6 +489,7 @@ const mapStateToProps = (state) => ({
   claimedNames: services.sunrise.selectors.claimedNames(state),
   winningBidsLoaded: selectors.winningBidsLoaded(state),
   isDarkmode: services.darkmode.selectors.isDarkmode(state),
+  revealedBids: selectors.revealedBids(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
