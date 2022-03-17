@@ -21,6 +21,7 @@ export const initialState = {
   enableEnhancedPrivacy: false,
 
   // claim
+  revealedBids: [],
   auctionResults: {},
   loadingWinningBids: false,
   isClaimingDomains: false,
@@ -118,6 +119,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         isApprovingWavax: action.value
+      }
+
+    case constants.SET_REVEALED_BIDS:
+      return {
+        ...state,
+        revealedBids: action.bids
       }
 
     case constants.SET_IS_CLAIMING_DOMAINS:
