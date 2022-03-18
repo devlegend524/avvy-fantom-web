@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { ethers } from 'ethers'
-import { TrashIcon } from '@heroicons/react/solid'
+import { TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 
 import components from 'components'
 import services from 'services'
@@ -21,7 +21,8 @@ class MyBids extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      isConnected: services.provider.isConnected()
+      isConnected: services.provider.isConnected(),
+      paginationIndex: 0,
     }
   }
 
@@ -348,6 +349,72 @@ class MyBids extends React.PureComponent {
     )
   }
 
+  renderPagination(numPages) {
+    numPages = Math.ceil(numPages)
+    const currPage = this.state.paginationIndex
+    let pagesDisplayed = []
+    const maxPagesToDisplay = 5
+    if (currPage === 0 || currPage === 1) {
+      for (let i = 0; i < numPages; i += 1) {
+        pagesDisplayed.push(i+1)
+        if (pagesDisplayed.length >= maxPagesToDisplay) break
+      }
+    } else if (currPage === numPages - 1 || currPage === numPages - 2) {
+      for (let i = numPages - 5; i < numPages; i += 1) {
+        pagesDisplayed.push(i+1)
+        if (pagesDisplayed.length >= maxPagesToDisplay) break
+      }
+    } else {
+      pagesDisplayed = [
+        currPage - 1,
+        currPage,
+        currPage + 1,
+        currPage + 2,
+        currPage + 3,
+      ]
+    }
+    return (
+      <div className='flex items-center justify-center'>
+        <div 
+          onClick={() => {
+            this.setState(currState => {
+              const currPage = this.state.paginationIndex
+              const nextPage = currPage === 0 ? currPage : currPage - 1
+              return {
+                paginationIndex: nextPage
+              }
+            })
+          }}
+          className='bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
+          <ChevronLeftIcon className='w-6' />
+        </div>
+        {pagesDisplayed.map((p, index) => (
+          <div 
+            onClick={() => {
+              this.setState({
+                paginationIndex: p - 1
+              })
+            }}
+            className={`cursor-pointer select-none bg-gray-100 rounded-lg w-12 h-12 flex items-center justify-center mr-2 ${currPage === p - 1 ? 'font-bold' : ''}`} key={index}>{p}
+          </div>
+        ))}
+        <div 
+          onClick={() => {
+            this.setState(currState => {
+              const currPage = this.state.paginationIndex
+              const nextPage = currPage >= numPages - 1 ? currPage : currPage + 1
+              return {
+                paginationIndex: nextPage
+              }
+            })
+          }}
+          className='bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
+          <ChevronRightIcon className='w-6' />
+        </div>
+      </div>
+    )
+  }
+
   renderBidPlacement() {
     const bidRevealStartsAt = this.props.auctionPhases[1] * 1000
     const claimStartsAt = this.props.auctionPhases[2] * 1000
@@ -376,6 +443,17 @@ class MyBids extends React.PureComponent {
 
     if (keys.length === 0) return this.renderNoBids()
 
+    let _keys
+    let _hasPages = false
+    let pageLength = 5
+    let _numPages = keys.length / pageLength
+    if (keys.length > pageLength) {
+      _keys = keys.slice(this.state.paginationIndex * pageLength, this.state.paginationIndex * pageLength + pageLength)
+      _hasPages = true
+    } else {
+      _keys = keys
+    }
+
     return (
       <div className='md:flex md:px-4 md:mt-2'>
         <div className='w-full md:mr-8'>
@@ -402,7 +480,7 @@ class MyBids extends React.PureComponent {
               this.disableBidModalWarning = false
             }} />
           </components.Modal>
-          {keys.map((key, index) => {
+          {_keys.map((key, index) => {
             const _isSubmitted = isSubmitted(key)
             return (
               <div className='bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4' key={index}>
@@ -427,6 +505,7 @@ class MyBids extends React.PureComponent {
               </div>
             )
           })}
+          {_hasPages ? this.renderPagination(_numPages) : null}
         </div>
         <div className='max-w-sm w-full m-auto mt-8 md:flex-shrink-0 md:ml-4 md:pl-4 md:mt-0 md:bg-gray-100 md:dark:bg-gray-800 md:rounded-lg md:p-4'>
           <div className='mb-8'>
