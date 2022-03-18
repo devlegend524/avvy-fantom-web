@@ -60,6 +60,7 @@ const actions = {
       try {
         const state = getState()
         const names = services.sunrise.selectors.unsubmittedBidNames(state)
+        const constraintsProofs = services.sunrise.selectors.constraintsProofs(state)
         const api = services.provider.buildAPI()
         let j = 0;
         const numSteps = names.length
@@ -69,8 +70,10 @@ const actions = {
             message: `Generating constraints proof for ${name} (${j}/${numSteps})`,
             percent: parseInt((j / numSteps) * 100),
           }))
-          let constraintsRes = await api.generateConstraintsProof(name)
-          dispatch(services.sunrise.actions.setConstraintsProof(name, constraintsRes.calldata))
+          if (!constraintsProofs[name]) {
+            let constraintsRes = await api.generateConstraintsProof(name)
+            dispatch(services.sunrise.actions.setConstraintsProof(name, constraintsRes.calldata))
+          }
           j += 1
         }
         dispatch(actions.setProofProgress({
