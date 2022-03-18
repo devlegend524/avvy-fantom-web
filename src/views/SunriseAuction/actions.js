@@ -162,13 +162,13 @@ const actions = {
       const bundle = bundles[bundleKey]
       const enhancedPrivacy = selectors.enhancedPrivacy(state)
       const reverseLookups = services.names.selectors.reverseLookups(state)
+
       try { 
         if (enhancedPrivacy) {
           await api.reveal(bundle.payload.names, bundle.payload.amounts, bundle.payload.salt)
         } else {
           const names = bundle.payload.names.map(n => reverseLookups[n])
           const preimages = await api.buildPreimages(names)
-          console.log(preimages)
           await api.revealWithPreimage(bundle.payload.names, bundle.payload.amounts, bundle.payload.salt, preimages)
         }
       } catch (err) {
@@ -210,6 +210,13 @@ const actions = {
     }
   },
 
+  setRevealedBids: (bids) => {
+    return {
+      type: constants.SET_REVEALED_BIDS,
+      bids
+    }
+  },
+
   loadWinningBids: (force) => {
     return async (dispatch, getState) => {
       const state = getState()
@@ -217,11 +224,14 @@ const actions = {
       if (isLoading && !force) return
       dispatch(actions.setLoadingWinningBids(true))
       const api = services.provider.buildAPI()
-      const bidBundles = services.sunrise.selectors.bidBundles(state)
-      const revealedBundles = services.sunrise.selectors.revealedBundles(state)
-      for (let domain in bidBundles) {
-        if (revealedBundles[bidBundles[domain]]) {
+      const revealedBids = await api.getRevealedBids()
+      // add in names that we are missing here
+      dispatch(actions.setRevealedBids(revealedBids))
+      for (let i = 0; i < revealedBids.length; i += 1) {
+        if (revealedBids[i].preimage) {
+          let domain = revealedBids[i].preimage
           let result = await api.getWinningBid(domain)
+          dispatch(services.sunrise.actions.refreshNameData(domain))
           dispatch(actions.setAuctionResult(domain, result))
         }
       }
@@ -313,6 +323,13 @@ const actions = {
     }
   },
 
+  setClaimGenerateProofs: (value) => {
+    return {
+      type: constants.SET_CLAIM_GENERATE_PROOFS,
+      value
+    }
+  },
+
   claim: (key) => {
     return async (dispatch, getState) => {
       dispatch(actions.isClaimingDomain(key, true))
@@ -322,12 +339,22 @@ const actions = {
       const constraintsProofs = services.sunrise.selectors.constraintsProofs(state)
       const names = []
       const constraintsData = []
-      Object.keys(auctionResults).forEach((name) => {
+      const missingProofs = []
+      for (let name in auctionResults) {
         if (auctionResults[name].isWinner && auctionResults[name].type !== 'IS_CLAIMED' && name === key) {
           names.push(name)
-          constraintsData.push(constraintsProofs[name])
+          if (constraintsProofs[name]) {
+            constraintsData.push(constraintsProofs[name])
+          }  else {
+            missingProofs.push(name)
+          }
         }
-      })
+      }
+      if (missingProofs.length > 0) {
+        dispatch(actions.setClaimGenerateProofs(missingProofs))
+        dispatch(actions.isClaimingDomain(key, false))
+        return
+      }
       if (names.length === 0) {
         dispatch(actions.isClaimingDomain(key, false))
       }
@@ -355,12 +382,22 @@ const actions = {
       const constraintsProofs = services.sunrise.selectors.constraintsProofs(state)
       const names = []
       const constraintsData = []
-      Object.keys(auctionResults).forEach((name) => {
+      const missingProofs = []
+      for (let name in auctionResults) {
         if (auctionResults[name].isWinner && auctionResults[name].type !== 'IS_CLAIMED') {
           names.push(name)
-          constraintsData.push(constraintsProofs[name])
+          if (constraintsProofs[name]) {
+            constraintsData.push(constraintsProofs[name])
+          } else {
+            missingProofs.push(name)
+          }
         }
-      })
+      }
+      if (missingProofs.length > 0) {
+        dispatch(actions.setClaimGenerateProofs(missingProofs))
+        dispatch(actions.isClaimingDomains(false))
+        return
+      }
       if (names.length === 0) {
         dispatch(actions.isClaimingDomains(false))
       }
@@ -394,6 +431,35 @@ const actions = {
           }
         } else {
         }
+      }
+    }
+  },
+
+  generateClaimProofs: (names) => {
+    return async (dispatch, getState) => {
+      try {
+        const state = getState()
+        const api = services.provider.buildAPI()
+        let j = 0;
+        const numSteps = names.length
+        for (let i = 0; i < names.length; i += 1) {
+          let name = names[i]
+          dispatch(actions.setProofProgress({
+            message: `Generating constraints proof for ${name} (${j}/${numSteps})`,
+            percent: parseInt((j / numSteps) * 100),
+          }))
+          let constraintsRes = await api.generateConstraintsProof(name)
+          dispatch(services.sunrise.actions.setConstraintsProof(name, constraintsRes.calldata))
+          j += 1
+        }
+        dispatch(actions.setProofProgress({
+          message: `Done`,
+          percent: 100,
+        }))
+      } catch (err) {
+        services.logger.error(err)
+        console.log(err)
+        return dispatch(actions.setHasBidError(true))
       }
     }
   },
