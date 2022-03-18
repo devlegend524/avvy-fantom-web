@@ -92,6 +92,14 @@ class MyBids extends React.PureComponent {
     const bids = this.props.bids
     const keys = Object.keys(bids).sort().filter(name => isSubmitted(name))
     const nameData = this.props.nameData
+
+    if (this.props.loadedBidProgress < 100) return (
+      <div className='text-gray-400 mt-8 max-w-sm m-auto text-center'>
+        <div className='mb-4 '>Loading Bids</div>
+        <components.ProgressBar progress={this.props.loadedBidProgress} />
+      </div>
+    )
+
     let bidTotal = ethers.BigNumber.from('0') // total to pay to claim all
     let fullBidTotal = ethers.BigNumber.from('0') // total of all bids
     let registrationTotal = ethers.BigNumber.from('0')
@@ -602,6 +610,7 @@ const mapStateToProps = (state) => ({
   isDarkmode: services.darkmode.selectors.isDarkmode(state),
   revealedBids: selectors.revealedBids(state),
   claimGenerateProofs: selectors.claimGenerateProofs(state),
+  loadedBidProgress: selectors.loadedBidProgress(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({

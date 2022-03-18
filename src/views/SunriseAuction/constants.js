@@ -20,6 +20,7 @@ const constants = reduxService.prepareConstants(
     'SET_IS_CLAIMING_DOMAIN',
     'SET_CLAIM_GENERATE_PROOFS',
     'SET_REVEALED_BIDS',
+    'SET_LOADED_BID_PROGRESS',
     'WINNING_BIDS_LOADED',
     'SET_GETTING_WAVAX',
   ]

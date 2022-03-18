@@ -22,6 +22,7 @@ const selectors = {
   revealedBids: (state) => root(state).revealedBids,
   winningBidsLoaded: (state) => root(state).winningBidsLoaded,
   claimGenerateProofs: (state) => root(state).claimGenerateProofs,
+  loadedBidProgress: (state) => root(state).loadedBidProgress,
 }
 
 export default selectors

@@ -352,32 +352,21 @@ class AvvyClient {
     await tx.wait()
   }
 
-  async getRevealedBids() {
-    // fetch bids
+  async getRevealedBidForSenderCount() {
     const count = await this.contracts.SunriseAuctionV1.getRevealedBidForSenderCount()
-    let promises = []
-    for (let i = 0; i < count; i += 1) {
-      promises.push(this.contracts.SunriseAuctionV1.getRevealedBidForSenderAtIndex(i))
-    }
-    let results = await Promise.all(promises)
+    return count
+  }
 
-    // try to get revealed preimages
-    promises = []
-    for (let i = 0; i < results.length; i += 1) {
-      promises.push(this.contracts.RainbowTableV1.lookup(results[i].name))
+  async getRevealedBidForSenderAtIndex(index) {
+    const bid = await this.contracts.SunriseAuctionV1.getRevealedBidForSenderAtIndex(index)
+    const nameSignal = await this.contracts.RainbowTableV1.lookup(bid.name)
+    const preimage = await client.decodeNameHashInputSignals(nameSignal)
+    return {
+      name: bid.name,
+      amount: bid.amount,
+      timestamp: bid.timestamp,
+      preimage: preimage
     }
-    let preimages = await Promise.all(promises)
-    let output = []
-
-    for (let i = 0; i < preimages.length; i += 1) {
-      output.push({
-        name: results[i].name,
-        amount: results[i].amount,
-        timestamp: results[i].timestamp,
-        preimage: await client.decodeNameHashInputSignals(preimages[i])
-      })
-    }
-    return output
   }
 
   async sunriseClaim(names, constraintsData) {

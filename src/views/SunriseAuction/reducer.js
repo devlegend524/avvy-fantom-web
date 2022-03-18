@@ -28,6 +28,7 @@ export const initialState = {
   isClaimingDomain: {},
   claimGenerateProofs: [],
   winningBidsLoaded: false,
+  loadedBidProgress: 0,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -141,6 +142,12 @@ export const reducer = (state = initialState, action) => {
           ...state.isClaimingDomain,
           [action.key]: action.value
         }
+      }
+
+    case constants.SET_LOADED_BID_PROGRESS:
+      return {
+        ...state,
+        loadedBidProgress: action.progress
       }
 
     case constants.SET_CLAIM_GENERATE_PROOFS:

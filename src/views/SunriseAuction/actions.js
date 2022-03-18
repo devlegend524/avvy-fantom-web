@@ -220,6 +220,13 @@ const actions = {
     }
   },
 
+  setLoadedBidProgress: (progress) => {
+    return {
+      type: constants.SET_LOADED_BID_PROGRESS,
+      progress
+    }
+  },
+
   loadWinningBids: (force) => {
     return async (dispatch, getState) => {
       const state = getState()
@@ -227,7 +234,22 @@ const actions = {
       if (isLoading && !force) return
       dispatch(actions.setLoadingWinningBids(true))
       const api = services.provider.buildAPI()
-      const revealedBids = await api.getRevealedBids()
+      const revealedBidCount = await api.getRevealedBidForSenderCount()
+      const promises = []
+      let loadedBidCount = 0
+      let totalProgressCount = revealedBidCount * 2
+
+      for (let i = 0; i < revealedBidCount; i += 1) {
+        promises.push(new Promise(async (resolve, reject) => {
+          const bid = await api.getRevealedBidForSenderAtIndex(i)
+          loadedBidCount += 1
+          dispatch(actions.setLoadedBidProgress(parseInt((loadedBidCount / totalProgressCount) * 100)))
+          return resolve(bid)
+        }))
+      }
+
+      const revealedBids = await Promise.all(promises)
+
       // add in names that we are missing here
       dispatch(actions.setRevealedBids(revealedBids))
       for (let i = 0; i < revealedBids.length; i += 1) {
@@ -237,6 +259,8 @@ const actions = {
           dispatch(services.sunrise.actions.refreshNameData(domain))
           dispatch(actions.setAuctionResult(domain, result))
         }
+        loadedBidCount += 1
+        dispatch(actions.setLoadedBidProgress(parseInt((loadedBidCount / totalProgressCount) * 100)))
       }
       dispatch(actions.winningBidsLoaded(true))
       setTimeout(() => {
