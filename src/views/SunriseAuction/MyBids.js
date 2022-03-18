@@ -385,7 +385,7 @@ class MyBids extends React.PureComponent {
               }
             })
           }}
-          className='bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
+          className='dark:bg-gray-800 bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
           <ChevronLeftIcon className='w-6' />
         </div>
         {pagesDisplayed.map((p, index) => (
@@ -395,7 +395,7 @@ class MyBids extends React.PureComponent {
                 paginationIndex: p - 1
               })
             }}
-            className={`cursor-pointer select-none bg-gray-100 rounded-lg w-12 h-12 flex items-center justify-center mr-2 ${currPage === p - 1 ? 'font-bold' : ''}`} key={index}>{p}
+            className={`dark:bg-gray-800 cursor-pointer select-none bg-gray-100 rounded-lg w-12 h-12 flex items-center justify-center mr-2 ${currPage === p - 1 ? 'font-bold' : ''}`} key={index}>{p}
           </div>
         ))}
         <div 
@@ -408,7 +408,7 @@ class MyBids extends React.PureComponent {
               }
             })
           }}
-          className='bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
+          className='dark:bg-gray-800 bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
           <ChevronRightIcon className='w-6' />
         </div>
       </div>
