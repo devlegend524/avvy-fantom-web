@@ -101,7 +101,7 @@ class Wrapper extends React.PureComponent {
 				</div>
 
         {/* Page header */}
-				<div className="fixed top-0 w-full h-16 md:h-24 border-b-2 border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-700">
+				<div className="fixed top-0 w-full h-16 md:h-24 border-b-2 border-gray-100 bg-white dark:bg-gray-900 dark:border-gray-700 z-10">
 					<div className="text-center flex items-center justify-between w-full h-full max-w-screen-xl m-auto">
 						<Link to={services.linking.path('Landing')}>
 							<div className="h-full ml-1 md:ml-6 items-center justify-center flex">
