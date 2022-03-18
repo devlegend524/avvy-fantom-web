@@ -49,7 +49,6 @@ const actions = {
   },
 
   setNameData: (name, data) => {
-    console.log('setting name data', name)
     return {
       type: constants.SET_NAME_DATA,
       name,
@@ -59,7 +58,6 @@ const actions = {
 
   refreshNameData: (name) => {
     return async (dispatch, getState) => {
-      console.log('fetching name data', name)
       const api = services.provider.buildAPI()
       const data = await api.loadDomain(name)
       dispatch(actions.setNameData(name, data))

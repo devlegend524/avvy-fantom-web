@@ -21,6 +21,7 @@ const selectors = {
   isClaimingDomain: (state) => root(state).isClaimingDomain,
   revealedBids: (state) => root(state).revealedBids,
   winningBidsLoaded: (state) => root(state).winningBidsLoaded,
+  claimGenerateProofs: (state) => root(state).claimGenerateProofs,
 }
 
 export default selectors
