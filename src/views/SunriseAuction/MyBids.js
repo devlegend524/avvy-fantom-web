@@ -282,6 +282,17 @@ class MyBids extends React.PureComponent {
       </>
     )
 
+    let _keys
+    let _hasPages = false
+    let pageLength = 5
+    let _numPages = keys.length / pageLength
+    if (keys.length > pageLength) {
+      _keys = keys.slice(this.state.paginationIndex * pageLength, this.state.paginationIndex * pageLength + pageLength)
+      _hasPages = true
+    } else {
+      _keys = keys
+    }
+
     return (
       <>
         <components.Modal ref={(ref) => {
@@ -311,7 +322,7 @@ class MyBids extends React.PureComponent {
                 <components.labels.Information text={'Some of your bids are not revealed.'} justify='justify-flex-start' />
               )}
             </div>
-            {keys.map((key, index) => {
+            {_keys.map((key, index) => {
               const _isRevealed = isRevealed(key)
               return (
                 <div className='bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4' key={index}>
@@ -330,6 +341,7 @@ class MyBids extends React.PureComponent {
                 </div>
               )
             })}
+            {_hasPages ? this.renderPagination(_numPages) : null}
           </div>
           <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 dark:md:bg-gray-800 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
             <div className='mb-8'>
