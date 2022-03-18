@@ -12,6 +12,7 @@ import selectors from './selectors'
 import AuctionPhase from './AuctionPhase'
 import BidFlow from './BidFlow'
 import RevealFlow from './RevealFlow'
+import ClaimProofFlow from './ClaimProofFlow'
 import Summary from './Summary'
 
 
@@ -144,6 +145,13 @@ class MyBids extends React.PureComponent {
 
     return (
       <>
+        <components.Modal show={this.props.claimGenerateProofs.length > 0} ref={(ref) => {
+          this.claimProofModal = ref
+        }} onClose={() => this.props.setClaimGenerateProofs([])}> 
+          <ClaimProofFlow onComplete={() => {
+            this.claimProofModal.toggle()
+          }} />
+        </components.Modal>
         <div className='md:flex md:mt-2 md:mx-4'>
           <div className='w-full md:mr-8'>
             <div>
@@ -490,6 +498,7 @@ const mapStateToProps = (state) => ({
   winningBidsLoaded: selectors.winningBidsLoaded(state),
   isDarkmode: services.darkmode.selectors.isDarkmode(state),
   revealedBids: selectors.revealedBids(state),
+  claimGenerateProofs: selectors.claimGenerateProofs(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -499,6 +508,7 @@ const mapDispatchToProps = (dispatch) => ({
   claimAll: () => dispatch(actions.claimAll()),
   claim: (key) => dispatch(actions.claim(key)),
   resetBidFlow: () => dispatch(actions.resetBidding()),
+  setClaimGenerateProofs: (names) => dispatch(actions.setClaimGenerateProofs(names)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyBids)

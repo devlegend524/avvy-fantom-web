@@ -9,6 +9,14 @@ class Modal extends React.PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.show && !prevProps.show) {
+      this.setState({
+        open: true
+      })
+    }
+  }
+
   toggle() {
     if (this.state.open && this.props.onClose) {
       const result = this.props.onClose()
