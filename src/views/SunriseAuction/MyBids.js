@@ -144,6 +144,17 @@ class MyBids extends React.PureComponent {
     )
     */
 
+    let _keys
+    let _hasPages = false
+    let pageLength = 5
+    let _numPages = this.props.revealedBids.length / pageLength
+    if (this.props.revealedBids.length > pageLength) {
+      _keys = this.props.revealedBids.slice(this.state.paginationIndex * pageLength, this.state.paginationIndex * pageLength + pageLength)
+      _hasPages = true
+    } else {
+      _keys = this.props.revealedBids
+    }
+
     return (
       <>
         <components.Modal show={this.props.claimGenerateProofs.length > 0} ref={(ref) => {
@@ -170,7 +181,7 @@ class MyBids extends React.PureComponent {
                 </>
               )}
             </div>
-            {this.props.revealedBids.map((bid, index) => {
+            {_keys.map((bid, index) => {
               let key = bid.preimage
               const result = this.props.auctionResults[key]
               if (!result) return null
@@ -205,6 +216,7 @@ class MyBids extends React.PureComponent {
                 </div>
               )
             })}
+            {_hasPages ? this.renderPagination(_numPages) : null}
           </div>
           <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 md:dark:bg-gray-800 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
             <Summary.FullSummary  
