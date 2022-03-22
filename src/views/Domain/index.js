@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { CheckCircleIcon } from '@heroicons/react/solid'
-import { InformationCircleIcon } from '@heroicons/react/outline' 
+import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/solid'
+import { InformationCircleIcon, PlusIcon } from '@heroicons/react/outline' 
 import services from 'services'
 import components from 'components'
 
 import AddBid from './AddBid'
+import SetRecord from './SetRecord'
 import actions from './actions'
 import constants from './constants'
 import reducer from './reducer'
@@ -19,7 +20,8 @@ class Domain extends React.PureComponent {
     const domain = params.domain ? params.domain.toLowerCase() : null
     this.state = {
       domain: domain,
-      connected: services.provider.isConnected()
+      connected: services.provider.isConnected(),
+      setRecordReset: 0, // increment this to reset the form
     }
     this.searchPlaceholder = 'Search for another name'
     this.loadDomain(domain)
@@ -43,6 +45,15 @@ class Domain extends React.PureComponent {
     this.setState({
       connected: true
     })
+    if (this.connectModal) this.connectModal.hide()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.setRecordComplete && this.props.setRecordComplete) {
+      this.setRecordModal.toggle()
+      this.setState(currState => ({ setRecordReset: currState.setRecordReset + 1 }))
+      this.props.resetSetRecord()
+    }
   }
 
   componentDidMount() {
@@ -67,6 +78,10 @@ class Domain extends React.PureComponent {
   handleAddBid(navigate, value) {
     this.props.addBid(this.state.domain, value)
     services.linking.navigate(navigate, 'SunriseAuctionMyBids')
+  }
+
+  _handleSetRecord = (type, value) => {
+    this.props.setStandardRecord(this.state.domain, type, value)
   }
 
   renderAvailableBody() {
@@ -147,59 +162,67 @@ class Domain extends React.PureComponent {
     )
   }
 
-  renderOwnershipDetails() {
+  renderRegistered() {
+    const isOwned = services.provider.getAccount() === this.props.domain.owner.toLowerCase()
+    
     return (
-      <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-8 dark:bg-gray-800'>
-        <div>
-          <div className='font-bold'>{'Registrant'}</div>
-          <div className='truncate'>
-            {this.props.domain.owner}
+      <div className='max-w-screen-md m-auto flex w-full md:flex-row md:items-start'>
+        <components.Modal title={'Set Record'} ref={(ref) => this.setRecordModal = ref}>
+          <SetRecord key={this.state.setRecordReset} handleSubmit={this._handleSetRecord} loading={this.props.isSettingRecord} />
+        </components.Modal>
+        <components.Modal title={'Connect Wallet'} ref={(ref) => this.connectModal = ref}>
+          <components.ConnectWallet />
+        </components.Modal>
+        <div className='w-full'>
+          <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
+            <div className='font-bold'>{'Basic Information'}</div>
+            <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
+            <div className='mt-4 text-sm'>
+              <div className='font-bold'>{'Registrant'}</div>
+              <div className='truncate'>
+                {this.props.domain.owner}
+              </div>
+            </div>
+            <div className='mt-4 text-sm'>
+              <div className='font-bold'>{'Expiry'}</div>
+              <div>
+                {new Intl.DateTimeFormat(
+                  navigator.language,
+                  { month: 'short', day: 'numeric', year: 'numeric' }
+                ).format(this.props.domain.expiresAt * 1000)}
+                {' at '}
+                {new Intl.DateTimeFormat(
+                  navigator.langauge,
+                  { hour: 'numeric', minute: 'numeric' }
+                ).format(this.props.domain.expiresAt * 1000)}
+              </div>
+            </div>
+          </div>
+          <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
+            <div className='flex justify-between items-center'>
+              <div className='font-bold'>{'Records'}</div>
+              {!this.state.connected ? (
+                <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
+              ) : isOwned ? (
+                <PlusCircleIcon className='cursor-pointer w-6' onClick={() => this.setRecordModal.toggle()} />
+              ) : null}
+            </div>
+            <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
+            
+            {this.props.isLoadingRecords ? (
+              <components.Spinner />
+            ) : this.props.records.map((record, index) => (
+              <div className='mt-4' key={index}>
+                <div className='text-sm font-bold'>
+                  {record.typeName}
+                </div>
+                <div className='text-sm truncate'>
+                  {record.value}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        <div className='mt-4'>
-          <div className='font-bold'>{'Expiry'}</div>
-          <div>
-            {new Intl.DateTimeFormat(
-              navigator.language,
-              { month: 'short', day: 'numeric', year: 'numeric' }
-            ).format(this.props.domain.expiresAt * 1000)}
-            {' at '}
-            {new Intl.DateTimeFormat(
-              navigator.langauge,
-              { hour: 'numeric', minute: 'numeric' }
-            ).format(this.props.domain.expiresAt * 1000)}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  renderRegisteredSelfBody() {
-    return (
-      <div className='max-w-md m-auto'>
-        <components.labels.Information text={'This domain is registered to your account'} />
-        <div className='mt-4'>
-          <components.DomainSearch placeholder={this.searchPlaceholder} />
-        </div>
-        <div className='mt-4'>
-          <components.buttons.Button text={'View my domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
-        </div>
-        {this.renderOwnershipDetails()}
-      </div>
-    )
-  }
-
-  renderRegisteredOtherBody() {
-    return (
-      <div className='max-w-md m-auto'>
-        <div className='max-w-sm m-auto mt-4 flex items-center justify-center'>
-          <InformationCircleIcon className='w-6 text-alert-red mr-2' />
-          <div className='text-alert-red'>{'This name is already registered'}</div>
-        </div>
-        <div className='mt-4'>
-          <components.DomainSearch placeholder={this.searchPlaceholder} />
-        </div>
-        {this.renderOwnershipDetails()}
       </div>
     )
   }
@@ -230,10 +253,10 @@ class Domain extends React.PureComponent {
         return this.renderAuctionBiddingClosedBody()
 
       case statuses.REGISTERED_OTHER:
-        return this.renderRegisteredOtherBody()
+        return this.renderRegistered()
 
       case statuses.REGISTERED_SELF:
-        return this.renderRegisteredSelfBody()
+        return this.renderRegistered()
       
       default:
         return null
@@ -261,12 +284,19 @@ const mapStateToProps = (state) => ({
   isLoading: selectors.isLoading(state),
   domain: selectors.domain(state),
   bids: services.sunrise.selectors.bids(state),
+  isSettingRecord: selectors.isSettingRecord(state),
+  isLoadingRecords: selectors.isLoadingRecords(state),
+  records: selectors.records(state),
+  setRecordComplete: selectors.setRecordComplete(state),
+  avatarRecord: selectors.avatarRecord(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   loadDomain: (domain) => dispatch(actions.loadDomain(domain)),
   addToCart: (domain) => dispatch(services.cart.actions.addToCart(domain)),
   addBid: (domain, amount) => dispatch(services.sunrise.actions.addBid(domain, amount)),
+  setStandardRecord: (domain, type, value) => dispatch(actions.setStandardRecord(domain, type, value)),
+  resetSetRecord: () => dispatch(actions.setRecordComplete(false)),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Domain)

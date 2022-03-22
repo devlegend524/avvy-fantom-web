@@ -4,6 +4,7 @@ import DomainPrivacy from './DomainPrivacy'
 import DomainSearch from './DomainSearch'
 import Modal from './Modal'
 import ProgressBar from './ProgressBar'
+import Select from './Select'
 import Spinner from './Spinner'
 
 import account from './account'
@@ -23,6 +24,7 @@ const components = {
   DomainSearch,
   Modal,
   ProgressBar,
+  Select,
   Spinner,
 }
 

@@ -115,7 +115,6 @@ async function buildWitnessCalculator(uri) {
     for (let j=0; j<shared_rw_memory_size; j++) {
         arr[shared_rw_memory_size-1-j] = instance.exports.readSharedRWMemory(j);
     }
-    console.log(fromArray32(arr));
   }
   
   let wc = new WitnessCalculator(instance, {});

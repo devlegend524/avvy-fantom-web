@@ -14,6 +14,7 @@ import money from './money'
 import names from './names'
 import provider from './provider'
 import random from './random'
+import records from './records'
 import redux from './redux'
 import sunrise from './sunrise'
 import time from './time'
@@ -36,6 +37,7 @@ const services = {
   names,
   provider,
   random,
+  records,
   redux,
   sunrise,
   time,
