@@ -404,6 +404,31 @@ class AvvyClient {
     const name = await client.decodeNameHashInputSignals(output)
     return name
   }
+
+  async setStandardRecord(domain, type, value) {
+    const hash = await client.nameHash(domain)
+    const tx = await this.contracts.ResolverV1.setStandard(hash, [], type, value)
+    await tx.wait()
+  }
+
+  async getStandardRecords(domain) {
+    const promises = []
+    const hash = await client.nameHash(domain)
+    for (let i = 1; i <= 6; i += 1) {
+      promises.push(this.contracts.ResolverV1.resolveStandard(hash, i))
+    }
+    const types = [
+      'X-Chain Address',
+      'C-Chain Address',
+    ]
+    const results = await Promise.all(promises)
+    return results.map((res, index) => {
+      return {
+        type: index + 1,
+        value: res
+      }
+    }).filter(res => res.value !== '')
+  }
 }
 
 export default AvvyClient
