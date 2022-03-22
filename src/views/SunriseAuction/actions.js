@@ -259,6 +259,13 @@ const actions = {
       let loadedBidCount = 0
       let totalProgressCount = revealedBidCount * 2
 
+      if (revealedBidCount.eq('0')) {
+        dispatch(actions.setLoadedBidProgress(100))
+        dispatch(actions.setLoadingWinningBids(false))
+        dispatch(actions.winningBidsLoaded(true))
+        return
+      }
+
       for (let i = 0; i < revealedBidCount; i += 1) {
         promises.push(new Promise(async (resolve, reject) => {
           const bid = await api.getRevealedBidForSenderAtIndex(i)
