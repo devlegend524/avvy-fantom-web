@@ -108,6 +108,7 @@ class MyBids extends React.PureComponent {
     let anyRevealed = false
     let auctionResults = this.props.auctionResults
     let canClaim = false
+    let toClaim = 0
     this.props.revealedBids.forEach((bid, index) => {
       let key = bid.preimage
       if (!nameData[key]) {
@@ -121,6 +122,7 @@ class MyBids extends React.PureComponent {
           registrationTotal = registrationTotal.add(ethers.BigNumber.from(nameData[key].priceUSDCents))
           if (auctionResults[key].type !== 'IS_CLAIMED') {
             canClaim = true
+            toClaim += 1
           }
         }
       } else {
@@ -252,7 +254,10 @@ class MyBids extends React.PureComponent {
                       </div>
                     </>
                   ) : canClaim ? (
-                    <components.buttons.Button text={'Claim All'} onClick={() => this.props.claimAll()} loading={this.props.isClaimingDomains} />
+                    <>
+                      <div className='mb-4 text-center'>You have {toClaim} domains to claim.{toClaim > 50 ? ' You can only claim 50 per transaction.' : ''}</div>
+                      <components.buttons.Button text={toClaim > 50 ? 'Claim Next 50 Domains' : 'Claim All'} onClick={() => this.props.claimAll()} loading={this.props.isClaimingDomains} />
+                    </>
                   ) : null}
                 </div>
               </>

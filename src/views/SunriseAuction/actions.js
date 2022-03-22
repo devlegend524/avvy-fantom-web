@@ -283,9 +283,6 @@ const actions = {
         dispatch(actions.setLoadedBidProgress(parseInt((loadedBidCount / totalProgressCount) * 100)))
       }
       dispatch(actions.winningBidsLoaded(true))
-      setTimeout(() => {
-        dispatch(actions.setLoadingWinningBids(false))
-      }, 60000)
     }
   },
 
@@ -409,13 +406,15 @@ const actions = {
         await api.sunriseClaim(names, constraintsData)
         names.forEach(name => {
           dispatch(services.sunrise.actions.setClaimed(name))
+          dispatch(actions.setAuctionResult(name, Object.assign(auctionResults[name], {
+            type: 'IS_CLAIMED'
+          })))
         })
       } catch (err) {
         console.log(err)
         alert('Failed to claim domain')
         dispatch(actions.isClaimingDomain(key, false))
       }
-      dispatch(actions.loadWinningBids(true))
       dispatch(actions.isClaimingDomain(key, false))
     }
   },
@@ -439,6 +438,7 @@ const actions = {
             missingProofs.push(name)
           }
         }
+        if (names.length >= 50) break // max 50 names per transaction
       }
       if (missingProofs.length > 0) {
         dispatch(actions.setClaimGenerateProofs(missingProofs))
@@ -452,6 +452,9 @@ const actions = {
         await api.sunriseClaim(names, constraintsData)
         names.forEach(name => {
           dispatch(services.sunrise.actions.setClaimed(name))
+          dispatch(actions.setAuctionResult(name, Object.assign(auctionResults[name], {
+            type: 'IS_CLAIMED'
+          })))
         })
       } catch (err) {
         console.log(err)
