@@ -268,8 +268,8 @@ class AvvyClient {
     return phases
   }
 
-  async bid(hash) {
-    const tx = await this.contracts.SunriseAuctionV1.bid(hash)
+  async bid(hashes) {
+    const tx = await this.contracts.SunriseAuctionV1.bid(hashes)
     await tx.wait()
   }
 

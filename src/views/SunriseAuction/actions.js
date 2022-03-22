@@ -98,44 +98,64 @@ const actions = {
       const bids = services.sunrise.selectors.bids(state)
       const names = services.sunrise.selectors.unsubmittedBidNames(state)
       
-      const bundle = {}
+      const bundles = []
+      let bundle
+      let bidBundles = {}
+      let MAX_BIDS_PER_BUNDLE = 50
+      let counter
+
       for (let i = 0; i < names.length; i += 1) {
-        let name = names[i]
-        if (i === 0) {
-          bundle.payload = {
-            names: [],
-            amounts: [],
-            salt: services.random.salt()
+        if (i % MAX_BIDS_PER_BUNDLE  === 0) {
+          bundle = {
+            payload: {
+              names: [],
+              amounts: [],
+              salt: services.random.salt()
+            }
           }
+          bundles.push(bundle)
+          counter = 0
         }
+
+        let name = names[i]
         let hash = await client.nameHash(name)
-        bundle.payload.names[i] = hash.toString()
-        bundle.payload.amounts[i] = bids[name]
+        bundle.payload.names[counter] = hash.toString()
+        bundle.payload.amounts[counter] = bids[name]
         bundle[name] = {
           amount: bids[name],
           hash: hash.toString()
         }
+        bidBundles[name] = bundles.length - 1
+        counter += 1
       }
 
-      bundle.payload.hash = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
-          ['int[]', 'int[]', 'string'],
-          [bundle.payload.names, bundle.payload.amounts, bundle.payload.salt]
+      for (let i = 0; i < bundles.length; i += 1) {
+        let bundle = bundles[i]
+        bundle.payload.hash = ethers.utils.keccak256(
+          ethers.utils.defaultAbiCoder.encode(
+            ['int[]', 'int[]', 'string'],
+            [bundle.payload.names, bundle.payload.amounts, bundle.payload.salt]
+          )
         )
-      )
+      }
       
       try {
-        await api.bid(bundle.payload.hash)
+        await api.bid(bundles.map(bundle => bundle.payload.hash))
       } catch (err) {
         console.log(err)
         return dispatch(actions.setHasBidError(true))
       }
-      
-      names.forEach((name) => {
-        dispatch(services.sunrise.actions.setBidBundle(name, bundle.payload.hash))
-      })
 
-      dispatch(services.sunrise.actions.addBundle(bundle.payload.hash, bundle))
+      for (let name in bidBundles) { 
+        let bundleIndex = bidBundles[name]
+        let hash = bundles[bundleIndex].payload.hash
+        dispatch(services.sunrise.actions.setBidBundle(name, hash))
+      }
+
+      for (let i = 0; i < bundles.length; i += 1) {
+        dispatch(services.sunrise.actions.addBundle(bundles[i].payload.hash, bundles[i]))
+      }
+
       dispatch(actions.setBiddingInProgress(false))
       dispatch(actions.setBiddingIsComplete(true))
     }
