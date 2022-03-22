@@ -139,10 +139,7 @@ class MyBids extends React.PureComponent {
 
     if (!hasAllKeys) return null
 
-    /*
-    if (!hasAllKeys) return null
-
-    if (keys.length === 0 || !anyRevealed) return (
+    if (this.props.revealedBids.length === 0) return (
       <>
         <div className='mt-4 mb-4 text-lg text-center font-bold'>{'No valid bids.'}</div>
         <div className='max-w-md m-auto'>
@@ -152,7 +149,6 @@ class MyBids extends React.PureComponent {
         </div>
       </>
     )
-    */
 
     let _keys
     let _hasPages = false
