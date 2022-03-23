@@ -9,10 +9,11 @@ export const initialState = {
   constraintsProofs: {},
   progress: {},
   hasCommit: false,
-  hasError: false,
+  hasError: false, 
   isComplete: false,
   isCommitting: false,
   isFinalizing: false,
+  enableEnhancedPrivacy: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -81,6 +82,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         isFinalizing: action.value
+      }
+
+    case constants.ENABLE_ENHANCED_PRIVACY:
+      return {
+        ...state,
+        enableEnhancedPrivacy: action.value
       }
 
     default:
