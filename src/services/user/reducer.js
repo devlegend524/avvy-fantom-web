@@ -7,6 +7,10 @@ export const initialState = {
   domainCount: null,
 
   token: null,
+
+  // connection criteria
+  hasAcceptedDisclaimers: false,
+  injectSentry: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -27,6 +31,11 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         token: action.token
+      }
+
+    case constants.ACCEPT_DISCLAIMERS:
+      return {
+        hasAcceptedDisclaimers: true,
       }
 
     default:

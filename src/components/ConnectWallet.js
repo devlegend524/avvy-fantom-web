@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+
 import services from 'services'
 import components from 'components'
 
@@ -8,6 +10,8 @@ class ConnectWallet extends React.PureComponent {
     super(props)
     this.state = { 
       connecting: false,
+      privacy: false,
+      terms: false,
     }
   }
 
@@ -59,6 +63,33 @@ class ConnectWallet extends React.PureComponent {
     })
   }
 
+  toggleDisclaimer = (stateKey) => {
+    this.setState((currState) => {
+      return {
+        [stateKey]: !currState[stateKey]
+      }
+    })
+  }
+
+  renderDisclaimers() {
+    return (
+      <>
+        <div className=''>
+          By checking the boxes below, you acknowledge that you have read and agree to our <a className='text-alert-blue' href="https://avvy.domains/privacy-policy" target="_blank">Privacy Policy</a> and our <a className='text-alert-blue' href="https://avvy.domains/terms-and-conditions" target="_blank">Terms and Conditions</a>
+        </div>
+        <div className='mt-4'>
+          <components.checkbox.Checkbox text={'Privacy Policy'} singleLine={true} checked={this.state.privacy} onCheck={() => this.toggleDisclaimer('privacy')} />
+        </div>
+        <div className='mt-2'>
+          <components.checkbox.Checkbox text={'Terms and Conditions'} singleLine={true} checked={this.state.terms} onCheck={() => this.toggleDisclaimer('terms')} />
+        </div>
+        <div className='mt-4 max-w-sm m-auto'>
+          <components.buttons.Button disabled={!this.state.terms || !this.state.privacy} text={'Continue'} onClick={() => this.props.acceptDisclaimers()} />
+        </div>
+      </>
+    )
+  }
+
   render() {
     const wallets = [
       { 
@@ -72,6 +103,8 @@ class ConnectWallet extends React.PureComponent {
         connect: this.walletConnect.bind(this)
       }
     ]
+    if (!this.props.hasAcceptedDisclaimers) return this.renderDisclaimers()
+
     return (
       <>
         {this.state.connecting ? (
@@ -102,4 +135,13 @@ class ConnectWallet extends React.PureComponent {
   }
 }
 
-export default ConnectWallet
+const mapStateToProps = (state) => ({
+  injectSentry: services.user.selectors.injectSentry(state),
+  hasAcceptedDisclaimers: services.user.selectors.hasAcceptedDisclaimers(state),
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  acceptDisclaimers: () => dispatch(services.user.actions.acceptDisclaimers()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectWallet)
