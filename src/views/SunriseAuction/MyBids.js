@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { ethers } from 'ethers'
+import { Link } from 'react-router-dom'
 import { TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 
 import components from 'components'
@@ -109,8 +110,13 @@ class MyBids extends React.PureComponent {
     let auctionResults = this.props.auctionResults
     let canClaim = false
     let toClaim = 0
+    let missingEnhanced = 0
     this.props.revealedBids.forEach((bid, index) => {
       let key = bid.preimage
+      if (key === null) {
+        missingEnhanced += 1
+        return
+      }
       if (!nameData[key]) {
         hasAllKeys = false
         return
@@ -141,10 +147,28 @@ class MyBids extends React.PureComponent {
 
     if (this.props.revealedBids.length === 0) return (
       <>
-        <div className='mt-4 mb-4 text-lg text-center font-bold'>{'No valid bids.'}</div>
+        <div className='mt-4 mb-4 text-lg text-center font-bold'>{'Sunrise Auction - Claim'}</div>
         <div className='max-w-md m-auto'>
-          <div className='mb-8'>
-            <components.labels.Information text={"The bid placement phase of the auction is over. Unfortunately you cannot place a bid at this stage. Domains will be available for on-demand registration after the auction is complete."} />
+          <div className='mt-4 text-gray-700 dark:text-gray-400'>
+            {"During this phase, users can check on their Revealed Bids, and they can claim any auctions that t hey have won."}
+          </div>
+          <div className='font-bold mt-4'>
+            {"No Revealed Bids were found."}
+          </div>
+          <div className='mt-4 text-gray-700 dark:text-gray-400'>
+            {"Revealed Bids are stored on-chain. If you do not see them here, then the wallet you have connected did not have any valid, revealed bids in the Sunrise Auction."}
+          </div>
+          <div className='font-bold mt-4'>
+            {"I placed a bid. Why don't I see it?"}
+          </div>
+          <div className='mt-4 text-gray-700 dark:text-gray-400'>
+            {"In order to see a bid here, you must have successfully completed the Bid Placement and Bid Reveal phases. If you failed to place your bid or failed to reveal your bid, the process was not successful."}
+          </div>
+          <div className='font-bold mt-4'>
+            {"What can I do now?"}
+          </div>
+          <div className='mt-4 text-gray-700 dark:text-gray-400'>
+            {"Once the auction is over, you will be able to register domains. Please return when the auction has completed."} <Link className='text-alert-blue' to={services.linking.path('SunriseAuction')}>{'Auction dates are available in the Sunrise Auction description.'}</Link>
           </div>
         </div>
       </>
@@ -177,6 +201,11 @@ class MyBids extends React.PureComponent {
               <div className='text-md text-left text-gray-500 mb-4 max-w-sm m-auto md:text-left md:m-0'>{'During this stage you must claim the auctions you have won.'}</div>
               <div className='mb-8 mt-4'></div>
             </div>
+            {missingEnhanced > 0 ? (
+              <div>
+                <components.labels.Error text={`You have ${missingEnhanced} Enhanced Privacy ${missingEnhanced === 1 ? 'domain' : 'domains'} which ${missingEnhanced === 1 ? 'is' : 'are'} hidden. To claim ${missingEnhanced === 1 ? 'it' : 'them'}, you must reveal ${missingEnhanced === 1 ? 'it' : 'them'}.`} />
+              </div>
+            ) : null}
             <div className='mb-8'>
               {this.state.isConnected ? null : (
                 <>
@@ -251,7 +280,7 @@ class MyBids extends React.PureComponent {
                     </>
                   ) : canClaim ? (
                     <>
-                      <div className='mb-4 text-center'>You have {toClaim} domains to claim.{toClaim > 50 ? ' You can only claim 50 per transaction.' : ''}</div>
+                      <div className='mb-4 text-center'>You have {toClaim} {toClaim === 1 ? 'domain' : 'domains'} to claim.{toClaim > 50 ? ' You can only claim 50 per transaction.' : ''}</div>
                       <components.buttons.Button text={toClaim > 50 ? 'Claim Next 50 Domains' : 'Claim All'} onClick={() => this.props.claimAll()} loading={this.props.isClaimingDomains} />
                     </>
                   ) : null}
@@ -294,10 +323,28 @@ class MyBids extends React.PureComponent {
 
     if (keys.length === 0) return (
       <>
-        <div className='mt-4 mb-4 text-lg text-center font-bold'>{'No valid bids.'}</div>
+        <div className='mt-4 mb-4 text-lg text-center font-bold'>{'Sunrise Auction - Bid Reveal'}</div>
         <div className='max-w-md m-auto'>
-          <div className='mb-8'>
-            <components.labels.Information text={"The bid placement phase of the auction is over. Unfortunately you cannot place a bid at this stage. Domains will be available for on-demand registration after the auction is complete."} />
+          <div className='mt-4 text-gray-700 dark:text-gray-400'>
+            {"During this phase, no new bids can be placed. Users who have already placed sealed bids must reveal the contents of their sealed bids."}
+          </div>
+          <div className='font-bold mt-4'>
+            {"No bids found."}
+          </div>
+          <div className='mt-4 text-gray-700 dark:text-gray-400'>
+            {"We did not find any bids on your device. If you did not place a bid during the Bid Placement phase, you cannot place a bid now."}
+          </div>
+          <div className='font-bold mt-4'>
+            {"Did you place a bid during the Bid Placement phase?"}
+          </div>
+          <div className='mt-4 text-gray-700 dark:text-gray-400'>
+            {"During the Bid Placement phase, you submit a sealed bid to the C-Chain and your bid details are kept on your device. After you submit the sealed bid, you are forced to download a backup file "}<span className='italic'>{'avvy-backup.json'}</span>{". If you are able to find that file, "}<Link className='text-alert-blue' to={services.linking.path('Settings')}>{'you can restore it in your settings'}</Link>{"."}<br /><br />{"If you are able to access the device you used for Bid Placement, your data may be on that device. If you are unable to locate the data to reveal your bid, your bid will be disqualified."}
+          </div>
+          <div className='font-bold mt-4'>
+            {"What can I do now?"}
+          </div>
+          <div className='mt-4 text-gray-700 dark:text-gray-400'>
+            {"Once the auction is over, you will be able to register domains. Please return when the auction has completed."}<Link className='text-alert-blue' to={services.linking.path('SunriseAuction')}>{'Auction dates are available in the Sunrise Auction description.'}</Link>
           </div>
         </div>
       </>
