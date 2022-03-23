@@ -15,6 +15,7 @@ class RegistrationFlow extends React.PureComponent {
       connected: services.provider.isConnected(),
       needsProofs: true,
       hasProofs: false,
+      hasPrivacy: false,
     }
   }
 
@@ -96,6 +97,23 @@ class RegistrationFlow extends React.PureComponent {
     )
   }
 
+  renderPrivacy() {
+    return (
+      <>
+        <div className=''>
+          <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Generate Proofs'}</div>
+          <components.DomainPrivacy />
+        </div>
+        <div className='m-auto max-w-sm mb-4 mt-8 text-center'>
+          <components.checkbox.Button onCheck={() => this.props.enableEnhancedPrivacy(!this.props.enhancedPrivacy)} checked={this.props.enhancedPrivacy} text={'Enable Enhanced Privacy'} />
+        </div>
+        <div className='mt-4 m-auto max-w-sm'>
+          <components.buttons.Button text={'Continue'} onClick={() => this.setState({ hasPrivacy: true })} />
+        </div>
+      </>
+    )
+  }
+
   renderFinalize() {
     return (
       <>
@@ -143,6 +161,7 @@ class RegistrationFlow extends React.PureComponent {
     if (this.props.hasError) return this.renderHasError()
     if (!this.state.connected) return this.renderConnect()
     if (!this.state.hasProofs) return this.renderProofs()
+    if (!this.state.hasPrivacy) return this.renderPrivacy()
     if (!this.props.isComplete) return this.renderFinalize()
     return this.renderComplete()
   }
@@ -159,6 +178,7 @@ const mapStateToProps = (state) => ({
   isComplete: selectors.isComplete(state),
   isCommitting: selectors.isCommitting(state),
   isFinalizing: selectors.isFinalizing(state),
+  enhancedPrivacy: selectors.enhancedPrivacy(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -166,6 +186,7 @@ const mapDispatchToProps = (dispatch) => ({
   resetProofs: () => dispatch(actions.resetProofs()),
   commitTransaction: () => dispatch(actions.commit()),
   finalizeTransaction: () => dispatch(actions.finalize()),
+  enableEnhancedPrivacy: (value) => dispatch(actions.enableEnhancedPrivacy(value)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegistrationFlow)

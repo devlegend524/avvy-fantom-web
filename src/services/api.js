@@ -236,7 +236,7 @@ class AvvyClient {
     return hash
   }
 
-  async register(domains, quantities, constraintsProofs, pricingProofs, salt) {
+  async _getRegistrationArgs(domains, quantities) {
     let hashes = []
     let total = ethers.BigNumber.from('0')
     const conversionRate = await this.getAVAXConversionRate()
@@ -251,8 +251,23 @@ class AvvyClient {
         )
       )
     }
+    return {
+      total, 
+      hashes
+    }
+  }
 
+  async register(domains, quantities, constraintsProofs, pricingProofs, salt) {
+    const { total, hashes } = await this._getRegistrationArgs(domains, quantities)
     const registerTx = await this.contracts.LeasingAgentV1.register(hashes, quantities, constraintsProofs, pricingProofs, salt, {
+      value: total
+    })
+    await registerTx.wait()
+  }
+
+  async registerWithPreimage(domains, quantities, constraintsProofs, pricingProofs, salt, preimages) {
+    const { total, hashes } = await this._getRegistrationArgs(domains, quantities)
+    const registerTx = await this.contracts.LeasingAgentV1.registerWithPreimage(hashes, quantities, constraintsProofs, pricingProofs, salt, preimages, {
       value: total
     })
     await registerTx.wait()

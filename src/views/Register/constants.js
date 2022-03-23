@@ -13,6 +13,7 @@ const constants = reduxService.prepareConstants(
     'SET_IS_COMPLETE',
     'SET_IS_COMMITTING',
     'SET_IS_FINALIZING',
+    'ENABLE_ENHANCED_PRIVACY',
   ]
 )
 

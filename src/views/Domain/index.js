@@ -207,7 +207,9 @@ class Domain extends React.PureComponent {
                 <PlusCircleIcon className='cursor-pointer w-6' onClick={() => this.setRecordModal.toggle()} />
               ) : null}
             </div>
-            <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
+            {this.props.isLoadingRecords || this.props.records.length > 0 ? (
+              <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
+            ) : null}
             
             {this.props.isLoadingRecords ? (
               <components.Spinner />

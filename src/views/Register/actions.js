@@ -177,13 +177,31 @@ const actions = {
           pricingProofs.push(_pricingProofs[name])
           constraintsProofs.push(_constraintsProofs[name])
         })
-        await api.register(
-          names,
-          quantities,
-          constraintsProofs,
-          pricingProofs,
-          salt,
-        )
+
+        const enhancedPrivacy = selectors.enhancedPrivacy(state)
+        const reverseLookups = services.names.selectors.reverseLookups(state)
+
+        if (enhancedPrivacy) {
+          await api.register(
+            names,
+            quantities,
+            constraintsProofs,
+            pricingProofs,
+            salt,
+          )
+        } else {
+          const _names = names.map(n => reverseLookups[n])
+          const preimages = await api.buildPreimages(names)
+          await api.registerWithPreimage(
+            names,
+            quantities,
+            constraintsProofs,
+            pricingProofs,
+            salt,
+            preimages
+          )
+        }
+
         dispatch(actions.setIsComplete(true))
         dispatch(services.cart.actions.clear())
       } catch (err) {
@@ -191,8 +209,16 @@ const actions = {
           dispatch(actions.setIsFinalizing(false))
           return // user rejected transaction, give them another chance
         }
+        console.log(err)
         dispatch(actions.setHasError(true))
       }
+    }
+  },
+
+  enableEnhancedPrivacy: (value) => {
+    return {
+      type: constants.ENABLE_ENHANCED_PRIVACY, 
+      value
     }
   },
 }
