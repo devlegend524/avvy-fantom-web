@@ -20,7 +20,8 @@ class SunriseAuction extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      isConnected: services.provider.isConnected()
+      isConnected: services.provider.isConnected(),
+      importingBids: false,
     }
   }
 
@@ -85,7 +86,9 @@ class SunriseAuction extends React.PureComponent {
       }
     }
     this.props.addBulkBids(bids)
-    services.linking.navigate(navigator, 'SunriseAuctionMyBids')
+    this.setState({
+      importingBids: true
+    })
   }
   
   renderSections() {
@@ -124,7 +127,17 @@ class SunriseAuction extends React.PureComponent {
     return (
       <div className='max-w-screen-md m-auto'>
         <components.Modal ref={(ref) => this.bulkBidModal = ref} title={this.state.isConnected ? 'Bulk bid' : 'Connect wallet'}>
-          {this.state.isConnected ? (
+          {this.state.importingBids ? ( 
+            <div className='max-w-sm m-auto'> 
+              <div className='mb-4 font-bold text-center '>Importing Bids</div>
+              <div className='mb-4'>
+                <components.ProgressBar progress={this.props.nameDataProgress} />
+              </div>
+              <components.buttons.Button text={'View My Bids'} disabled={this.props.nameDataProgress < 100} onClick={(navigator) => {
+                services.linking.navigate(navigator, 'SunriseAuctionMyBids')
+              }} />
+            </div>
+          ) : this.state.isConnected ? (
             <>
               <div className='mb-4'>{'To place bids in bulk, follow the steps below.'}</div>
               <ol className='list-decimal pl-4'>
@@ -152,6 +165,7 @@ class SunriseAuction extends React.PureComponent {
 const mapStateToProps = (state) => ({
   auctionPhases: selectors.auctionPhases(state),
   isDarkmode: services.darkmode.selectors.isDarkmode(state),
+  nameDataProgress: services.sunrise.selectors.nameDataProgress(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({

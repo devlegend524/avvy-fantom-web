@@ -17,6 +17,20 @@ export const reducer = (state = initialState, action) => {
         }
       }
 
+    case constants.BULK_ADD_RECORDS:
+      console.log(action)
+      return {
+        ...state,
+        reverseLookups: {
+          ...state.reverseLookups,
+          ...action.names.reduce((obj, name, index) => {
+            const hash = action.hashes[index]
+            obj[hash] = name
+            return obj
+          }, {})
+        }
+      }
+
     default:
       return state
   }

@@ -47,6 +47,7 @@ const selectors = {
   },
   constraintsProofs: (state) => account(root(state).constraintsProofs),
   claimedNames: (state) => account(root(state).claimedNames),
+  nameDataProgress: (state) => root(state).nameDataProgress,
 }
 
 export default selectors

@@ -18,6 +18,21 @@ const actions = {
     }
   },
 
+  _bulkAddBids: (names, amounts) => {
+    return {
+      type: constants.BULK_ADD_BIDS,
+      names,
+      amounts,
+    }
+  },
+
+  bulkAddBids: (names, amounts) => {
+    return (dispatch, getState) => {
+      dispatch(actions._bulkAddBids(names, amounts))
+      dispatch(actions.refreshAllNameData())
+    }
+  },
+
   deleteBid: (domain) => {
     return {
       type: constants.DELETE_BID,
@@ -64,12 +79,42 @@ const actions = {
     }
   },
 
+  setNameDataProgress: (progress) => {
+    return {
+      type: constants.SET_NAME_DATA_PROGRESS,
+      progress
+    }
+  },
+
+  setAllNameData: (names, results) => {
+    return {
+      type: constants.SET_ALL_NAME_DATA,
+      names, 
+      results,
+    }
+  },
+
   refreshAllNameData: () => {
     return async (dispatch, getState) => {
+      const api = services.provider.buildAPI()
       const names = selectors.names(getState())
-      names.forEach((name) => {
-        dispatch(actions.refreshNameData(name))
-      })
+      const batchSize = 50
+      const numBatches = Math.floor(names.length / batchSize)
+      let currBatch = 0
+      let promises = []
+      let results = []
+      dispatch(actions.setNameDataProgress(0))
+      for (let i = 0; i < names.length; i += 1) {
+        promises.push(api.loadDomain(names[i]))
+        if (promises.length > batchSize || i === names.length - 1) {
+          let _results = await Promise.all(promises)
+          results = results.concat(_results)
+          currBatch += 1
+          promises = []
+          dispatch(actions.setNameDataProgress(parseInt((currBatch / numBatches) * 100)))
+        }
+      }
+      dispatch(actions.setAllNameData(names, results))
     }
   },
 

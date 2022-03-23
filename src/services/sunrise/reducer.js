@@ -12,6 +12,7 @@ export const initialState = {
   revealedBundles: {},
   constraintsProofs: {},
   claimedNames: {},
+  nameDataProgress: 0,
 }
 
 const rehydrate = (action, state) => {
@@ -57,6 +58,22 @@ export const reducer = (state = initialState, action) => {
           }
         }
       }
+      
+    case constants.BULK_ADD_BIDS:
+      return {
+        ...state,
+        bids: {
+          ...state.bids,
+          [account]: {
+            ...state.bids[account],
+            ...action.names.reduce((obj, name, index) => {
+              const amount = action.amounts[index]
+              obj[name] = amount
+              return obj
+            }, {})
+          }
+        }
+      }
 
     case constants.DELETE_BID:
       return {
@@ -81,6 +98,28 @@ export const reducer = (state = initialState, action) => {
             [action.name]: action.data
           }
         }
+      }
+
+    case constants.SET_ALL_NAME_DATA:
+      return {
+        ...state,
+        nameData: {
+          ...state.nameData,
+          [account]: {
+            ...state.nameData[account],
+            ...action.names.reduce((obj, name, index) => {
+              const data = action.results[index]
+              obj[name] = data
+              return obj
+            }, {})
+          }
+        }
+      }
+
+    case constants.SET_NAME_DATA_PROGRESS:
+      return {
+        ...state,
+        nameDataProgress: action.progress
       }
 
     case constants.ADD_BUNDLE:
