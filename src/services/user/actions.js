@@ -29,6 +29,12 @@ const actions = {
       }
     }
   },
+  
+  acceptDisclaimers: () => {
+    return {
+      type: constants.ACCEPT_DISCLAIMERS,
+    }
+  },
 
   setToken: (token) => {
     return {

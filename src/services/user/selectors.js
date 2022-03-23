@@ -6,6 +6,9 @@ const selectors = {
   domainIds: (state) => root(state).domainIds,
   domainCount: (state) => root(state).domainCount,
   token: (state) => root(state).token,
+
+  injectSentry: (state) => root(state).injectSentry,
+  hasAcceptedDisclaimers: (state) => root(state).hasAcceptedDisclaimers,
 }
 
 export default selectors

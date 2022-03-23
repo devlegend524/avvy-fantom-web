@@ -12,7 +12,7 @@ class Checkbox extends React.PureComponent {
   render() {
     return (
       <div className='flex items-flex-start cursor-pointer' onClick={this.check}>
-        <div className='mr-4 mt-2 w-6 h-6 border-2 border-gray-700 dark:border-gray-300 rounded flex-shrink-0 flex items-center justify-center'>
+        <div className={`mr-4 ${this.props.singleLine ? '' : 'mt-2'} w-6 h-6 border-2 border-gray-700 dark:border-gray-300 rounded flex-shrink-0 flex items-center justify-center`}>
           {this.props.checked ? (
             <CheckIcon className='w-6 text-gray-700 dark:text-gray-300' />
           ) : null}

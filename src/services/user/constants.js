@@ -7,6 +7,8 @@ const constants = reduxService.prepareConstants(
     'SET_DOMAIN_COUNT',
 
     'SET_TOKEN', 
+
+    'ACCEPT_DISCLAIMERS',
   ]
 )
 
