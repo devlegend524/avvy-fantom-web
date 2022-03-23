@@ -475,6 +475,9 @@ const actions = {
   addBulkBids: (bids) => {
     return async (dispatch, getState) => {
       const api = services.provider.buildAPI()
+      const domains = []
+      const hashes = []
+      const amounts = []
       for (let _domain in bids) {
         let domain = _domain.toLowerCase()
         let isSupported = await api.isSupported(domain)
@@ -482,13 +485,16 @@ const actions = {
           try {
             ethers.BigNumber.from(bids[domain])
             const hash = await client.nameHash(domain)
-            dispatch(services.names.actions.addRecord(domain, hash.toString()))
-            dispatch(services.sunrise.actions.addBid(domain, bids[domain]))
+            domains.push(domain)
+            hashes.push(hash.toString())
+            amounts.push(bids[domain])
           } catch (err) {
           }
         } else {
         }
       }
+      dispatch(services.names.actions.bulkAddRecords(domains, hashes))
+      dispatch(services.sunrise.actions.bulkAddBids(domains, amounts))
     }
   },
 

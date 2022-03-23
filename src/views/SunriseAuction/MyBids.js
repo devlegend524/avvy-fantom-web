@@ -501,6 +501,7 @@ class MyBids extends React.PureComponent {
     const isSubmitted = (name) => this.props.unsubmittedBidNames.indexOf(name) === -1
     const bids = this.props.bids
     const keys = Object.keys(bids).sort()
+
     const allSubmitted = keys.reduce((sum, curr) => {
       if (!sum) return false
       if (!isSubmitted(curr)) return false

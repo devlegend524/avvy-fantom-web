@@ -10,6 +10,14 @@ const actions = {
     }
   },
 
+  bulkAddRecords: (names, hashes) => {
+    return {
+      type: constants.BULK_ADD_RECORDS,
+      names,
+      hashes,
+    }
+  },
+
   lookup: (hash) => {
     return async (dispatch, getState) => {
       const api = services.provider.buildAPI()
