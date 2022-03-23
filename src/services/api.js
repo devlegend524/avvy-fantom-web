@@ -359,8 +359,13 @@ class AvvyClient {
 
   async getRevealedBidForSenderAtIndex(index) {
     const bid = await this.contracts.SunriseAuctionV1.getRevealedBidForSenderAtIndex(index)
-    const nameSignal = await this.contracts.RainbowTableV1.lookup(bid.name)
-    const preimage = await client.decodeNameHashInputSignals(nameSignal)
+    let nameSignal, preimage
+    try {
+      nameSignal = await this.contracts.RainbowTableV1.lookup(bid.name)
+      preimage = await client.decodeNameHashInputSignals(nameSignal)
+    } catch (err) {
+      preimage = null
+    }
     return {
       name: bid.name,
       amount: bid.amount,
