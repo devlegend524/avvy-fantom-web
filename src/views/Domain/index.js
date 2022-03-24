@@ -37,7 +37,9 @@ class Domain extends React.PureComponent {
     })
   }
 
-  loadDomain(domain) {
+  loadDomain() {
+    const params = services.linking.getParams('Domain')
+    const domain = params.domain ? params.domain.toLowerCase() : null
     this.props.loadDomain(domain)
   }
 
@@ -46,6 +48,7 @@ class Domain extends React.PureComponent {
       connected: true
     })
     if (this.connectModal) this.connectModal.hide()
+    this.loadDomain()
   }
 
   componentDidUpdate(prevProps) {
@@ -175,7 +178,17 @@ class Domain extends React.PureComponent {
         </components.Modal>
         <div className='w-full'>
           <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
-            <div className='font-bold'>{'Basic Information'}</div>
+            <div className='flex justify-between items-center'>
+              <div className='font-bold'>{'Basic Information'}</div>
+              {!this.state.connected ? (
+                <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
+              ) : isOwned ? (
+                <components.buttons.Button disabled={!this.props.domain.canRenew} sm={true} text='Renew' onClick={(navigator) => {
+                  this.props.renewDomain(this.props.domain.domain)
+                  services.linking.navigate(navigator, 'Register')
+                }} />
+              ) : null}
+            </div>
             <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
             <div className='mt-4 text-sm'>
               <div className='font-bold'>{'Registrant'}</div>
@@ -183,18 +196,20 @@ class Domain extends React.PureComponent {
                 {this.props.domain.owner}
               </div>
             </div>
-            <div className='mt-4 text-sm'>
-              <div className='font-bold'>{'Expiry'}</div>
+            <div className='mt-4 text-sm flex items-center justify-between'>
               <div>
-                {new Intl.DateTimeFormat(
-                  navigator.language,
-                  { month: 'short', day: 'numeric', year: 'numeric' }
-                ).format(this.props.domain.expiresAt * 1000)}
-                {' at '}
-                {new Intl.DateTimeFormat(
-                  navigator.langauge,
-                  { hour: 'numeric', minute: 'numeric' }
-                ).format(this.props.domain.expiresAt * 1000)}
+                <div className='font-bold'>{'Expiry'}</div>
+                <div>
+                  {new Intl.DateTimeFormat(
+                    navigator.language,
+                    { month: 'short', day: 'numeric', year: 'numeric' }
+                  ).format(this.props.domain.expiresAt * 1000)}
+                  {' at '}
+                  {new Intl.DateTimeFormat(
+                    navigator.langauge,
+                    { hour: 'numeric', minute: 'numeric' }
+                  ).format(this.props.domain.expiresAt * 1000)}
+                </div>
               </div>
             </div>
           </div>
@@ -301,6 +316,7 @@ const mapDispatchToProps = (dispatch) => ({
   addBid: (domain, amount) => dispatch(services.sunrise.actions.addBid(domain, amount)),
   setStandardRecord: (domain, type, value) => dispatch(actions.setStandardRecord(domain, type, value)),
   resetSetRecord: () => dispatch(actions.setRecordComplete(false)),
+  renewDomain: (domain) => dispatch(services.cart.actions.addToCart(domain)),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Domain)

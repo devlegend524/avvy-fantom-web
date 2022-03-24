@@ -7,6 +7,7 @@ const constants = reduxService.prepareConstants(
     'REMOVE_FROM_CART',
     'SET_QUANTITY',
     'SET_NAME_DATA',
+    'IS_REFRESHING_NAME_DATA',
   ]
 )
 

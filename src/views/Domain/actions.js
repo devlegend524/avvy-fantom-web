@@ -26,6 +26,14 @@ const actions = {
         domain = await api.loadDomain(_domain)
         dispatch(services.names.actions.addRecord(_domain, domain.hash))
         if (domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_SELF || domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_OTHER) dispatch(actions.loadRecords(_domain))
+        if (domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_SELF) {
+          const currExpiry = domain.expiresAt
+          const now = parseInt(Date.now() / 1000)
+          const oneYear = 365 * 24 * 60 * 60 // this value is directly from the LeasingAgent
+          const registeredExpiry = currExpiry + 2 * oneYear
+          domain.canRenew = !(registeredExpiry >= now + oneYear * services.environment.MAX_REGISTRATION_QUANTITY)
+        }
+
       } else {
         domain = {
           supported: false,

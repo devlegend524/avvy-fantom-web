@@ -16,29 +16,28 @@ import RegistrationFlow from './RegistrationFlow'
 class Register extends React.PureComponent {
   constructor(props) {
     super(props)
+    const params = services.linking.getParams('Domain')
     this.state = {
-      connected: services.provider.isConnected(),
+      domain: params.domain,
     }
   } 
 
+  updateParams = () => {
+    const params = services.linking.getParams('Domain')
+    this.setState({
+      domain: params.domain
+    })
+  }
+
   componentDidMount() {
     services.linking.addEventListener('Domain', this.updateParams)
-    services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
+    setTimeout(() => {
+      this.props.refreshNameData()
+    }, 1)
   }
 
   componentWillUnmount() {
     services.linking.removeEventListener('Domain', this.updateParams)
-    services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
-  }
-
-  onConnect() {
-    if (this.connectModal) {
-      this.connectModal.hide()
-    }
-    this.setState({
-      connected: true
-    })
-    this.props.refreshNameData()
   }
 
   incrementQuantity(name) {
@@ -56,11 +55,7 @@ class Register extends React.PureComponent {
   removeUnavailable() {
     this.props.names.forEach(name => {
       const nameData = this.props.nameData[name]
-      const validStatuses = [
-        nameData.constants.DOMAIN_STATUSES.AVAILABLE,
-        nameData.constants.DOMAIN_STATUSES.REGISTERED_SELF,
-      ]
-      if (validStatuses.indexOf(nameData.status) === -1) {
+      if (nameData.status !== nameData.constants.DOMAIN_STATUSES.AVAILABLE) {
         this.props.removeFromCart(name)
       }
     })
@@ -116,19 +111,13 @@ class Register extends React.PureComponent {
   renderName(name, index) {
     const nameData = this.props.nameData[name]
     if (!nameData) return null
-    if (nameData.status !== nameData.constants.DOMAIN_STATUSES.AVAILABLE && nameData.status !== nameData.constants.DOMAIN_STATUSES.REGISTERED_SELF) return null
-    const isRenewal = nameData.status === nameData.constants.DOMAIN_STATUSES.REGISTERED_SELF
+    if (nameData.status !== nameData.constants.DOMAIN_STATUSES.AVAILABLE) return null
     return (
       <div key={index} className='bg-gray-100 rounded-lg mb-4 p-4 dark:bg-gray-800'>
         <div className='flex justify-between flex-col items-center sm:flex-row'>
           <div className='text-center sm:text-left'>
             <div className='font-bold sm:text-xl'>{name}</div>
             {this.renderNameData(name)}
-            {isRenewal ? (
-              <div className='mt-2'>
-                <span className='text-xs bg-gray-600 py-1 px-2 rounded'>Renewal</span>
-              </div>
-            ) : null}
           </div>
           {this.renderQuantity(name)}
         </div>
@@ -145,11 +134,6 @@ class Register extends React.PureComponent {
         <components.DomainSearch />
       </div>
     )
-    if (this.props.isRefreshingNameData) return (
-      <div className='text-center w-full'>
-        <components.Spinner size='md' color={this.props.isDarkmode ? '#ddd' : '#555'} />
-      </div>
-    )
     const names = Array.from(this.props.names).sort((a, b) => a > b ? 1 : -1)
     const nameData = this.props.nameData
     const quantities = this.props.quantities
@@ -158,7 +142,7 @@ class Register extends React.PureComponent {
     }
     const unavailable = []
     const total = names.reduce((sum, curr) => {
-      if (nameData[curr].status !== nameData[curr].constants.DOMAIN_STATUSES.AVAILABLE && nameData[curr].status !== nameData[curr].constants.DOMAIN_STATUSES.REGISTERED_SELF) {
+      if (nameData[curr].status !== nameData[curr].constants.DOMAIN_STATUSES.AVAILABLE) {
         unavailable.push(curr)
         return sum
       }
@@ -219,17 +203,6 @@ class Register extends React.PureComponent {
     )
   }
 
-  renderNotConnected() {
-    return (
-      <div className='max-w-md m-auto'>
-        <components.labels.Information text={'You must be connected to a wallet to register domains'} />
-        <div className='mt-8'>
-          <components.buttons.Button text={'Connect your wallet'} onClick={() => this.connectModal.toggle()} />
-        </div>
-      </div>
-    )
-  }
-
   render() {
     return (
       <div>
@@ -239,11 +212,8 @@ class Register extends React.PureComponent {
         }}> 
           <RegistrationFlow />
         </components.Modal>
-        <components.Modal ref={(ref) => this.connectModal = ref} title={'Connect your wallet'}> 
-          <components.ConnectWallet />
-        </components.Modal>
         <div className='mt-4 mb-4 text-lg text-center font-bold'>{'Register'}</div>
-        {this.state.connected ? this.renderNames() : this.renderNotConnected()}
+        {this.renderNames()}
       </div>
     )
   }
@@ -253,8 +223,6 @@ const mapStateToProps = (state) => ({
   names: services.cart.selectors.names(state),
   nameData: services.cart.selectors.nameData(state),
   quantities: services.cart.selectors.quantities(state),
-  isRefreshingNameData: services.cart.selectors.isRefreshingNameData(state),
-  isDarkmode: services.darkmode.selectors.isDarkmode(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
