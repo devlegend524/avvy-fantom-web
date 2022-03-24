@@ -14,6 +14,7 @@ const reducers = [
   components.account.reducer,
   views.Domain.redux.reducer,
   views.Register.redux.reducer,
+  views.Renew.redux.reducer,
   views.SunriseAuction.redux.reducer,
   services.cart.reducer,
   services.darkmode.reducer,

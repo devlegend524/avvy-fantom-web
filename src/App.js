@@ -23,6 +23,7 @@ function Inner() {
         <Route path={services.linking.path('Landing')} element={<views.Landing />} />
         <Route path={services.linking.path('MyDomains')} element={<views.MyDomains />} />
         <Route path={services.linking.path('Register')} element={<views.Register />} />
+        <Route path={services.linking.path('Renew')} element={<views.Renew/>} />
         <Route path={services.linking.path('SunriseAuction')} element={<views.SunriseAuction />} />
         <Route path={services.linking.path('SunriseAuctionMyBids')} element={<views.SunriseAuction.MyBids />} />
         <Route path={services.linking.path('SetPassword')} element={<views.SetPassword />} />

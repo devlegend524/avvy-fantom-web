@@ -41,8 +41,24 @@ const actions = {
 
   incrementQuantity: (name) => {
     return (dispatch, getState) => {
-      const quantities = selectors.quantities(getState())
-      if (quantities[name] + 1> services.environment.MAX_REGISTRATION_QUANTITY) return
+      const state = getState()
+      const quantities = selectors.quantities(state)
+      const nameData = selectors.nameData(state)[name]
+
+      const quantity = quantities[name]
+
+      // prevent renewal quantity from exceeding max registration length
+      if (nameData.status === nameData.constants.DOMAIN_STATUSES.REGISTERED_SELF) {
+        const currExpiry = nameData.expiresAt
+        const now = parseInt(Date.now() / 1000)
+        const oneYear = 365 * 24 * 60 * 60 // this value is directly from the LeasingAgent
+        const registeredExpiry = currExpiry + (quantity + 1) * oneYear
+        if (registeredExpiry >= now + oneYear * services.environment.MAX_REGISTRATION_QUANTITY) return
+      }
+      
+      // prevent registration quantity from exceeding max registration length
+      if (quantity + 1 > services.environment.MAX_REGISTRATION_QUANTITY) return
+
       dispatch(actions._setQuantity(name, quantities[name] + 1))
     }
   },
@@ -71,12 +87,21 @@ const actions = {
     }
   },
 
+  isRefreshingNameData: (value) => {
+    return {
+      type: constants.IS_REFRESHING_NAME_DATA,
+      value
+    }
+  },
+
   refreshAllNameData: () => {
     return async (dispatch, getState) => {
+      dispatch(actions.isRefreshingNameData(true))
       const names = selectors.names(getState())
       names.forEach((name) => {
         dispatch(actions.refreshNameData(name))
       })
+      dispatch(actions.isRefreshingNameData(false))
     }
   },
 }

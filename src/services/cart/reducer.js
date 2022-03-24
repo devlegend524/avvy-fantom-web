@@ -6,6 +6,7 @@ export const initialState = {
   names: [],
   quantities: {},
   nameData: {},
+  isRefreshingNameData: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -48,6 +49,12 @@ export const reducer = (state = initialState, action) => {
           ...state.nameData,
           [action.name]: action.data
         }
+      }
+
+    case constants.IS_REFRESHING_NAME_DATA:
+      return {
+        ...state,
+        isRefreshingNameData: action.value
       }
 
     default:

@@ -13,6 +13,7 @@ const paths = {
   MyDomains: '/user/domains', SunriseAuctionMyBids: '/sunrise/bids',
   SunriseAuction: '/sunrise',
   Register: '/register',
+  Renew: '/renew',
   SetPassword: '/set-password/:token',
   Settings: '/settings',
 }
