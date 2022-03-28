@@ -280,8 +280,8 @@ class MyBids extends React.PureComponent {
                     </>
                   ) : canClaim ? (
                     <>
-                      <div className='mb-4 text-center'>You have {toClaim} {toClaim === 1 ? 'domain' : 'domains'} to claim.{toClaim > 50 ? ' You can only claim 50 per transaction.' : ''}</div>
-                      <components.buttons.Button text={toClaim > 50 ? 'Claim Next 50 Domains' : 'Claim All'} onClick={() => this.props.claimAll()} loading={this.props.isClaimingDomains} />
+                      <div className='mb-4 text-center'>You have {toClaim} {toClaim === 1 ? 'domain' : 'domains'} to claim.{toClaim > 12 ? ' You can only claim 12 per transaction.' : ''}</div>
+                      <components.buttons.Button text={toClaim > 50 ? 'Claim Next 12 Domains' : 'Claim All'} onClick={() => this.props.claimAll()} loading={this.props.isClaimingDomains} />
                     </>
                   ) : null}
                 </div>

@@ -1,7 +1,7 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { persistStore, persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
+import localforage from 'localforage'
 
 // import reducers
 import components from 'components'
@@ -29,7 +29,7 @@ reducers.forEach(service => {
 
 const persistedReducer = persistReducer({
     key: 'root',
-    storage,
+    storage: localforage,
     whitelist: [
       services.cart.reducer.reducerName,
       services.darkmode.reducer.reducerName,

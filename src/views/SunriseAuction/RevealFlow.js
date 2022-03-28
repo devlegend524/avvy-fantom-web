@@ -23,8 +23,8 @@ class RevealFlow extends React.PureComponent {
     }
   }
 
-  backup = () => {
-    services.data.backup()
+  backup = async () => {
+    await services.data.backup()
     this.setState({
       hasBackedUp: true
     })
