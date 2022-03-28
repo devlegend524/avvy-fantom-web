@@ -101,7 +101,7 @@ const actions = {
       const bundles = []
       let bundle
       let bidBundles = {}
-      let MAX_BIDS_PER_BUNDLE = 50
+      let MAX_BIDS_PER_BUNDLE = 15
       let counter
 
       for (let i = 0; i < names.length; i += 1) {
@@ -252,10 +252,11 @@ const actions = {
       const state = getState()
       const isLoading = selectors.isLoadingWinningBids(state)
       if (isLoading && !force) return
+      dispatch(actions.setLoadedBidProgress(0))
       dispatch(actions.setLoadingWinningBids(true))
       const api = services.provider.buildAPI()
       const revealedBidCount = await api.getRevealedBidForSenderCount()
-      const promises = []
+      let promises = []
       let loadedBidCount = 0
       let totalProgressCount = revealedBidCount * 2
 
@@ -266,16 +267,21 @@ const actions = {
         return
       }
 
+      let revealedBids = []
+
       for (let i = 0; i < revealedBidCount; i += 1) {
         promises.push(new Promise(async (resolve, reject) => {
           const bid = await api.getRevealedBidForSenderAtIndex(i)
-          loadedBidCount += 1
-          dispatch(actions.setLoadedBidProgress(parseInt((loadedBidCount / totalProgressCount) * 100)))
           return resolve(bid)
         }))
+        if (promises.length >= 50 || i === revealedBidCount - 1) {
+          let output = await Promise.all(promises)
+          revealedBids = revealedBids.concat(output)
+          loadedBidCount += promises.length
+          dispatch(actions.setLoadedBidProgress(parseInt((loadedBidCount / totalProgressCount) * 100)))
+          promises = []
+        }
       }
-
-      const revealedBids = await Promise.all(promises)
 
       // add in names that we are missing here
       dispatch(actions.setRevealedBids(revealedBids))
@@ -445,7 +451,7 @@ const actions = {
             missingProofs.push(name)
           }
         }
-        if (names.length >= 50) break // max 50 names per transaction
+        if (names.length >= 12) break
       }
       if (missingProofs.length > 0) {
         dispatch(actions.setClaimGenerateProofs(missingProofs))

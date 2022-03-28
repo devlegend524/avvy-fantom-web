@@ -49,8 +49,8 @@ class BidFlow extends React.PureComponent {
     this.props.submitBid()
   }
 
-  backupData = () => {
-    services.data.backup()
+  backupData = async () => {
+    await services.data.backup()
     this.setState({
       hasBackedUp: true
     })
