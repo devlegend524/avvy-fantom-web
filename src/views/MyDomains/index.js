@@ -105,7 +105,11 @@ class MyDomains extends React.PureComponent {
   renderDomainSection() {
     const domainCount = this.props.domainCount 
     if (!services.provider.isConnected()) return this.renderNotConnected()
-    if (domainCount === null) return null
+    if (domainCount === null) return (
+      <div className='text-center w-full mt-8'>
+        <components.Spinner size='md' color={this.props.isDarkmode ? '#eee' : '#555'} />
+      </div>
+    )
     if (domainCount === 0) return this.renderEmpty()
     return this.renderDomains()
   }
@@ -127,6 +131,7 @@ const mapStateToProps = (state) => ({
   domainIds: services.user.selectors.domainIds(state),
   domainCount: services.user.selectors.domainCount(state),
   reverseLookups: services.names.selectors.reverseLookups(state),
+  isDarkmode: services.darkmode.selectors.isDarkmode(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
