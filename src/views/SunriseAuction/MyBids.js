@@ -441,7 +441,9 @@ class MyBids extends React.PureComponent {
       }
     } else if (currPage === numPages - 1 || currPage === numPages - 2) {
       for (let i = numPages - 5; i < numPages; i += 1) {
-        pagesDisplayed.push(i+1)
+        if (i + 1 > 0) {
+          pagesDisplayed.push(i+1)
+        }
         if (pagesDisplayed.length >= maxPagesToDisplay) break
       }
     } else {
