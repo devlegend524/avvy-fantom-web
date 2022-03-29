@@ -6,8 +6,6 @@ const constants = reduxService.prepareConstants(
     'SET_HASH',
     'SET_SALT',
     'SET_PROGRESS',
-    'SET_PRICING_PROOF',
-    'SET_CONSTRAINTS_PROOF',
     'SET_HAS_COMMIT',
     'SET_HAS_ERROR',
     'SET_IS_COMPLETE',

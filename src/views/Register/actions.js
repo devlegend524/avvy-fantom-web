@@ -18,22 +18,6 @@ const actions = {
     }
   },
 
-  setPricingProof: (domain, proof) => {
-    return {
-      type: constants.SET_PRICING_PROOF,
-      domain,
-      proof
-    }
-  },
-
-  setConstraintsProof: (domain, proof) => {
-    return {
-      type: constants.SET_CONSTRAINTS_PROOF,
-      domain,
-      proof
-    }
-  },
-
   setProgress: (progress) => {
     return {
       type: constants.SET_PROGRESS,
@@ -90,23 +74,30 @@ const actions = {
     return async (dispatch, getState) => {
       try {
         const api = services.provider.buildAPI()
+        const state = getState()
+        const constraintsProofs = services.proofs.selectors.constraintsProofs(state)
+        const pricingProofs = services.proofs.selectors.pricingProofs(state)
         let j = 0;
         const numSteps = names.length * 2
         for (let i = 0; i < names.length; i += 1) {
           let name = names[i]
-          dispatch(actions.setProgress({
-            message: `Generating pricing proof for ${name} (${j+1}/${numSteps})`,
-            percent: parseInt((j / numSteps) * 100)
-          }))
-          let pricingRes = await api.generateDomainPriceProof(name)
-          dispatch(actions.setPricingProof(name, pricingRes.calldata))
+          if (!pricingProofs[name]) {
+            dispatch(actions.setProgress({
+              message: `Generating pricing proof for ${name} (${j+1}/${numSteps})`,
+              percent: parseInt((j / numSteps) * 100)
+            }))
+            let pricingRes = await api.generateDomainPriceProof(name)
+            dispatch(services.proofs.actions.setPricingProof(name, pricingRes.calldata))
+          }
           j += 1
-          dispatch(actions.setProgress({
-            message: `Generating constraints proof for ${name} (${j+1}/${numSteps})`,
-            percent: parseInt((j / numSteps) * 100),
-          }))
-          let constraintsRes = await api.generateConstraintsProof(name)
-          dispatch(actions.setConstraintsProof(name, constraintsRes.calldata))
+          if (!constraintsProofs[name]) {
+            dispatch(actions.setProgress({
+              message: `Generating constraints proof for ${name} (${j+1}/${numSteps})`,
+              percent: parseInt((j / numSteps) * 100),
+            }))
+            let constraintsRes = await api.generateConstraintsProof(name)
+            dispatch(services.proofs.actions.setConstraintsProof(name, constraintsRes.calldata))
+          }
           j += 1
         }
         dispatch(actions.setProgress({
