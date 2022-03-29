@@ -13,6 +13,7 @@ class DomainPrivacy extends React.PureComponent {
               <li>{'NFT exchanges can list your domain names'}</li>
               <li>{'Your wallet will always remember your domain names'}</li>
               <li>{'Reverse resolution will work for your domain names'}</li>
+              <li>{'You cannot switch these names to Enhanced Privacy***'}</li>
             </ul>
           </div>
           <div className='bg-gray-100 dark:bg-gray-800 p-4 rounded-xl'>
@@ -22,12 +23,14 @@ class DomainPrivacy extends React.PureComponent {
               <li>{'NFT exchanges cannot list your domain names*'}</li>
               <li>{'Your wallet will not remember your domain names**'}</li>
               <li>{'Reverse resolution will not work for your domain names'}</li>
+              <li>{'You can switch these names to Standard Privacy in the future***'}</li>
             </ul>
           </div>
         </div>
         <div className='text-gray-500 text-xs mt-4'>
           <div>{'* In some cases, it may be possible to read Enhanced Privacy domains'}</div>
           <div>{'** With Enhanced Privacy, you must remember the domain name you have registered or back up your data'}</div>
+          <div>{'*** Enabling Enhanced Privacy for names that were previously registered with Standard Privacy will have no effect'}</div>
           <div className='mt-4'><a target="_blank" rel="noreferrer" href="https://avvy.domains/blog/enhanced-privacy/" className='underline'>{'Read more about Enhanced Privacy'}</a></div>
         </div>
       </>

@@ -19,6 +19,14 @@ class RegistrationFlow extends React.PureComponent {
     }
   }
 
+  reset() {
+    this.setState({
+      needProofs: true,
+      hasProofs: false,
+      hasPrivacy: false,
+    })
+  }
+
   generateProofs() {
     this.setState({
       needsProofs: false
@@ -101,7 +109,7 @@ class RegistrationFlow extends React.PureComponent {
     return (
       <>
         <div className=''>
-          <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Generate Proofs'}</div>
+          <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Domain Privacy'}</div>
           <components.DomainPrivacy />
         </div>
         <div className='m-auto max-w-sm mb-4 mt-8 text-center'>
@@ -183,7 +191,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   generateProofs: (names) => dispatch(actions.generateProofs(names)),
-  resetProofs: () => dispatch(actions.resetProofs()),
   commitTransaction: () => dispatch(actions.commit()),
   finalizeTransaction: () => dispatch(actions.finalize()),
   enableEnhancedPrivacy: (value) => dispatch(actions.enableEnhancedPrivacy(value)),

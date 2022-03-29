@@ -119,8 +119,8 @@ const actions = {
         const api = services.provider.buildAPI()
         const names = services.cart.selectors.names(state)
         const _quantities = services.cart.selectors.quantities(state)
-        const _constraintsProofs = selectors.constraintsProofs(state)
-        const _pricingProofs = selectors.pricingProofs(state)
+        const _constraintsProofs = services.proofs.selectors.constraintsProofs(state)
+        const _pricingProofs = services.proofs.selectors.pricingProofs(state)
         let quantities = []
         let pricingProofs = []
         let constraintsProofs = []
@@ -144,6 +144,7 @@ const actions = {
           dispatch(actions.setIsCommitting(false))
           return // user rejected transaction, give them another chance
         }
+        services.logger.error(err)
         dispatch(actions.setHasError(true))
       }
     }
@@ -158,8 +159,8 @@ const actions = {
         const names = services.cart.selectors.names(state)
         const salt = selectors.commitSalt(state)
         const _quantities = services.cart.selectors.quantities(state)
-        const _constraintsProofs = selectors.constraintsProofs(state)
-        const _pricingProofs = selectors.pricingProofs(state)
+        const _constraintsProofs = services.proofs.selectors.constraintsProofs(state)
+        const _pricingProofs = services.proofs.selectors.pricingProofs(state)
         let quantities = []
         let pricingProofs = []
         let constraintsProofs = []
@@ -200,7 +201,7 @@ const actions = {
           dispatch(actions.setIsFinalizing(false))
           return // user rejected transaction, give them another chance
         }
-        console.log(err)
+        services.logger.error(err)
         dispatch(actions.setHasError(true))
       }
     }

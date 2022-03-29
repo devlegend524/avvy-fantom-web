@@ -204,7 +204,7 @@ class Register extends React.PureComponent {
             {this.renderNameData(name)}
             {isRenewal ? (
               <div className='mt-2'>
-                <span className='text-xs bg-gray-600 py-1 px-2 rounded'>Renewal</span>
+                <span className='text-xs bg-gray-200 dark:bg-gray-600 py-1 px-2 rounded'>Renewal</span>
               </div>
             ) : null}
           </div>
@@ -379,7 +379,7 @@ class Register extends React.PureComponent {
           const answer = window.confirm('Closing this window will cancel your registration. Are you sure you want to proceed?')
           return answer
         }}> 
-          <RegistrationFlow />
+          <RegistrationFlow ref={(ref) => this.registrationFlow = ref} />
         </components.Modal>
         <components.Modal ref={(ref) => this.connectModal = ref} title={'Connect your wallet'}> 
           <components.ConnectWallet />
