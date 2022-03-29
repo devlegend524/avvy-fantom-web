@@ -5,6 +5,7 @@ const constants = reduxService.prepareConstants(
   [
     'ADD_TO_CART',
     'ADD_BULK_REGISTRATIONS',
+    'SET_BULK_REGISTRATION_PROGRESS',
     'REMOVE_FROM_CART',
     'SET_QUANTITY',
     'SET_NAME_DATA',

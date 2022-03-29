@@ -26,22 +26,46 @@ const actions = {
     }
   },
 
+  _setBulkRegistrationProgress: (progress) => {
+    return {
+      type: constants.SET_BULK_REGISTRATION_PROGRESS,
+      progress
+    }
+  },
+
   addBulkRegistrations: (registrations) => {
     return async (dispatch, getState) => {
       let nameData = {}
       const api = services.provider.buildAPI()
       const names = []
       const quantities = {}
-      for (let name in registrations) {
-        let isSupported = await api.isSupported(name)
-        let quantity = parseInt(registrations[name])
-        if (isSupported && quantity > 0) {
-          names.push(name)
-          quantities[name] = quantity > services.environment.MAX_REGISTRATION_QUANTITY ? services.environment.MAX_REGISTRATION_QUANTITY : quantity 
-          let data = await api.loadDomain(name)
-          nameData[name] = data
-        }
+      let promises = []
+      let progress = 0
+      let completed = 0
+      let total = Object.keys(registrations).length
+      dispatch(actions._setBulkRegistrationProgress(progress))
+      const execPromises = async () => {
+        await Promise.all(promises)
+        completed += promises.length
+        promises = []
+        dispatch(actions._setBulkRegistrationProgress(parseInt((completed / total) * 100)))
       }
+      for (let name in registrations) {
+        promises.push(new Promise(async (resolve, reject) => {
+          let isSupported = await api.isSupported(name)
+          let quantity = parseInt(registrations[name])
+          if (isSupported && quantity > 0) {
+            names.push(name)
+            quantities[name] = quantity > services.environment.MAX_REGISTRATION_QUANTITY ? services.environment.MAX_REGISTRATION_QUANTITY : quantity 
+            let data = await api.loadDomain(name)
+            nameData[name] = data
+          }
+          resolve()
+        }))
+        if (promises.length >= 10) await execPromises()
+      }
+      await execPromises()
+      dispatch(actions._setBulkRegistrationProgress(100))
       dispatch(actions._addBulkRegistrations(names, quantities, nameData))
     }
   },

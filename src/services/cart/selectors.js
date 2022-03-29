@@ -7,6 +7,7 @@ const selectors = {
   nameData: (state) => root(state).nameData,
   quantities: (state) => root(state).quantities,
   isRefreshingNameData: (state) => root(state).isRefreshingNameData,
+  bulkRegistrationProgress: (state) => root(state).bulkRegistrationProgress,
 }
 
 export default selectors

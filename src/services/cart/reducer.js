@@ -7,6 +7,7 @@ export const initialState = {
   quantities: {},
   nameData: {},
   isRefreshingNameData: false,
+  bulkRegistrationProgress: 0,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -52,7 +53,7 @@ export const reducer = (state = initialState, action) => {
       }
 
     case constants.ADD_BULK_REGISTRATIONS:
-      const nextState = {
+      return {
         ...state,
         names: [
           ...state.names,
@@ -67,7 +68,12 @@ export const reducer = (state = initialState, action) => {
           ...action.quantities,
         },
       }
-      return nextState
+
+    case constants.SET_BULK_REGISTRATION_PROGRESS:
+      return {
+        ...state,
+        bulkRegistrationProgress: action.progress
+      }
 
     case constants.IS_REFRESHING_NAME_DATA:
       return {

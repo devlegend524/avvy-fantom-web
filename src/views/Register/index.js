@@ -278,9 +278,9 @@ class Register extends React.PureComponent {
             <div className='max-w-sm m-auto'> 
               <div className='mb-4 font-bold text-center '>Importing Registrations</div>
               <div className='mb-4'>
-                <components.ProgressBar progress={this.props.nameDataProgress} />
+                <components.ProgressBar progress={this.props.bulkRegistrationProgress} />
               </div>
-              <components.buttons.Button text={'Close'} disabled={this.props.nameDataProgress < 100} onClick={() => this.bulkModal.toggle()} />
+              <components.buttons.Button text={'Close'} disabled={this.props.bulkRegistrationProgress < 100} onClick={() => this.bulkModal.toggle()} />
             </div>
           ) : this.state.connected ? (
             <>
@@ -321,6 +321,7 @@ const mapStateToProps = (state) => ({
   quantities: services.cart.selectors.quantities(state),
   isRefreshingNameData: services.cart.selectors.isRefreshingNameData(state),
   isDarkmode: services.darkmode.selectors.isDarkmode(state),
+  bulkRegistrationProgress: services.cart.selectors.bulkRegistrationProgress(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
