@@ -51,6 +51,24 @@ export const reducer = (state = initialState, action) => {
         }
       }
 
+    case constants.ADD_BULK_REGISTRATIONS:
+      const nextState = {
+        ...state,
+        names: [
+          ...state.names,
+          ...action.names.filter(name => state.names.indexOf(name === -1)),
+        ],
+        nameData: {
+          ...state.nameData,
+          ...action.nameData,
+        },
+        quantities: {
+          ...state.quantities,
+          ...action.quantities,
+        },
+      }
+      return nextState
+
     case constants.IS_REFRESHING_NAME_DATA:
       return {
         ...state,
