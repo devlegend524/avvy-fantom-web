@@ -19,6 +19,7 @@ const reducers = [
   services.cart.reducer,
   services.darkmode.reducer,
   services.names.reducer,
+  services.proofs.reducer,
   services.sunrise.reducer,
   services.user.reducer
 ]
@@ -34,6 +35,7 @@ const persistedReducer = persistReducer({
       services.cart.reducer.reducerName,
       services.darkmode.reducer.reducerName,
       services.names.reducer.reducerName,
+      services.proofs.reducer.reducerName,
       services.sunrise.reducer.reducerName,
       services.user.reducer.reducerName,
     ]

@@ -12,6 +12,7 @@ import linking from './linking'
 import logger from './logger'
 import money from './money'
 import names from './names'
+import proofs from './proofs'
 import provider from './provider'
 import random from './random'
 import records from './records'
@@ -35,6 +36,7 @@ const services = {
   logger,
   money,
   names,
+  proofs,
   provider,
   random,
   records,
