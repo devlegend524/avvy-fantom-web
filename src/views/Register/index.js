@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/solid'
+import { ChevronLeftIcon, ChevronRightIcon, PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/solid'
 
 import services from 'services'
 import components from 'components'
@@ -17,6 +17,7 @@ class Register extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
+      paginationIndex: 0,
       connected: services.provider.isConnected(),
       importingRegistrations: false,
     }
@@ -70,6 +71,74 @@ class Register extends React.PureComponent {
   startPurchase() {
     this.props.resetRegistration()
     this.registrationModal.toggle()
+  }
+
+  renderPagination(numPages) {
+    numPages = Math.ceil(numPages)
+    const currPage = this.state.paginationIndex
+    let pagesDisplayed = []
+    const maxPagesToDisplay = 5
+    if (currPage === 0 || currPage === 1) {
+      for (let i = 0; i < numPages; i += 1) {
+        pagesDisplayed.push(i+1)
+        if (pagesDisplayed.length >= maxPagesToDisplay) break
+      }
+    } else if (currPage === numPages - 1 || currPage === numPages - 2) {
+      for (let i = numPages - 5; i < numPages; i += 1) {
+        if (i + 1 > 0) {
+          pagesDisplayed.push(i+1)
+        }
+        if (pagesDisplayed.length >= maxPagesToDisplay) break
+      }
+    } else {
+      pagesDisplayed = [
+        currPage - 1,
+        currPage,
+        currPage + 1,
+        currPage + 2,
+        currPage + 3,
+      ]
+    }
+    return (
+      <div className='flex items-center justify-center'>
+        <div 
+          onClick={() => {
+            this.setState(currState => {
+              const currPage = this.state.paginationIndex
+              const nextPage = currPage === 0 ? currPage : currPage - 1
+              return {
+                paginationIndex: nextPage
+              }
+            })
+          }}
+          className='dark:bg-gray-800 bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
+          <ChevronLeftIcon className='w-6' />
+        </div>
+        {pagesDisplayed.map((p, index) => (
+          <div 
+            onClick={() => {
+              this.setState({
+                paginationIndex: p - 1
+              })
+            }}
+            className={`dark:bg-gray-800 cursor-pointer select-none bg-gray-100 rounded-lg w-12 h-12 flex items-center justify-center mr-2 ${currPage === p - 1 ? 'font-bold' : ''}`} key={index}>{p}
+          </div>
+        ))}
+        <div 
+          onClick={() => {
+            this.setState(currState => {
+              const currPage = this.state.paginationIndex
+              const nextPage = currPage >= numPages - 1 ? currPage : currPage + 1
+              return {
+                paginationIndex: nextPage
+              }
+            })
+          }}
+          className='dark:bg-gray-800 bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
+          <ChevronRightIcon className='w-6' />
+        </div>
+      </div>
+    )
   }
 
   renderNameData(name) {
@@ -162,7 +231,7 @@ class Register extends React.PureComponent {
         <components.Spinner size='md' color={this.props.isDarkmode ? '#ddd' : '#555'} />
       </div>
     )
-    const names = Array.from(this.props.names).sort((a, b) => a > b ? 1 : -1)
+    let names = Array.from(this.props.names).sort((a, b) => a > b ? 1 : -1)
     const nameData = this.props.nameData
     const quantities = this.props.quantities
     for (let i = 0; i < names.length; i += 1) {
@@ -200,9 +269,16 @@ class Register extends React.PureComponent {
         </div>
       </div>
     )
+
+    const pageLength = 5
+    const hasPagination = names.length > pageLength
+    const numPages = names.length / pageLength
+    names = names.slice(this.state.paginationIndex * pageLength, this.state.paginationIndex * pageLength + pageLength)
+
     return (
       <>
         {names.map(this.renderName.bind(this))}
+        {hasPagination ? this.renderPagination(numPages) : null}
         <div className='max-w-md m-auto mt-8'>
           <div className='m-auto mb-8 max-w-xs'>
             <div className='border-b border-gray-400 pb-4 mb-4'>
