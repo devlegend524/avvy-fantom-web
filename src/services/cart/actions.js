@@ -17,6 +17,35 @@ const actions = {
     }
   },
 
+  _addBulkRegistrations: (names, quantities, nameData) => {
+    return {
+      type: constants.ADD_BULK_REGISTRATIONS,
+      names,
+      quantities,
+      nameData,
+    }
+  },
+
+  addBulkRegistrations: (registrations) => {
+    return async (dispatch, getState) => {
+      let nameData = {}
+      const api = services.provider.buildAPI()
+      const names = []
+      const quantities = {}
+      for (let name in registrations) {
+        let isSupported = await api.isSupported(name)
+        let quantity = parseInt(registrations[name])
+        if (isSupported && quantity > 0) {
+          names.push(name)
+          quantities[name] = quantity > services.environment.MAX_REGISTRATION_QUANTITY ? services.environment.MAX_REGISTRATION_QUANTITY : quantity 
+          let data = await api.loadDomain(name)
+          nameData[name] = data
+        }
+      }
+      dispatch(actions._addBulkRegistrations(names, quantities, nameData))
+    }
+  },
+
   removeFromCart: (name) => {
     return {
       type: constants.REMOVE_FROM_CART,

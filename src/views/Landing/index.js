@@ -28,6 +28,12 @@ class Landing extends React.PureComponent {
           <div>{'Sunrise Auction'}</div>
           <ArrowRightIcon className="h-6" />
         </Link>
+        <Link
+          to={services.linking.path('Register')}
+          className="flex justify-between bg-gray-100 font-bold p-4 rounded mb-2 dark:bg-gray-700">
+          <div>{'Register a Name'}</div>
+          <ArrowRightIcon className="h-6" />
+        </Link>
       </div>
     )
   }

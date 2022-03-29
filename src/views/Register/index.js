@@ -18,6 +18,7 @@ class Register extends React.PureComponent {
     super(props)
     this.state = {
       connected: services.provider.isConnected(),
+      importingRegistrations: false,
     }
   } 
 
@@ -113,6 +114,14 @@ class Register extends React.PureComponent {
     )
   }
 
+  initBulkRegistrations = () => {
+    this.setState({
+      importingRegistrations: false,
+    }, () => {
+      this.bulkModal.toggle()
+    })
+  }
+
   renderName(name, index) {
     const nameData = this.props.nameData[name]
     if (!nameData) return null
@@ -143,6 +152,9 @@ class Register extends React.PureComponent {
           <components.labels.Information text={"You haven't selected any names to register"} />
         </div>
         <components.DomainSearch />
+        <div className='mt-4 text-center text-gray-500 text-sm'>
+          <div className='underline cursor-pointer' onClick={() => this.initBulkRegistrations()}>{'Want to register in bulk?'}</div>
+        </div>
       </div>
     )
     if (this.props.isRefreshingNameData) return (
@@ -154,7 +166,11 @@ class Register extends React.PureComponent {
     const nameData = this.props.nameData
     const quantities = this.props.quantities
     for (let i = 0; i < names.length; i += 1) {
-      if (!nameData[names[i]] || !quantities[names[i]]) return null
+      if (!nameData[names[i]] || !quantities[names[i]]) {
+        console.log('missing namedata')
+        console.log(names[i])
+        return null
+      }
     }
     const unavailable = []
     const total = names.reduce((sum, curr) => {
@@ -230,9 +246,59 @@ class Register extends React.PureComponent {
     )
   }
 
+  downloadBulkBidTemplate() {
+    services.files.download(
+      'Domain Name,Registration Length (years)\navvydomains.avax,1',
+      'text/csv',
+      'avvy-registration-template.csv',
+    )
+  }
+
+  async uploadBulkBidTemplate(navigator) {
+    const data = await services.files.upload()
+    const lines = data.replace('\r\n', '\n').replace('\r', '\n').split('\n')
+    const registrations = {}
+    for (let i = 0; i < lines.length; i += 1) {
+      if (i > 0) {
+        let split = lines[i].split(',')
+        registrations[split[0]] = split[1]
+      }
+    }
+    this.props.addBulkRegistrations(registrations)
+    this.setState({
+      importingRegistrations: true
+    })
+  }
+
   render() {
     return (
       <div>
+        <components.Modal ref={(ref) => this.bulkModal = ref} title={this.state.connected ? 'Bulk register' : 'Connect wallet'}>
+          {this.state.importingRegistrations ? ( 
+            <div className='max-w-sm m-auto'> 
+              <div className='mb-4 font-bold text-center '>Importing Registrations</div>
+              <div className='mb-4'>
+                <components.ProgressBar progress={this.props.nameDataProgress} />
+              </div>
+              <components.buttons.Button text={'Close'} disabled={this.props.nameDataProgress < 100} onClick={() => this.bulkModal.toggle()} />
+            </div>
+          ) : this.state.connected ? (
+            <>
+              <div className='mb-4'>{'To register names in bulk, follow the steps below.'}</div>
+              <ol className='list-decimal pl-4'>
+                <li><span className='underline cursor-pointer' onClick={this.downloadBulkBidTemplate.bind(this)}>{'Download our bulk-registration template'}</span>{' and edit it as described in the following steps.'}</li>
+                <li>{'In the '}<span className='font-bold'>{'Domain Name'}</span>{' column, enter the name you wish to register (or renew). You must include the .avax extension. Any names that are not of the format '}<span className='font-bold'>{'nametoregister.avax'}</span>{' will be disregarded.'}</li>
+                <li>{'In the '}<span className='font-bold'>Registration Length</span>{' column, include the number of years you wish to register the domain for. You can register names for a maximum of 5 years into the future.'}</li>
+                <li>{'Upload the edited template.'}</li>
+              </ol>
+              <div className='mt-8 max-w-sm m-auto'>
+                <components.buttons.Button text='Upload template' onClick={(navigator) => this.uploadBulkBidTemplate(navigator)} />
+              </div>
+            </>
+          ) : (
+            <components.ConnectWallet />
+          )}
+        </components.Modal>
         <components.Modal ref={(ref) => this.registrationModal = ref} onClose={() => {
           const answer = window.confirm('Closing this window will cancel your registration. Are you sure you want to proceed?')
           return answer
@@ -262,7 +328,8 @@ const mapDispatchToProps = (dispatch) => ({
   incrementQuantity: (name) => dispatch(services.cart.actions.incrementQuantity(name)),
   decrementQuantity: (name) => dispatch(services.cart.actions.decrementQuantity(name)),
   refreshNameData: () => dispatch(services.cart.actions.refreshAllNameData()),
-  resetRegistration: () => dispatch(actions.reset())
+  resetRegistration: () => dispatch(actions.reset()),
+  addBulkRegistrations: (registrations) => dispatch(services.cart.actions.addBulkRegistrations(registrations)),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Register)
