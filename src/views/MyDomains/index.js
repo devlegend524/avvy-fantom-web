@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { ArrowRightIcon } from '@heroicons/react/solid'
+import { ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { Link } from 'react-router-dom'
 
 import components from 'components'
@@ -8,6 +8,13 @@ import services from 'services'
 
 
 class MyDomains extends React.PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = {
+      paginationIndex: 0,
+    }
+  }
+
   componentDidMount() {
     services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
     this.loadDomains()
@@ -68,14 +75,88 @@ class MyDomains extends React.PureComponent {
     )
   }
 
+  renderPagination(numPages) {
+    numPages = Math.ceil(numPages)
+    const currPage = this.state.paginationIndex
+    let pagesDisplayed = []
+    const maxPagesToDisplay = 5
+    if (currPage === 0 || currPage === 1) {
+      for (let i = 0; i < numPages; i += 1) {
+        pagesDisplayed.push(i+1)
+        if (pagesDisplayed.length >= maxPagesToDisplay) break
+      }
+    } else if (currPage === numPages - 1 || currPage === numPages - 2) {
+      for (let i = numPages - 5; i < numPages; i += 1) {
+        if (i + 1 > 0) {
+          pagesDisplayed.push(i+1)
+        }
+        if (pagesDisplayed.length >= maxPagesToDisplay) break
+      }
+    } else {
+      pagesDisplayed = [
+        currPage - 1,
+        currPage,
+        currPage + 1,
+        currPage + 2,
+        currPage + 3,
+      ]
+    }
+    return (
+      <div className='flex items-center justify-center'>
+        <div 
+          onClick={() => {
+            this.setState(currState => {
+              const currPage = this.state.paginationIndex
+              const nextPage = currPage === 0 ? currPage : currPage - 1
+              return {
+                paginationIndex: nextPage
+              }
+            })
+          }}
+          className='dark:bg-gray-800 bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
+          <ChevronLeftIcon className='w-6' />
+        </div>
+        {pagesDisplayed.map((p, index) => (
+          <div 
+            onClick={() => {
+              this.setState({
+                paginationIndex: p - 1
+              })
+            }}
+            className={`dark:bg-gray-800 cursor-pointer select-none bg-gray-100 rounded-lg w-12 h-12 flex items-center justify-center mr-2 ${currPage === p - 1 ? 'font-bold' : ''}`} key={index}>{p}
+          </div>
+        ))}
+        <div 
+          onClick={() => {
+            this.setState(currState => {
+              const currPage = this.state.paginationIndex
+              const nextPage = currPage >= numPages - 1 ? currPage : currPage + 1
+              return {
+                paginationIndex: nextPage
+              }
+            })
+          }}
+          className='dark:bg-gray-800 bg-gray-100 rounded-lg select-none w-12 h-12 flex items-center justify-center mr-2 cursor-pointer'>
+          <ChevronRightIcon className='w-6' />
+        </div>
+      </div>
+    )
+  }
+
   renderDomains() {
     const reverseLookups = this.props.reverseLookups
-    const domains = this.props.domainIds.filter(domain => reverseLookups[domain])
+    let domains = this.props.domainIds.filter(domain => reverseLookups[domain])
     const hiddenDomainCount = this.props.domainIds.length - domains.length
+    const pageLength = 10
+    const hasPagination = domains.length > pageLength
+    const numPages = domains.length / pageLength
+    domains = domains.slice(this.state.paginationIndex * pageLength, this.state.paginationIndex * pageLength + pageLength)
+
     return (
       <div className='mt-8'>
         {hiddenDomainCount > 0 ? this.renderHiddenDomainsNotice(hiddenDomainCount) : null}
         {domains.map((domain, index) => this.renderRevealedDomain(domain, index))}
+        {hasPagination ? this.renderPagination(numPages) : null}
       </div>
     )
   }
