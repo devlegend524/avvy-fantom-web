@@ -56,6 +56,11 @@ class AvvyClient {
     return domains
   }
 
+  async getTokenOfOwnerByIndex(account, index) {
+    let id = await this.contracts.Domain.tokenOfOwnerByIndex(account, index.toString())
+    return id
+  }
+
   async isAuctionPeriod(auctionPhases) {
     const biddingStartsAt = parseInt(auctionPhases[0]) * 1000
     const claimEndsAt = parseInt(auctionPhases[3]) * 1000

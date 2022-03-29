@@ -5,6 +5,7 @@ export const reducerName = 'userService'
 export const initialState = {
   domainIds: [],
   domainCount: null,
+  loadedDomainCount: 0,
 
   token: null,
 
@@ -25,6 +26,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         domainCount: action.domainCount
+      }
+
+    case constants.SET_LOADED_DOMAIN_COUNT:
+      return {
+        ...state,
+        loadedDomainCount: action.loadedDomainCount
       }
 
     case constants.SET_TOKEN:

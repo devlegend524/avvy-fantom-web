@@ -1,5 +1,6 @@
 import constants from './constants'
 import functions from './functions'
+import localforage from 'localforage'
 
 const actions = {
   setDarkmode: (value) => {
