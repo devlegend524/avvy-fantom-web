@@ -104,13 +104,24 @@ class MyDomains extends React.PureComponent {
 
   renderDomainSection() {
     const domainCount = this.props.domainCount 
+    const loadedDomainCount = this.props.loadedDomainCount
+    const pct = parseInt((loadedDomainCount / domainCount) * 100)
+
     if (!services.provider.isConnected()) return this.renderNotConnected()
     if (domainCount === null) return (
       <div className='text-center w-full mt-8'>
         <components.Spinner size='md' color={this.props.isDarkmode ? '#eee' : '#555'} />
       </div>
     )
-    if (domainCount === 0) return this.renderEmpty()
+    if (loadedDomainCount < domainCount) {
+      return (
+        <div className='mt-8 max-w-sm m-auto text-center'>
+          <components.ProgressBar progress={pct} />
+         <div className='mt-4 text-gray-400 dark:text-gray-700'>{'Loading domains'}</div>
+        </div>
+      )
+    }
+    if (domainCount === 0 || !this.props.domainIds) return this.renderEmpty()
     return this.renderDomains()
   }
 
@@ -130,6 +141,7 @@ class MyDomains extends React.PureComponent {
 const mapStateToProps = (state) => ({
   domainIds: services.user.selectors.domainIds(state),
   domainCount: services.user.selectors.domainCount(state),
+  loadedDomainCount: services.user.selectors.loadedDomainCount(state),
   reverseLookups: services.names.selectors.reverseLookups(state),
   isDarkmode: services.darkmode.selectors.isDarkmode(state),
 })

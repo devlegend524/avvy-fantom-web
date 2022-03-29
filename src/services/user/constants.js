@@ -5,6 +5,7 @@ const constants = reduxService.prepareConstants(
   [
     'SET_DOMAIN_IDS',
     'SET_DOMAIN_COUNT',
+    'SET_LOADED_DOMAIN_COUNT',
 
     'SET_TOKEN', 
 

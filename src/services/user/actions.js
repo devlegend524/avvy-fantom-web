@@ -16,17 +16,34 @@ const actions = {
     }
   },
 
+  setLoadedDomainCount: (loadedDomainCount) => {
+    return {
+      type: constants.SET_LOADED_DOMAIN_COUNT,
+      loadedDomainCount
+    }
+  },
+
   loadDomains: () => {
     return async (dispatch, getState) => {
       const api = services.provider.buildAPI()
       dispatch(actions.setDomainCount(null))
-      const domainIds = await api.getDomainIDsByOwner(api.account)
-      dispatch(actions.setDomainIds(domainIds))
-      dispatch(actions.setDomainCount(domainIds.length))
+      const domainCount = await api.getDomainCountForOwner(api.account)
+      let domainIds = []
+      let loadedDomainCount = 0
+      dispatch(actions.setLoadedDomainCount(0))
+      dispatch(actions.setDomainCount(domainCount))
+      for (let i = 0; i < domainCount; i += 1) {
+        let id = await api.getTokenOfOwnerByIndex(api.account, i.toString())
+        domainIds.push(id)
+        loadedDomainCount += 1
+        if (loadedDomainCount % 10 === 0) dispatch(actions.setLoadedDomainCount(loadedDomainCount))
+      }
+      dispatch(actions.setLoadedDomainCount(domainIds.length))
       const lookups = services.names.selectors.reverseLookups(getState())
       for (let i = 0; i < domainIds.length; i += 1) {
         if (!lookups[domainIds[i]]) dispatch(services.names.actions.lookup(domainIds[i]))
       }
+      dispatch(actions.setDomainIds(domainIds))
     }
   },
   
