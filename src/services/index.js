@@ -1,5 +1,6 @@
 import account from './account'
 import abi from './abi'
+import analytics from './analytics'
 import api from './api'
 import cart from './cart'
 import circuits from './circuits'
@@ -24,6 +25,7 @@ import user from './user'
 const services = {
   account,
   abi,
+  analytics,
   api,
   cart,
   circuits,
