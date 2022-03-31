@@ -16,6 +16,7 @@ const reducers = [
   views.Register.redux.reducer,
   views.Renew.redux.reducer,
   views.SunriseAuction.redux.reducer,
+  services.analytics.reducer,
   services.cart.reducer,
   services.darkmode.reducer,
   services.names.reducer,
@@ -32,6 +33,7 @@ const persistedReducer = persistReducer({
     key: 'root',
     storage: localforage,
     whitelist: [
+      services.analytics.reducer.reducerName,
       services.cart.reducer.reducerName,
       services.darkmode.reducer.reducerName,
       services.names.reducer.reducerName,
@@ -48,6 +50,13 @@ export const store = createStore(
   applyMiddleware(thunk),
 );
 
-persistStore(store)
+persistStore(store, null, () => {
+  // after rehydrate
+  const state = store.getState()
+  const injectSentry = services.analytics.selectors.injectSentry(state)
+  if (injectSentry) {
+    services.analytics.functions.injectSentry()
+  }
+})
 
 export default store
