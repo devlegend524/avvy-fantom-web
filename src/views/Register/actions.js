@@ -117,13 +117,14 @@ const actions = {
         dispatch(actions.setIsCommitting(true))
         const state = getState()
         const api = services.provider.buildAPI()
-        const names = services.cart.selectors.names(state)
+        let names = services.cart.selectors.names(state)
         const _quantities = services.cart.selectors.quantities(state)
         const _constraintsProofs = services.proofs.selectors.constraintsProofs(state)
         const _pricingProofs = services.proofs.selectors.pricingProofs(state)
         let quantities = []
         let pricingProofs = []
         let constraintsProofs = []
+        names = names.slice(0, services.environment.MAX_REGISTRATION_NAMES)
         names.forEach(name => {
           quantities.push(_quantities[name])
           pricingProofs.push(_pricingProofs[name])
@@ -156,7 +157,7 @@ const actions = {
         dispatch(actions.setIsFinalizing(true))
         const state = getState()
         const api = services.provider.buildAPI()
-        const names = services.cart.selectors.names(state)
+        let names = services.cart.selectors.names(state)
         const salt = selectors.commitSalt(state)
         const _quantities = services.cart.selectors.quantities(state)
         const _constraintsProofs = services.proofs.selectors.constraintsProofs(state)
@@ -164,6 +165,11 @@ const actions = {
         let quantities = []
         let pricingProofs = []
         let constraintsProofs = []
+        let hasMore = false
+        if (names.length > services.environment.MAX_REGISTRATION_NAMES) {
+          hasMore = true
+          names = names.slice(0, services.environment.MAX_REGISTRATION_NAMES)
+        }
         names.forEach(name => {
           quantities.push(_quantities[name])
           pricingProofs.push(_pricingProofs[name])
@@ -195,7 +201,7 @@ const actions = {
         }
 
         dispatch(actions.setIsComplete(true))
-        dispatch(services.cart.actions.clear())
+        dispatch(services.cart.actions.clearNames(names))
       } catch (err) {
         if (err.code === 4001) {
           dispatch(actions.setIsFinalizing(false))

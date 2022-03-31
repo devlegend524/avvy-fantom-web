@@ -123,10 +123,17 @@ class RegistrationFlow extends React.PureComponent {
   }
 
   renderFinalize() {
+    const names = this.props.names
+    const inBatches = names.length > services.environment.MAX_REGISTRATION_NAMES
     return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Complete Registration'}</div>
-        <components.labels.Information text={"In this step we make the final purchase. This is done in two steps to lower the chances of exploitation by front-runners."} />
+        {inBatches ? (
+          <>
+            <components.labels.Warning text={`You have ${names.length} names to register. You must register them in batches of ${services.environment.MAX_REGISTRATION_NAMES}.`} />
+            <div className='text-gray-700 mt-8 text-center w-full font-bold'>{`Register next ${services.environment.MAX_REGISTRATION_NAMES} names`}</div>
+          </>
+        ) : null}
         <div className='mt-8 max-w-sm m-auto'>
           <div className='mt-4'>
             <components.buttons.Button text={'Commit registration'} onClick={this.commitTransaction.bind(this)} loading={this.props.isCommitting && !this.props.hasCommit} disabled={this.props.hasCommit} />
@@ -140,15 +147,32 @@ class RegistrationFlow extends React.PureComponent {
   }
 
   renderComplete() {
+    const remaining = this.props.names.length
     return (
       <>
         <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Registration Complete'}</div>
-        <components.labels.Success text={"Your registration was successful."} />
-        <div className='mt-8 max-w-sm m-auto'>
-          <div className='mt-4'>
-            <components.buttons.Button text={'View my domains'} onClick={(navigate) => services.linking.navigate(navigate, 'MyDomains')} />
-          </div>
-        </div>
+        {remaining > 0 ? (
+          <>
+            <components.labels.Success text={`You have successfully registered ${services.environment.MAX_REGISTRATION_NAMES} names`} />
+            <div className='mt-8 max-w-sm m-auto'>
+              <div className='mt-4 text-center w-full font-bold'>
+                {'You have '}{remaining} {remaining === 1 ? 'name' : 'names'}{' left to register'}
+              </div>
+              <div className='mt-4'>
+                <components.buttons.Button text={'Register next batch of names'} onClick={() => this.props.nextBatch()} />
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <components.labels.Success text={"Your registration was successful."} />
+            <div className='mt-8 max-w-sm m-auto'>
+              <div className='mt-4'>
+                <components.buttons.Button text={'View my domains'} onClick={(navigate) => services.linking.navigate(navigate, 'MyDomains')} />
+              </div>
+            </div>
+          </>
+        )}
       </>
     )
   }
@@ -194,6 +218,7 @@ const mapDispatchToProps = (dispatch) => ({
   commitTransaction: () => dispatch(actions.commit()),
   finalizeTransaction: () => dispatch(actions.finalize()),
   enableEnhancedPrivacy: (value) => dispatch(actions.enableEnhancedPrivacy(value)),
+  nextBatch: () => dispatch(actions.reset()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegistrationFlow)

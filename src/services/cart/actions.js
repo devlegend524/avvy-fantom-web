@@ -84,6 +84,12 @@ const actions = {
     }
   },
 
+  clearNames: (names) => {
+    return (dispatch, getState) => {
+      names.forEach(name => dispatch(actions.removeFromCart(name)))
+    }
+  },
+
   _setQuantity: (name, quantity) => {
     return {
       type: constants.SET_QUANTITY,
