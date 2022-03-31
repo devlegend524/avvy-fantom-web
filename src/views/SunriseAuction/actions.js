@@ -60,7 +60,7 @@ const actions = {
       try {
         const state = getState()
         const names = services.sunrise.selectors.unsubmittedBidNames(state)
-        const constraintsProofs = services.sunrise.selectors.constraintsProofs(state)
+        const constraintsProofs = services.proofs.selectors.constraintsProofs(state)
         const api = services.provider.buildAPI()
         let j = 0;
         const numSteps = names.length
@@ -72,7 +72,7 @@ const actions = {
           }))
           if (!constraintsProofs[name]) {
             let constraintsRes = await api.generateConstraintsProof(name)
-            dispatch(services.sunrise.actions.setConstraintsProof(name, constraintsRes.calldata))
+            dispatch(services.proofs.actions.setConstraintsProof(name, constraintsRes.calldata))
           }
           j += 1
         }
@@ -393,7 +393,7 @@ const actions = {
       const api = services.provider.buildAPI()
       const state = getState()
       const auctionResults = selectors.auctionResults(state)
-      const constraintsProofs = services.sunrise.selectors.constraintsProofs(state)
+      const constraintsProofs = services.proofs.selectors.constraintsProofs(state)
       const names = []
       const constraintsData = []
       const missingProofs = []
@@ -438,7 +438,7 @@ const actions = {
       const api = services.provider.buildAPI()
       const state = getState()
       const auctionResults = selectors.auctionResults(state)
-      const constraintsProofs = services.sunrise.selectors.constraintsProofs(state)
+      const constraintsProofs = services.proofs.selectors.constraintsProofs(state)
       const names = []
       const constraintsData = []
       const missingProofs = []
@@ -518,7 +518,7 @@ const actions = {
             percent: parseInt((j / numSteps) * 100),
           }))
           let constraintsRes = await api.generateConstraintsProof(name)
-          dispatch(services.sunrise.actions.setConstraintsProof(name, constraintsRes.calldata))
+          dispatch(services.proofs.actions.setConstraintsProof(name, constraintsRes.calldata))
           j += 1
         }
         dispatch(actions.setProofProgress({
