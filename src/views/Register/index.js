@@ -233,8 +233,9 @@ class Register extends React.PureComponent {
       </div>
     )
     if (this.props.isRefreshingNameData) return (
-      <div className='text-center w-full'>
-        <components.Spinner size='md' color={this.props.isDarkmode ? '#ddd' : '#555'} />
+      <div className='mt-8 max-w-sm m-auto text-center'>
+        <components.ProgressBar progress={this.props.refreshNameDataProgress} />
+        <div className='mt-4 text-gray-400 dark:text-gray-700'>{'Loading registration data'}</div>
       </div>
     )
     let names = Array.from(this.props.names).sort((a, b) => a > b ? 1 : -1)
@@ -407,6 +408,7 @@ const mapStateToProps = (state) => ({
   isRefreshingNameData: services.cart.selectors.isRefreshingNameData(state),
   isDarkmode: services.darkmode.selectors.isDarkmode(state),
   bulkRegistrationProgress: services.cart.selectors.bulkRegistrationProgress(state),
+  refreshNameDataProgress: services.cart.selectors.refreshNameDataProgress(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({

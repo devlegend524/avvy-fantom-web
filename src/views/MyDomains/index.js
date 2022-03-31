@@ -198,7 +198,7 @@ class MyDomains extends React.PureComponent {
       return (
         <div className='mt-8 max-w-sm m-auto text-center'>
           <components.ProgressBar progress={pct} />
-         <div className='mt-4 text-gray-400 dark:text-gray-700'>{'Loading domains'}</div>
+          <div className='mt-4 text-gray-400 dark:text-gray-700'>{'Loading domains'}</div>
         </div>
       )
     }
