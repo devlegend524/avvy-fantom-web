@@ -10,6 +10,8 @@ const constants = reduxService.prepareConstants(
     'SET_QUANTITY',
     'SET_NAME_DATA',
     'IS_REFRESHING_NAME_DATA',
+    'SET_REFRESH_NAME_DATA_PROGRESS',
+    'SET_NAME_DATA_BULK',
   ]
 )
 

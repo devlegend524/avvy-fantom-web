@@ -153,13 +153,50 @@ const actions = {
     }
   },
 
+  _setRefreshNameDataProgress: (progress) => {
+    return {
+      type: constants.SET_REFRESH_NAME_DATA_PROGRESS,
+      progress
+    }
+  },
+
+  _setNameDataBulk: (nameData) => {
+    return {
+      type: constants.SET_NAME_DATA_BULK,
+      nameData,
+    }
+  },
+
   refreshAllNameData: () => {
     return async (dispatch, getState) => {
       dispatch(actions.isRefreshingNameData(true))
       const names = selectors.names(getState())
-      names.forEach((name) => {
-        dispatch(actions.refreshNameData(name))
-      })
+      const api = services.provider.buildAPI()
+      let progress = 0
+      let total = names.length
+      let promises = []
+      let results = []
+      let batchSize = 10
+      dispatch(actions._setRefreshNameDataProgress(0))
+      
+      for (let i = 0; i < names.length; i += 1) {
+        promises.push(api.loadDomain(names[i]))
+        if (promises.length >= batchSize || i === names.length - 1) {
+          let result = await Promise.all(promises)
+          results = results.concat(result)
+          promises = []
+          progress += batchSize
+          dispatch(actions._setRefreshNameDataProgress(parseInt((progress / total) * 100)))
+        }
+      }
+
+      let nameData = {}
+      for (let i = 0; i < names.length; i += 1) {
+        nameData[names[i]] = results[i]
+      }
+
+      dispatch(actions._setNameDataBulk(nameData))
+      dispatch(actions._setRefreshNameDataProgress(100))
       dispatch(actions.isRefreshingNameData(false))
     }
   },

@@ -8,6 +8,7 @@ export const initialState = {
   nameData: {},
   isRefreshingNameData: false,
   bulkRegistrationProgress: 0,
+  refreshNameDataProgress: 0,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -79,6 +80,21 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         isRefreshingNameData: action.value
+      }
+
+    case constants.SET_REFRESH_NAME_DATA_PROGRESS:
+      return {
+        ...state,
+        refreshNameDataProgress: action.progress
+      }
+
+    case constants.SET_NAME_DATA_BULK:
+      return {
+        ...state,
+        nameData: {
+          ...state.nameData,
+          ...action.nameData
+        }
       }
 
     default:
