@@ -55,6 +55,12 @@ class Register extends React.PureComponent {
     this.props.removeFromCart(name)
   }
 
+  cancelRegistration = () => {
+    if (window.confirm('Are you sure?')) {
+      this.props.clear()
+    }
+  }
+
   removeUnavailable() {
     this.props.names.forEach(name => {
       const nameData = this.props.nameData[name]
@@ -306,6 +312,9 @@ class Register extends React.PureComponent {
             <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX. Amounts noted are estimates; actual price will be determined in future steps.'} />
           </div>
           <components.buttons.Button text={'Continue Registration'} onClick={this.startPurchase.bind(this)} />
+          <div className='mt-4 text-center text-gray-500 text-sm'>
+            <div className='underline cursor-pointer' onClick={() => this.cancelRegistration()}>{'Cancel registration'}</div>
+          </div>
         </div>
       </>
     )
@@ -407,6 +416,7 @@ const mapDispatchToProps = (dispatch) => ({
   refreshNameData: () => dispatch(services.cart.actions.refreshAllNameData()),
   resetRegistration: () => dispatch(actions.reset()),
   addBulkRegistrations: (registrations) => dispatch(services.cart.actions.addBulkRegistrations(registrations)),
+  clear: () => dispatch(services.cart.actions.clear()),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Register)
