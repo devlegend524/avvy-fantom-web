@@ -75,13 +75,13 @@ class ConnectWallet extends React.PureComponent {
     return (
       <>
         <div className=''>
-          By checking the boxes below, you acknowledge that you have read and agree to our <a className='text-alert-blue' href="https://avvy.domains/privacy-policy" target="_blank">Privacy Policy</a> and our <a className='text-alert-blue' href="https://avvy.domains/terms-and-conditions" target="_blank">Terms and Conditions</a>
+          By checking the boxes below, you acknowledge that you have read and agree to our <a className='text-alert-blue' href="https://avvy.domains/p/privacy-policy" target="_blank">Privacy Policy</a> and our <a className='text-alert-blue' href="https://avvy.domains/p/terms-of-service" target="_blank">Terms of Service</a>
         </div>
         <div className='mt-4'>
           <components.checkbox.Checkbox text={'Privacy Policy'} singleLine={true} checked={this.state.privacy} onCheck={() => this.toggleDisclaimer('privacy')} />
         </div>
         <div className='mt-2'>
-          <components.checkbox.Checkbox text={'Terms and Conditions'} singleLine={true} checked={this.state.terms} onCheck={() => this.toggleDisclaimer('terms')} />
+          <components.checkbox.Checkbox text={'Terms of Service'} singleLine={true} checked={this.state.terms} onCheck={() => this.toggleDisclaimer('terms')} />
         </div>
         <div className='mt-4 max-w-sm m-auto'>
           <components.buttons.Button disabled={!this.state.terms || !this.state.privacy} text={'Continue'} onClick={() => this.props.acceptDisclaimers()} />
