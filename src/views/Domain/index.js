@@ -182,7 +182,7 @@ class Domain extends React.PureComponent {
               <div className='font-bold'>{'Basic Information'}</div>
               {!this.state.connected ? (
                 <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
-              ) : isOwned ? (
+              ) : isOwned && services.environment.REGISTRATIONS_ENABLED ? (
                 <components.buttons.Button disabled={!this.props.domain.canRenew} sm={true} text='Renew' onClick={(navigator) => {
                   this.props.renewDomain(this.props.domain.domain)
                   services.linking.navigate(navigator, 'Register')
