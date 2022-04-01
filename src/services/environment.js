@@ -11,6 +11,7 @@ const environment = {
   BACKEND_BASE_URL: process.env.REACT_APP_BACKEND_BASE_URL,
   MAX_REGISTRATION_QUANTITY: 5, // years
   MAX_REGISTRATION_NAMES: 15, // number of names per registration chunk
+  REGISTRATIONS_ENABLED: process.env.REACT_APP_REGISTRATIONS_ENABLED || false,
   SENTRY_DSN: process.env.REACT_APP_SENTRY_DSN,
   ENVIRONMENT: process.env.REACT_APP_ENVIRONMENT,
 }
