@@ -31,7 +31,7 @@ class DomainPrivacy extends React.PureComponent {
           <div>{'* In some cases, it may be possible to read Enhanced Privacy domains'}</div>
           <div>{'** With Enhanced Privacy, you must remember the domain name you have registered or back up your data'}</div>
           <div>{'*** Enabling Enhanced Privacy for names that were previously registered with Standard Privacy will have no effect'}</div>
-          <div className='mt-4'><a target="_blank" rel="noreferrer" href="https://avvy.domains/blog/enhanced-privacy/" className='underline'>{'Read more about Enhanced Privacy'}</a></div>
+          <div className='mt-4'><a target="_blank" rel="noreferrer" href="https://avvy.domains/docs/privacy-features-registrations/" className='underline'>{'Read more about Enhanced Privacy'}</a></div>
         </div>
       </>
     )
