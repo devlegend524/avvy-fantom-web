@@ -114,6 +114,7 @@ const actions = {
           dispatch(actions.setNameDataProgress(parseInt((currBatch / numBatches) * 100)))
         }
       }
+      dispatch(actions.setNameDataProgress(100))
       dispatch(actions.setAllNameData(names, results))
     }
   },

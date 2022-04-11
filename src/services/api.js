@@ -105,6 +105,7 @@ class AvvyClient {
 
   async isSupported(name) {
     // checks whether a given name is supported by the system
+    if (!name) return false
     const hash = await client.nameHash(name)
     if (artifacts.blocklist.isBlocked(hash)) return false
     const split = name.split('.')
