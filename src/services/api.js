@@ -431,6 +431,31 @@ class AvvyClient {
     return name
   }
 
+  getDefaultResolverAddress() {
+    return this.contracts.ResolverV1.address
+  }
+
+  async getResolver(domain) {
+    const hash = await client.nameHash(domain)
+    const resolver = await this.contracts.ResolverRegistry.get(hash)
+    return resolver
+  }
+
+  async setResolver(domain, address) {
+    const hash = await client.nameHash(domain)
+    const defaultResolverAddress = this.getDefaultResolverAddress()
+    let datasetId
+    if (address === defaultResolverAddress) {
+      datasetId = hash
+    } else {
+      // otherwise, we are setting it to None
+      datasetId = 0
+    }
+    const contract = await this.contracts.ResolverRegistry
+    const tx = await contract.set(hash, [], address, datasetId)
+    await tx.wait()
+  }
+
   async setStandardRecord(domain, type, value) {
     const hash = await client.nameHash(domain)
     const tx = await this.contracts.ResolverV1.setStandard(hash, [], type, value)

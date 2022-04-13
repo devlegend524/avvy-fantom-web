@@ -12,6 +12,9 @@ const constants = reduxService.prepareConstants(
     'IS_LOADING_RECORDS',
     'RECORDS_LOADED',
     'SET_RECORD_COMPLETE',
+    'SET_RESOLVER',
+    'SET_RESOLVER_LOADING',
+    'SET_RESOLVER_COMPLETE',
   ]
 )
 

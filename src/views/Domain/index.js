@@ -7,6 +7,7 @@ import components from 'components'
 
 import AddBid from './AddBid'
 import SetRecord from './SetRecord'
+import SetResolver from './SetResolver'
 import actions from './actions'
 import constants from './constants'
 import reducer from './reducer'
@@ -22,9 +23,20 @@ class Domain extends React.PureComponent {
       domain: domain,
       connected: services.provider.isConnected(),
       setRecordReset: 0, // increment this to reset the form
+      defaultResolver: undefined,
     }
     this.searchPlaceholder = 'Search for another name'
     this.loadDomain(domain)
+  }
+
+  async setDefaultResolver() { 
+    const api = await services.provider.buildAPI()
+    console.log('setting default resolver')
+    this.setState({
+      defaultResolver: api.getDefaultResolverAddress()
+    }, () => {
+      console.log('default', this.state.defaultResolver)
+    })
   }
 
   updateParams = () => {
@@ -62,6 +74,7 @@ class Domain extends React.PureComponent {
   componentDidMount() {
     services.linking.addEventListener('Domain', this.updateParams)
     services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
+    this.setDefaultResolver()
   }
 
   componentWillUnmount() {
@@ -173,6 +186,9 @@ class Domain extends React.PureComponent {
         <components.Modal title={'Set Record'} ref={(ref) => this.setRecordModal = ref}>
           <SetRecord key={this.state.setRecordReset} handleSubmit={this._handleSetRecord} loading={this.props.isSettingRecord} />
         </components.Modal>
+        <components.Modal title={'Set Resolver'} ref={(ref) =>  this.setResolverModal = ref}>
+          <SetResolver onComplete={() => this.setResolverModal.toggle()} domain={this.state.domain} resolver={this.props.resolver} />
+        </components.Modal>
         <components.Modal title={'Connect Wallet'} ref={(ref) => this.connectModal = ref}>
           <components.ConnectWallet />
         </components.Modal>
@@ -212,35 +228,53 @@ class Domain extends React.PureComponent {
                 </div>
               </div>
             </div>
-          </div>
-          <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
-            <div className='flex justify-between items-center'>
-              <div className='font-bold'>{'Records'}</div>
-              {!this.state.connected ? (
-                <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
-              ) : isOwned ? (
-                <PlusCircleIcon className='cursor-pointer w-6' onClick={() => this.setRecordModal.toggle()} />
-              ) : null}
+            <div className='mt-4 text-sm'>
+              <div className='font-bold'>{'Resolver'}</div>
+              <div className='truncate flex items-center'>
+                {this.props.resolver ? (
+                  <div>{this.props.resolver.resolver === this.state.defaultResolver ? 'Default Resolver' : 'Unknown Resolver'}</div>
+                ) : (
+                  <div className='italic'>Not set</div>
+                )}
+                {this.state.connected && isOwned ? (
+                  <components.buttons.Transparent onClick={() => {
+                    this.props.resetSetResolver()
+                    this.setResolverModal.toggle()
+                  }}><div className='ml-2 inline-block cursor-pointer text-alert-blue underline'>Set Resolver</div></components.buttons.Transparent>
+                ) : null}
+              </div>
             </div>
-            {this.props.records.length > 0 ? (
-              <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
-            ) : null}
-            
-            {this.props.isLoadingRecords ? (
-              <div className='my-4 w-full text-center'>
-                <components.Spinner />
-              </div>
-            ) : this.props.records.map((record, index) => (
-              <div className='mt-4' key={index}>
-                <div className='text-sm font-bold'>
-                  {record.typeName}
-                </div>
-                <div className='text-sm truncate'>
-                  {record.value}
-                </div>
-              </div>
-            ))}
           </div>
+          {this.props.resolver && this.props.resolver.resolver === this.state.defaultResolver ? (
+            <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
+              <div className='flex justify-between items-center'>
+                <div className='font-bold'>{'Records'}</div>
+                {!this.state.connected ? (
+                  <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
+                ) : isOwned ? (
+                  <PlusCircleIcon className='cursor-pointer w-6' onClick={() => this.setRecordModal.toggle()} />
+                ) : null}
+              </div>
+              {this.props.records.length > 0 ? (
+                <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
+              ) : null}
+              
+              {this.props.isLoadingRecords ? (
+                <div className='my-4 w-full text-center'>
+                  <components.Spinner />
+                </div>
+              ) : this.props.records.map((record, index) => (
+                <div className='mt-4' key={index}>
+                  <div className='text-sm font-bold'>
+                    {record.typeName}
+                  </div>
+                  <div className='text-sm truncate'>
+                    {record.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
     )
@@ -308,6 +342,7 @@ const mapStateToProps = (state) => ({
   records: selectors.records(state),
   setRecordComplete: selectors.setRecordComplete(state),
   avatarRecord: selectors.avatarRecord(state),
+  resolver: selectors.resolver(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -317,6 +352,7 @@ const mapDispatchToProps = (dispatch) => ({
   setStandardRecord: (domain, type, value) => dispatch(actions.setStandardRecord(domain, type, value)),
   resetSetRecord: () => dispatch(actions.setRecordComplete(false)),
   renewDomain: (domain) => dispatch(services.cart.actions.addToCart(domain)),
+  resetSetResolver: () => dispatch(actions.setResolverComplete(false)),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Domain)
