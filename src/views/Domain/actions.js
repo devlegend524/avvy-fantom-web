@@ -106,14 +106,59 @@ const actions = {
     }
   },
 
+  _setResolver: (resolver) => {
+    return {
+      type: constants.SET_RESOLVER,
+      resolver
+    }
+  },
+
+  setResolverLoading: (loading) => {
+    return {
+      type: constants.SET_RESOLVER_LOADING,
+      loading
+    }
+  },
+
+  setResolverComplete: (complete) => {
+    return {
+      type: constants.SET_RESOLVER_COMPLETE,
+      complete
+    }
+  },
+
+  setResolver: (domain, resolverAddress) => {
+    return async (dispatch, getState) => {
+      dispatch(actions.setResolverLoading(true))
+      const api = await services.provider.buildAPI()
+      try {
+        await api.setResolver(domain, resolverAddress)
+        dispatch(actions.loadRecords(domain))
+        dispatch(actions.setResolverComplete(true))
+      } catch (err) {
+        alert('Failed to set resolver')
+      }
+      dispatch(actions.setResolverLoading(false))
+    }
+  },
+
   loadRecords: (domain) => {
     return async (dispatch, getState) => {
       dispatch(actions.isLoadingRecords(true))
       const api = services.provider.buildAPI()
-      const records = await api.getStandardRecords(domain)
-      dispatch(actions.recordsLoaded(records.map(record => Object.assign(record, {
-        typeName: services.records.getStandard(record.type).name
-      }))))
+      let resolver = null
+      try {
+        resolver = await api.getResolver(domain)
+      } catch (err) {
+        resolver = null
+      }
+      dispatch(actions._setResolver(resolver))
+      if (resolver) {
+        const records = await api.getStandardRecords(domain)
+        dispatch(actions.recordsLoaded(records.map(record => Object.assign(record, {
+          typeName: services.records.getStandard(record.type).name
+        }))))
+      }
       dispatch(actions.isLoadingRecords(false))
     }
   }

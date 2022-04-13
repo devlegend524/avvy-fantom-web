@@ -34,21 +34,6 @@ function Inner() {
 }
 
 function App() {
-  if (services.environment.ENVIRONMENT === 'staging' && window.location.search.indexOf('bypass') === -1) {
-    return (
-      <div className='flex items-center justify-center h-screen w-screen flex-col'>
-        <div>
-          <img src="/images/logo.png" className='w-16 h-16' alt="wat" />
-        </div>
-        <div className='mt-4 max-w-sm text-center'>
-          Thank you to everyone who participated in the testing. The test application is now closed. 
-        </div>
-        <div className='mt-4 max-w-sm text-center'>
-          <a className='underline' href="https://twitter.com/avvydomains">Follow us on Twitter to stay updated!</a>
-        </div>
-      </div>
-    )
-  }
   return (
     <BrowserRouter>
       <Inner />

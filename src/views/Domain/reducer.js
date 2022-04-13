@@ -13,6 +13,9 @@ export const initialState = {
   records: [],
   avatarRecord: null,
   setRecordComplete: false,
+  resolver: null,
+  setResolverLoading: false,
+  setResolverComplete: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -61,6 +64,24 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         setRecordComplete: action.value
+      }
+
+    case constants.SET_RESOLVER:
+      return {
+        ...state,
+        resolver: action.resolver
+      }
+
+    case constants.SET_RESOLVER_LOADING:
+      return {
+        ...state,
+        setResolverLoading: action.loading
+      }
+
+    case constants.SET_RESOLVER_COMPLETE:
+      return {
+        ...state,
+        setResolverComplete: action.complete
       }
 
     default:
