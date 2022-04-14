@@ -432,12 +432,12 @@ class AvvyClient {
   }
 
   getDefaultResolverAddress() {
-    return this.contracts.ResolverV1.address
+    return this.contracts.PublicResolverV1.address
   }
 
   async getResolver(domain) {
     const hash = await client.nameHash(domain)
-    const resolver = await this.contracts.ResolverRegistry.get(hash)
+    const resolver = await this.contracts.ResolverRegistryV1.get(hash, hash)
     return resolver
   }
 
@@ -451,22 +451,23 @@ class AvvyClient {
       // otherwise, we are setting it to None
       datasetId = 0
     }
-    const contract = await this.contracts.ResolverRegistry
+    const contract = await this.contracts.ResolverRegistryV1
     const tx = await contract.set(hash, [], address, datasetId)
     await tx.wait()
   }
 
   async setStandardRecord(domain, type, value) {
     const hash = await client.nameHash(domain)
-    const tx = await this.contracts.ResolverV1.setStandard(hash, [], type, value)
+    const tx = await this.contracts.PublicResolverV1.setStandard(hash, [], type, value)
     await tx.wait()
   }
 
   async getStandardRecords(domain) {
+    // this won't work for subdomains yet.
     const promises = []
     const hash = await client.nameHash(domain)
     for (let i = 1; i <= 6; i += 1) {
-      promises.push(this.contracts.ResolverV1.resolveStandard(hash, i))
+      promises.push(this.contracts.PublicResolverV1.resolveStandard(hash, hash, i))
     }
     const types = [
       'X-Chain Address',

@@ -24,7 +24,7 @@ class Select extends React.PureComponent {
 
   render() {
     return (
-      <select className='bg-gray-100 dark:bg-gray-700 py-2 px-2 rounded-xl w-full' ref={(ref) => {
+      <select className='bg-gray-100 dark:bg-gray-800 py-2 px-2 rounded-xl w-full' ref={(ref) => {
         this.selectRef = ref
         this.setInitial(ref)
       }}>
