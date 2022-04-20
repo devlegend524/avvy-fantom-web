@@ -89,7 +89,11 @@ class MyBids extends React.PureComponent {
     const claimEndsAt = this.props.auctionPhases[3] * 1000
     const later = Date.now() + 60 * 60 * 365 * 2000000
     const isSubmitted = (name) => this.props.unsubmittedBidNames.indexOf(name) === -1
-    const isRevealed = (name) => this.props.revealedBidNames.indexOf(name) > -1
+    const isRevealed = (name) => {
+      if (this.props.revealedBidNames.indexOf(name) > -1) return true
+      if (this.props.reverseLookups[name]) return true
+      return false
+    }
     const bids = this.props.bids
     const keys = Object.keys(bids).sort().filter(name => isSubmitted(name))
     const nameData = this.props.nameData
@@ -111,12 +115,20 @@ class MyBids extends React.PureComponent {
     let canClaim = false
     let toClaim = 0
     let missingEnhanced = 0
+    let allBids = []
     this.props.revealedBids.forEach((bid, index) => {
       let key = bid.preimage
       if (key === null) {
-        missingEnhanced += 1
-        return
+        if (this.props.reverseLookups[bid.name.toString()]) {
+          key = this.props.reverseLookups[bid.name.toString()]
+        } else {
+          missingEnhanced += 1
+          return
+        }
       }
+      allBids.push(Object.assign(bid, {
+        preimage: key
+      }))
       if (!nameData[key]) {
         hasAllKeys = false
         return
@@ -177,12 +189,12 @@ class MyBids extends React.PureComponent {
     let _keys
     let _hasPages = false
     let pageLength = 5
-    let _numPages = this.props.revealedBids.length / pageLength
-    if (this.props.revealedBids.length > pageLength) {
-      _keys = this.props.revealedBids.slice(this.state.paginationIndex * pageLength, this.state.paginationIndex * pageLength + pageLength)
+    let _numPages = allBids.length / pageLength
+    if (allBids.length > pageLength) {
+      _keys = allBids.slice(this.state.paginationIndex * pageLength, this.state.paginationIndex * pageLength + pageLength)
       _hasPages = true
     } else {
-      _keys = this.props.revealedBids
+      _keys = allBids
     }
 
     return (
@@ -668,6 +680,7 @@ const mapStateToProps = (state) => ({
   revealedBids: selectors.revealedBids(state),
   claimGenerateProofs: selectors.claimGenerateProofs(state),
   loadedBidProgress: selectors.loadedBidProgress(state),
+  reverseLookups: services.names.selectors.reverseLookups(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
