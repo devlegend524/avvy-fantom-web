@@ -220,6 +220,8 @@ class MyBids extends React.PureComponent {
               let key = bid.preimage
               const result = this.props.auctionResults[key]
               if (!result) return null
+              if (!this.props.nameData) return null
+              const isOwned = this.props.nameData[key].status === 'REGISTERED_SELF'
               return (
                 <div className='bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4' key={index}>
                   <div className='font-bold'>{key}</div>
@@ -230,7 +232,7 @@ class MyBids extends React.PureComponent {
                       <div className='mr-2'>
                         {result.type === 'NO_WINNER' ? (
                           <components.labels.Error text={'No participants have enough WAVAX to claim'} size={'xs'} />
-                        ) : this.props.claimedNames[key] ? (
+                        ) : this.props.claimedNames[key] || isOwned ? (
                           <components.labels.Success text={'You have claimed this name'} />
                         ) : result.type === 'IS_CLAIMED' ? (
                           <components.labels.Error text={'You lost this auction'} />
