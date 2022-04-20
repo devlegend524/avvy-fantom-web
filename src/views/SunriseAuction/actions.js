@@ -251,6 +251,7 @@ const actions = {
     return async (dispatch, getState) => {
       const state = getState()
       const isLoading = selectors.isLoadingWinningBids(state)
+      const reverseLookups = services.names.selectors.reverseLookups(state)
       if (isLoading && !force) return
       dispatch(actions.setLoadedBidProgress(0))
       dispatch(actions.setLoadingWinningBids(true))
@@ -286,8 +287,13 @@ const actions = {
       // add in names that we are missing here
       dispatch(actions.setRevealedBids(revealedBids))
       for (let i = 0; i < revealedBids.length; i += 1) {
+        let domain
         if (revealedBids[i].preimage) {
-          let domain = revealedBids[i].preimage
+          domain = revealedBids[i].preimage
+        } else {
+          domain = reverseLookups[revealedBids[i].name.toString()]
+        }
+        if (domain) {
           let result = await api.getWinningBid(domain)
           dispatch(services.sunrise.actions.refreshNameData(domain))
           dispatch(actions.setAuctionResult(domain, result))
