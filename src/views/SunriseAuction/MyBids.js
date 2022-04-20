@@ -190,9 +190,13 @@ class MyBids extends React.PureComponent {
         <components.Modal show={this.props.claimGenerateProofs.length > 0} ref={(ref) => {
           this.claimProofModal = ref
         }} onClose={() => this.props.setClaimGenerateProofs([])}> 
-          <ClaimProofFlow onComplete={() => {
-            this.claimProofModal.toggle()
-          }} />
+          {this.props.claimGenerateProofs.length > 0 ? (
+            <ClaimProofFlow
+              onComplete={() => {
+                this.claimProofModal.toggle()
+              }} 
+            />
+          ) : null}
         </components.Modal>
         <div className='md:flex md:mt-2 md:mx-4'>
           <div className='w-full md:mr-8'>

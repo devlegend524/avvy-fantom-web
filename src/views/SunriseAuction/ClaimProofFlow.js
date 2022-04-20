@@ -14,7 +14,6 @@ class ClaimProofFlow extends React.PureComponent {
     this.state = {
       connected: services.provider.isConnected(),
       needsProofs: true,
-
     }
   }
 
