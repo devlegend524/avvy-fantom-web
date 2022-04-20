@@ -14,6 +14,7 @@ const environment = {
   REGISTRATIONS_ENABLED: process.env.REACT_APP_REGISTRATIONS_ENABLED === '1' || false,
   SENTRY_DSN: process.env.REACT_APP_SENTRY_DSN,
   ENVIRONMENT: process.env.REACT_APP_ENVIRONMENT,
+  AUCTION_KEY: process.env.REACT_APP_AUCTION_KEY,
 }
 
 export default environment

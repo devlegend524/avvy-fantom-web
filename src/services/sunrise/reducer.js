@@ -13,6 +13,7 @@ export const initialState = {
   constraintsProofs: {},
   claimedNames: {},
   nameDataProgress: 0,
+  auctionKey: null,
 }
 
 const rehydrate = (action, state) => {
@@ -22,6 +23,12 @@ const rehydrate = (action, state) => {
   for (let key in initialState) {
     if (payload[key]) nextState[key] = payload[key]
     else nextState[key] = initialState[key]
+  }
+  if (nextState.auctionKey !== services.environment.AUCTION_KEY) {
+    for (let key in initialState) {
+      nextState[key] = initialState[key]
+      nextState.auctionKey = services.environment.AUCTION_KEY
+    }
   }
   return nextState
 }
