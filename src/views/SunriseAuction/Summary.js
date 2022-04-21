@@ -141,6 +141,16 @@ class FullSummary extends React.PureComponent {
               {services.money.renderWAVAX(bidTotal)}
             </div>
           </div>
+          {this.props.costToClaim ? (
+            <div className='flex justify-between'>
+              <div className='font-bold mr-2'>
+                {'Cost to Claim All'}
+              </div>
+              <div className=''>
+                {services.money.renderWAVAX(this.props.costToClaim)}
+              </div>
+            </div>
+          ) : null}
           <div className='flex justify-between'>
             <div className='font-bold mr-2'>
               {"Registration Fees"}
