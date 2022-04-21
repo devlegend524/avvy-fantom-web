@@ -68,7 +68,7 @@ class MyDomains extends React.PureComponent {
             {"Enhanced Privacy Domains are stored privately on the blockchain so that an observer cannot know which domains you have registered. To reveal your domains, search for them below."}
           </div>
           <div className='mt-4 mb-8'>
-            <components.DomainSearch placeholder={'Reveal private domains'} />
+            <components.DomainReveal />
           </div>
         </div>
       </div>
