@@ -220,6 +220,11 @@ class MyBids extends React.PureComponent {
             {missingEnhanced > 0 ? (
               <div>
                 <components.labels.Error text={`You have ${missingEnhanced} Enhanced Privacy ${missingEnhanced === 1 ? 'domain' : 'domains'} which ${missingEnhanced === 1 ? 'is' : 'are'} hidden. To claim ${missingEnhanced === 1 ? 'it' : 'them'}, you must reveal ${missingEnhanced === 1 ? 'it' : 'them'}.`} />
+                <div className='mt-4'>
+                  <components.DomainReveal onReveal={(revealed) => {
+                    this.props.loadWinningBids(true)
+                  }} />
+                </div>
               </div>
             ) : null}
             <div className='mb-8'>
