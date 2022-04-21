@@ -2,6 +2,7 @@ import ConnectWallet from './ConnectWallet'
 import ContinueRegistration from './ContinueRegistration'
 import DomainPrivacy from './DomainPrivacy'
 import DomainSearch from './DomainSearch'
+import DomainReveal from './DomainReveal'
 import Modal from './Modal'
 import ProgressBar from './ProgressBar'
 import Select from './Select'
@@ -22,6 +23,7 @@ const components = {
   ContinueRegistration,
   DomainPrivacy,
   DomainSearch,
+  DomainReveal,
   Modal,
   ProgressBar,
   Select,

@@ -103,6 +103,11 @@ class AvvyClient {
     return priceAVAX
   }
 
+  async nameHash(name) {
+    const hash = await client.nameHash(name)
+    return hash
+  }
+
   async isSupported(name) {
     // checks whether a given name is supported by the system
     if (!name) return false

@@ -10,6 +10,14 @@ const actions = {
     }
   },
 
+  addRecordWithoutHash: (name) => {
+    return async (dispatch, getState) => {
+      const api = await services.provider.buildAPI()
+      const hash = await api.nameHash(name)
+      dispatch(actions.addRecord(name, hash))
+    }
+  },
+
   bulkAddRecords: (names, hashes) => {
     return {
       type: constants.BULK_ADD_RECORDS,
