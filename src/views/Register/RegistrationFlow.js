@@ -110,10 +110,7 @@ class RegistrationFlow extends React.PureComponent {
       <>
         <div className=''>
           <div className='font-bold border-b border-gray-400 pb-4 mb-4'>{'Domain Privacy'}</div>
-          <components.DomainPrivacy />
-        </div>
-        <div className='m-auto max-w-sm mb-4 mt-8 text-center'>
-          <components.checkbox.Button onCheck={() => this.props.enableEnhancedPrivacy(!this.props.enhancedPrivacy)} checked={this.props.enhancedPrivacy} text={'Enable Enhanced Privacy'} />
+          <components.DomainPrivacy error={false} onCheck={(isEnhancedPrivacy) => this.props.enableEnhancedPrivacy(isEnhancedPrivacy)} isEnhancedPrivacy={this.props.enhancedPrivacy} />
         </div>
         <div className='mt-4 m-auto max-w-sm'>
           <components.buttons.Button text={'Continue'} onClick={() => this.setState({ hasPrivacy: true })} />
