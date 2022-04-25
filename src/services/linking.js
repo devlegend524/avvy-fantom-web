@@ -10,7 +10,8 @@ import linkingService from 'services/linking'
 const paths = {
   Domain: '/domains/:domain',
   Landing: '/',
-  MyDomains: '/user/domains', SunriseAuctionMyBids: '/sunrise/bids',
+  MyDomains: '/user/domains', 
+  SunriseAuctionMyBids: '/sunrise/bids',
   SunriseAuction: '/sunrise',
   Register: '/register',
   Renew: '/renew',
