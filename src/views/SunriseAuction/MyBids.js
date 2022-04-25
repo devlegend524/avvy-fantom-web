@@ -120,6 +120,7 @@ class MyBids extends React.PureComponent {
     let toClaim = 0
     let missingEnhanced = 0
     let allBids = []
+
     this.props.revealedBids.forEach((bid, index) => {
       let key = bid.preimage
       if (key === null) {
@@ -156,7 +157,13 @@ class MyBids extends React.PureComponent {
         hasAllKeys = false
         return
       }
-      if (this.props.claimedNames && !this.props.claimedNames[key] && auctionResults[key] && auctionResults[key].type !== 'IS_CLAIMED') allClaimed = false
+      if (
+        this.props.claimedNames 
+        && !this.props.claimedNames[key] 
+        && auctionResults[key] 
+        && auctionResults[key].type !== 'IS_CLAIMED'
+        && auctionResults[key].isWinner
+      ) allClaimed = false
     })
 
     if (!hasAllKeys) return null

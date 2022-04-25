@@ -194,13 +194,13 @@ const actions = {
           const preimages = await api.buildPreimages(names)
           await api.revealWithPreimage(bundle.payload.names, bundle.payload.amounts, bundle.payload.salt, preimages)
         }
+        dispatch(services.sunrise.actions.revealBundle(bundleKey))
       } catch (err) {
         console.log(err)
         dispatch(actions.setRevealingBundle(bundleKey, false))
         return dispatch(actions.setHasRevealError(true))
       }
       dispatch(actions.setRevealingBundle(bundleKey, false))
-      dispatch(services.sunrise.actions.revealBundle(bundleKey))
     }
   },
 
