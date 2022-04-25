@@ -302,16 +302,17 @@ class MyBids extends React.PureComponent {
               />
               {this.state.isConnected ? (
                 <>
-                  {allClaimed ? null : (
-                    <div className='mt-8'>
-                      <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
-                      <AuctionPhase name='Claim period over' startsAt={claimEndsAt} endsAt={later} />
-                    </div>
-                  )}
+                  <div className='mt-8'>
+                    <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
+                    <AuctionPhase name='Auction over' startsAt={claimEndsAt} endsAt={later} />
+                  </div>
                   <div className='mt-4 max-w-sm m-auto'>
                     {allClaimed ? (
                       <>
                         <components.labels.Success text={'You have claimed all of the auctions you won. Congratulations!'} />
+                        <div className='mt-4'>
+                          <components.labels.Warning text={'Remember that you must return after the auction is over to renew your domains, or they will expire.'} />
+                        </div>
                         <div className='mt-4'>
                           <components.buttons.Button text={'View Domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
                         </div>
