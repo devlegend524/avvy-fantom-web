@@ -22,7 +22,7 @@ function _AddBid(props) {
 
   return (
     <>
-      <components.labels.Information text={'Enter the maximum amount you would be willing to pay to win the auction. This is a sealed-bid second-price (Vickrey) auction. If you win the auction, you will pay the amount of the second-highest bid as auction fees. If there are no other bids, you will win the auction and pay no auction fees.'} />
+      <components.labels.Information text={'Enter the maximum amount you would be willing to pay to win the auction. This is a sealed-bid second-price (Vickrey) auction. If you win the auction, you will pay the amount of the second-highest bid as auction fees. If there are no other bids, you will win the auction and pay no auction fees. You should have enough AVAX to cover all bids that you place, in the event that you win all of the auctions.'} />
       <div className='mt-8 font-bold text-center'>
         {props.domain}
       </div>
