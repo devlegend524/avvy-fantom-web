@@ -118,7 +118,7 @@ const actions = {
         }
 
         let name = names[i]
-        let hash = await client.nameHash(name)
+        let hash = await client.utils.nameHash(name)
         bundle.payload.names[counter] = hash.toString()
         bundle.payload.amounts[counter] = bids[name]
         bundle[name] = {
@@ -496,7 +496,7 @@ const actions = {
         if (isSupported) {
           try {
             ethers.BigNumber.from(bids[domain])
-            const hash = await client.nameHash(domain)
+            const hash = await client.utils.nameHash(domain)
             domains.push(domain)
             hashes.push(hash.toString())
             amounts.push(bids[domain])

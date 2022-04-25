@@ -104,14 +104,14 @@ class AvvyClient {
   }
 
   async nameHash(name) {
-    const hash = await client.nameHash(name)
+    const hash = await client.utils.nameHash(name)
     return hash
   }
 
   async isSupported(name) {
     // checks whether a given name is supported by the system
     if (!name) return false
-    const hash = await client.nameHash(name)
+    const hash = await client.utils.nameHash(name)
     if (artifacts.blocklist.isBlocked(hash)) return false
     const split = name.split('.')
     if (split.length !== 2) return false
@@ -145,7 +145,7 @@ class AvvyClient {
   async loadDomain(domain) {
     
     // hash the name
-    const hash = await client.nameHash(domain)
+    const hash = await client.utils.nameHash(domain)
     const tokenExists = await this.tokenExists(hash)
     const auctionPhases = await this.getAuctionPhases()
     const isAuctionPeriod = await this.isAuctionPeriod(auctionPhases)
@@ -191,10 +191,10 @@ class AvvyClient {
   async generateDomainPriceProof(domain) {
     const domainSplit = domain.split('.')
     const name = domainSplit[0]
-    const nameArr = await client.string2AsciiArray(name, 62)
+    const nameArr = await client.utils.string2AsciiArray(name, 62)
     const namespace = domainSplit[domainSplit.length - 1]
-    const namespaceHash = await client.nameHash(namespace)
-    const hash = await client.nameHash(domain)
+    const namespaceHash = await client.utils.nameHash(namespace)
+    const hash = await client.utils.nameHash(domain)
     let minLength = name.length
     if (name.length >= 6) minLength = 6
     const inputs = {
@@ -217,9 +217,9 @@ class AvvyClient {
     const split = domain.split('.')
     const _name = split[0]
     const _namespace = split[1]
-    const namespace = await client.string2AsciiArray(_namespace, 62)
-    const name = await client.string2AsciiArray(_name, 62)
-    const hash = await client.nameHash(domain)
+    const namespace = await client.utils.string2AsciiArray(_namespace, 62)
+    const name = await client.utils.string2AsciiArray(_name, 62)
+    const hash = await client.utils.nameHash(domain)
     const inputs = {
       namespace,
       name,
@@ -238,10 +238,10 @@ class AvvyClient {
   async commit(domains, quantities, constraintsProofs, pricingProofs, salt) {
     let hashes = []
     for (let i = 0; i < domains.length; i += 1) {
-      let hash = await client.nameHash(domains[i])
+      let hash = await client.utils.nameHash(domains[i])
       hashes.push(hash.toString())
     }
-    const hash = await client.registrationCommitHash(hashes, quantities, constraintsProofs, pricingProofs, salt)
+    const hash = await client.utils.registrationCommitHash(hashes, quantities, constraintsProofs, pricingProofs, salt)
     const tx = await this.contracts.LeasingAgentV1.commit(hash)
     await tx.wait()
     return hash
@@ -253,7 +253,7 @@ class AvvyClient {
     const conversionRate = await this.getAVAXConversionRate()
 
     for (let i = 0; i < domains.length; i += 1) {
-      let hash = await client.nameHash(domains[i])
+      let hash = await client.utils.nameHash(domains[i])
       hashes.push(hash.toString())
       let namePrice = await this.getNamePriceAVAX(domains[i], conversionRate)
       total = total.add(
@@ -310,7 +310,7 @@ class AvvyClient {
   }
 
   async getWinningBid(name) {
-    const hash = await client.nameHash(name)
+    const hash = await client.utils.nameHash(name)
     let result
     try {
       const output = await this.contracts.SunriseAuctionV1.getWinningBid(hash.toString())
@@ -388,7 +388,7 @@ class AvvyClient {
     let nameSignal, preimage
     try {
       nameSignal = await this.contracts.RainbowTableV1.lookup(bid.name)
-      preimage = await client.decodeNameHashInputSignals(nameSignal)
+      preimage = await client.utils.decodeNameHashInputSignals(nameSignal)
     } catch (err) {
       preimage = null
     }
@@ -403,7 +403,7 @@ class AvvyClient {
   async sunriseClaim(names, constraintsData) {
     const hashes = []
     for (let i = 0; i < names.length; i += 1) {
-      let hash = await client.nameHash(names[i])
+      let hash = await client.utils.nameHash(names[i])
       hashes.push(hash.toString())
     }
     const tx = await this.contracts.SunriseAuctionV1.claim(hashes, constraintsData)
@@ -424,7 +424,7 @@ class AvvyClient {
   async buildPreimages(names) {
     let signal = []
     for (let i = 0; i < names.length; i += 1) {
-      let _sig = await client.encodeNameHashInputSignals(names[i])
+      let _sig = await client.utils.encodeNameHashInputSignals(names[i])
       signal = signal.concat(_sig)
     }
     return signal
@@ -432,7 +432,7 @@ class AvvyClient {
 
   async lookupPreimage(hash) {
     const output = await this.contracts.RainbowTableV1.lookup(hash)
-    const name = await client.decodeNameHashInputSignals(output)
+    const name = await client.utils.decodeNameHashInputSignals(output)
     return name
   }
 
@@ -441,13 +441,13 @@ class AvvyClient {
   }
 
   async getResolver(domain) {
-    const hash = await client.nameHash(domain)
+    const hash = await client.utils.nameHash(domain)
     const resolver = await this.contracts.ResolverRegistryV1.get(hash, hash)
     return resolver
   }
 
   async setResolver(domain, address) {
-    const hash = await client.nameHash(domain)
+    const hash = await client.utils.nameHash(domain)
     const defaultResolverAddress = this.getDefaultResolverAddress()
     let datasetId
     if (address === defaultResolverAddress) {
@@ -462,7 +462,7 @@ class AvvyClient {
   }
 
   async setStandardRecord(domain, type, value) {
-    const hash = await client.nameHash(domain)
+    const hash = await client.utils.nameHash(domain)
     const tx = await this.contracts.PublicResolverV1.setStandard(hash, [], type, value)
     await tx.wait()
   }
@@ -470,7 +470,7 @@ class AvvyClient {
   async getStandardRecords(domain) {
     // this won't work for subdomains yet.
     const promises = []
-    const hash = await client.nameHash(domain)
+    const hash = await client.utils.nameHash(domain)
     for (let i = 1; i <= 6; i += 1) {
       promises.push(this.contracts.PublicResolverV1.resolveStandard(hash, hash, i))
     }
