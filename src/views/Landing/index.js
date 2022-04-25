@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { ArrowRightIcon } from '@heroicons/react/solid'
+import { ArrowRightIcon, ExternalLinkIcon } from '@heroicons/react/solid'
 import { Link } from 'react-router-dom'
 
 import components from 'components'
@@ -36,6 +36,12 @@ class Landing extends React.PureComponent {
             <ArrowRightIcon className="h-6" />
           </Link>
         ) : null}
+        <a href="https://avvy.domains/docs/"
+          target="_blank"
+          className="flex justify-between bg-gray-100 font-bold p-4 rounded mb-2 dark:bg-gray-700">
+          <div>{'Documentation'}</div>
+          <ExternalLinkIcon className="h-6" />
+        </a>
       </div>
     )
   }
