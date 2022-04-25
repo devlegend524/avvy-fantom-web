@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { ArrowRightIcon } from '@heroicons/react/solid'
+import { ArrowRightIcon, ExternalLinkIcon } from '@heroicons/react/solid'
 
 import services from 'services'
 import actions from './actions'
@@ -104,7 +104,7 @@ class SunriseAuction extends React.PureComponent {
     return (
       <>
         {now >= bidPlacementStartsAt && now < claimEndsAt ? (
-          <div>
+          <div className='mb-4'>
             <Link to={services.linking.path('SunriseAuctionMyBids')}>
               <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold dark:bg-gray-800'>
                 <div>{'My Bids'}</div>
@@ -113,6 +113,14 @@ class SunriseAuction extends React.PureComponent {
             </Link>
           </div>
         ) : null}
+        <div>
+          <a href="https://avvy.domains/docs/" target="_blank">
+            <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold dark:bg-gray-800'>
+              <div>{'Auction Documentation'}</div>
+              <ExternalLinkIcon className="h-6" />
+            </div>
+          </a>
+        </div>
         {this.renderAuctionPhases()}
         {now < bidRevealStartsAt && now >= bidPlacementStartsAt ? (
           <div className='mt-4 text-center text-gray-500 text-sm'>
