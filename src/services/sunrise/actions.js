@@ -133,6 +133,13 @@ const actions = {
       name,
     }
   },
+
+  setHasSeenBidDisclaimer: (value) => {
+    return {
+      type: constants.SET_HAS_SEEN_BID_DISCLAIMER,
+      value
+    }
+  },
 }
 
 export default actions

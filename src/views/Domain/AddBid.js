@@ -1,10 +1,11 @@
+import React from 'react'
 import { ethers } from 'ethers'
 import { useNavigate } from 'react-router-dom'
 
 import components from 'components'
 
 
-function AddBid(props) {
+function _AddBid(props) {
   let inputRef
   let navigate = useNavigate()
 
@@ -38,5 +39,36 @@ function AddBid(props) {
     </>
   )
 }
+
+
+class AddBid extends React.PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = {
+      hasReadDocs: false,
+      hasClickedContinue: false,
+    }
+  }
+
+  render() {
+    if (this.props.hasSeenBidDisclaimer || this.state.hasClickedContinue) {
+      return (
+        <_AddBid {...this.props} />
+      )
+    }
+    return (
+      <>
+        <div className='mt-4 max-w-md m-auto'>{'Please be sure to read the '}<a className='underline' href="https://avvy.domains/docs/sunrise-auction/" target="_blank">Documentation on the Sunrise Auction</a>{' before placing any bids.'}</div>
+        <div className='mt-4 max-w-md m-auto'>
+          <components.checkbox.Button text="I have read the documentation" checked={this.state.hasReadDocs} onCheck={() => this.setState({ hasReadDocs: true })} />
+        </div>
+        <div className='mt-4 max-w-md m-auto'>
+          <components.buttons.Button text="Continue" disabled={!this.state.hasReadDocs} onClick={() => this.props.setHasSeenBidDisclaimer(true)} />
+        </div>
+      </>
+    )
+  }
+}
+
 
 export default AddBid
