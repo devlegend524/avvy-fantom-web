@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { ethers } from 'ethers'
 import { Link } from 'react-router-dom'
-import { TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
+import { ExternalLinkIcon, TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 
 import components from 'components'
 import services from 'services'
@@ -279,40 +279,43 @@ class MyBids extends React.PureComponent {
             })}
             {_hasPages ? this.renderPagination(_numPages) : null}
           </div>
-          <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 md:dark:bg-gray-800 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
-            <Summary.FullSummary  
-              subtitle={this.props.winningBidsLoaded && this.state.isConnected ? '(Totals for auctions that you won)' : null}
-              bidTotal={fullBidTotal} 
-              costToClaim={bidTotal}
-              registrationTotal={registrationTotal} 
-              showAvailable={!(this.state.isConnected && allClaimed)} 
-              notConnectedLabel={'Connect your wallet to see auction results & claim domains'}
-            />
-            {this.state.isConnected ? (
-              <>
-                {allClaimed ? null : (
-                  <div className='mt-8'>
-                    <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
-                    <AuctionPhase name='Claim period over' startsAt={claimEndsAt} endsAt={later} />
+          <div className='max-w-sm w-full m-auto mt-8 md:flex-shrink-0 md:ml-4 md:pl-4 md:mt-0'>
+            <div className='md:bg-gray-100 md:dark:bg-gray-800 md:rounded-lg md:p-4'>
+              <Summary.FullSummary  
+                subtitle={this.props.winningBidsLoaded && this.state.isConnected ? '(Totals for auctions that you won)' : null}
+                bidTotal={fullBidTotal} 
+                costToClaim={bidTotal}
+                registrationTotal={registrationTotal} 
+                showAvailable={!(this.state.isConnected && allClaimed)} 
+                notConnectedLabel={'Connect your wallet to see auction results & claim domains'}
+              />
+              {this.state.isConnected ? (
+                <>
+                  {allClaimed ? null : (
+                    <div className='mt-8'>
+                      <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
+                      <AuctionPhase name='Claim period over' startsAt={claimEndsAt} endsAt={later} />
+                    </div>
+                  )}
+                  <div className='mt-4 max-w-sm m-auto'>
+                    {allClaimed ? (
+                      <>
+                        <components.labels.Success text={'You have claimed all of the auctions you won. Congratulations!'} />
+                        <div className='mt-4'>
+                          <components.buttons.Button text={'View Domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
+                        </div>
+                      </>
+                    ) : canClaim ? (
+                      <>
+                        <div className='mb-4 text-center'>You have {toClaim} {toClaim === 1 ? 'domain' : 'domains'} to claim.{toClaim > 12 ? ' You can only claim 12 per transaction.' : ''}</div>
+                        <components.buttons.Button text={toClaim > 12 ? 'Claim Next 12 Domains' : 'Claim All'} onClick={() => this.props.claimAll()} loading={this.props.isClaimingDomains} />
+                      </>
+                    ) : null}
                   </div>
-                )}
-                <div className='mt-4 max-w-sm m-auto'>
-                  {allClaimed ? (
-                    <>
-                      <components.labels.Success text={'You have claimed all of the auctions you won. Congratulations!'} />
-                      <div className='mt-4'>
-                        <components.buttons.Button text={'View Domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
-                      </div>
-                    </>
-                  ) : canClaim ? (
-                    <>
-                      <div className='mb-4 text-center'>You have {toClaim} {toClaim === 1 ? 'domain' : 'domains'} to claim.{toClaim > 12 ? ' You can only claim 12 per transaction.' : ''}</div>
-                      <components.buttons.Button text={toClaim > 12 ? 'Claim Next 12 Domains' : 'Claim All'} onClick={() => this.props.claimAll()} loading={this.props.isClaimingDomains} />
-                    </>
-                  ) : null}
-                </div>
-              </>
-            ) : null}
+                </>
+              ) : null}
+            </div>
+            {this.renderDocumentation()}
           </div>
         </div>
       </>
@@ -437,18 +440,21 @@ class MyBids extends React.PureComponent {
             })}
             {_hasPages ? this.renderPagination(_numPages) : null}
           </div>
-          <div className='max-w-md m-auto mt-8 md:w-full md:max-w-sm md:bg-gray-100 dark:md:bg-gray-800 md:rounded-lg md:p-4 md:mt-0 md:flex-shrink-0'>
-            <div className='mb-8'>
-              <Summary.FullSummary fullBidTotal={bidTotal} bidTotal={bidTotal} registrationTotal={registrationTotal} showAvailable={allRevealed} />
-            </div>
-            {allRevealed ? 
-              <div>
-                <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
-                <AuctionPhase name='Claim' startsAt={claimStartsAt} endsAt={claimEndsAt} />
+          <div className='max-w-sm w-full m-auto mt-8 md:flex-shrink-0 md:ml-4 md:pl-4 md:mt-0'>
+            <div className='md:bg-gray-100 md:dark:bg-gray-800 md:rounded-lg md:p-4'>
+              <div className='mb-8'>
+                <Summary.FullSummary fullBidTotal={bidTotal} bidTotal={bidTotal} registrationTotal={registrationTotal} showAvailable={allRevealed} />
               </div>
-            : (
-              <components.buttons.Button text={'Reveal Bids'} onClick={() => this.revealModal.toggle()} />
-            )}
+              {allRevealed ? 
+                <div>
+                  <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
+                  <AuctionPhase name='Claim' startsAt={claimStartsAt} endsAt={claimEndsAt} />
+                </div>
+              : (
+                <components.buttons.Button text={'Reveal Bids'} onClick={() => this.revealModal.toggle()} />
+              )}
+            </div>
+            {this.renderDocumentation()}
           </div>
         </div>
       </>
@@ -520,6 +526,17 @@ class MyBids extends React.PureComponent {
           <ChevronRightIcon className='w-6' />
         </div>
       </div>
+    )
+  }
+
+  renderDocumentation() {
+    return (
+      <a href="https://avvy.domains/docs/sunrise-auction" target="_blank">
+        <div className='cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg p-4 font-bold dark:bg-gray-800 mt-4'>
+          <div>{'Auction Documentation'}</div>
+          <ExternalLinkIcon className="h-6" />
+        </div>
+      </a>
     )
   }
 
@@ -616,18 +633,21 @@ class MyBids extends React.PureComponent {
           })}
           {_hasPages ? this.renderPagination(_numPages) : null}
         </div>
-        <div className='max-w-sm w-full m-auto mt-8 md:flex-shrink-0 md:ml-4 md:pl-4 md:mt-0 md:bg-gray-100 md:dark:bg-gray-800 md:rounded-lg md:p-4'>
-          <div className='mb-8'>
-            <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} />
-          </div>
-          {allSubmitted ? (
-            <div>
-              <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
-              <AuctionPhase name='Bid reveal' startsAt={bidRevealStartsAt} endsAt={claimStartsAt} />
+        <div className='max-w-sm w-full m-auto mt-8 md:flex-shrink-0 md:ml-4 md:pl-4 md:mt-0'>
+          <div className='md:bg-gray-100 md:dark:bg-gray-800 md:rounded-lg md:p-4'>
+            <div className='mb-8'>
+              <Summary.FullSummary bidTotal={bidTotal} registrationTotal={registrationTotal} />
             </div>
-          ) : (
-            <components.buttons.Button text={'Place Bids'} onClick={() => this.bidModal.toggle()} />
-          )}
+            {allSubmitted ? (
+              <div>
+                <div className='font-bold text-center mb-4 text-lg'>{"Next auction phase:"}</div>
+                <AuctionPhase name='Bid reveal' startsAt={bidRevealStartsAt} endsAt={claimStartsAt} />
+              </div>
+            ) : (
+              <components.buttons.Button text={'Place Bids'} onClick={() => this.bidModal.toggle()} />
+            )}
+          </div>
+          {this.renderDocumentation()}
         </div>
       </div>
     )
