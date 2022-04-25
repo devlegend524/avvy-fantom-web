@@ -321,7 +321,11 @@ class Domain extends React.PureComponent {
       <div>
         <components.Modal ref={(ref) => this.bidModal = ref} title={'Add a bid'}> 
           {this.state.connected ? (
-            <AddBid domain={this.state.domain} handleSubmit={(navigate, val) => this.handleAddBid(navigate, val)} />
+            <AddBid 
+              hasSeenBidDisclaimer={this.props.hasSeenBidDisclaimer}
+              setHasSeenBidDisclaimer={this.props.setHasSeenBidDisclaimer}
+              domain={this.state.domain} 
+              handleSubmit={(navigate, val) => this.handleAddBid(navigate, val)} />
           ) : (
             <components.ConnectWallet />
           )}
@@ -343,6 +347,7 @@ const mapStateToProps = (state) => ({
   setRecordComplete: selectors.setRecordComplete(state),
   avatarRecord: selectors.avatarRecord(state),
   resolver: selectors.resolver(state),
+  hasSeenBidDisclaimer: services.sunrise.selectors.hasSeenBidDisclaimer(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -353,6 +358,7 @@ const mapDispatchToProps = (dispatch) => ({
   resetSetRecord: () => dispatch(actions.setRecordComplete(false)),
   renewDomain: (domain) => dispatch(services.cart.actions.addToCart(domain)),
   resetSetResolver: () => dispatch(actions.setResolverComplete(false)),
+  setHasSeenBidDisclaimer: (value) => dispatch(services.sunrise.actions.setHasSeenBidDisclaimer(value)),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Domain)

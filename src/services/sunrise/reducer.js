@@ -14,6 +14,8 @@ export const initialState = {
   claimedNames: {},
   nameDataProgress: 0,
   auctionKey: null,
+
+  hasSeenBidDisclaimer: false,
 }
 
 const rehydrate = (action, state) => {
@@ -175,6 +177,12 @@ export const reducer = (state = initialState, action) => {
             [action.name]: true
           }
         }
+      }
+
+    case constants.SET_HAS_SEEN_BID_DISCLAIMER:
+      return {
+        ...state,
+        hasSeenBidDisclaimer: action.value
       }
 
     default:
