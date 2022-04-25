@@ -24,6 +24,7 @@ class MyBids extends React.PureComponent {
     this.state = {
       isConnected: services.provider.isConnected(),
       paginationIndex: 0,
+      hasLoadedWinningBids: false
     }
   }
 
@@ -50,8 +51,11 @@ class MyBids extends React.PureComponent {
       const claimStartsAt = this.props.auctionPhases[2] * 1000
       const claimEndsAt = this.props.auctionPhases[3] * 1000
       const now = parseInt(Date.now())
-      if (now >= claimStartsAt && now < claimEndsAt) {
+      if (now >= claimStartsAt && now < claimEndsAt && !this.state.hasLoadedWinningBids) {
         this.props.loadWinningBids()
+        this.setState({
+          hasLoadedWinningBids: true
+        })
       }
     }
   }
