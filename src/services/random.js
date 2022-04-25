@@ -16,7 +16,7 @@ const random = {
       Date.now().toString()
     ]
     const input = inputs.join(',')
-    const salt = client.keccak256(input)
+    const salt = client.utils.keccak256(input)
     return salt
   },
 }
