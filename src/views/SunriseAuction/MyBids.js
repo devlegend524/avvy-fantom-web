@@ -309,10 +309,10 @@ class MyBids extends React.PureComponent {
                   <div className='mt-4 max-w-sm m-auto'>
                     {allClaimed ? (
                       <>
-                        <components.labels.Success text={'You have claimed all of the auctions you won. Congratulations!'} />
-                        <div className='mt-4'>
-                          <components.labels.Warning text={'Remember that you must return after the auction is over to renew your domains, or they will expire.'} />
+                        <div className='mb-4'>
+                          {'You must return after the auction is over to renew your domains or they will expire.'}
                         </div>
+                        <components.labels.Success text={'You have claimed all of the auctions you won. Congratulations!'} />
                         <div className='mt-4'>
                           <components.buttons.Button text={'View Domains'} onClick={(navigator) => services.linking.navigate(navigator, 'MyDomains')} />
                         </div>
