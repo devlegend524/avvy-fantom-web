@@ -3,6 +3,7 @@ import reduxService from 'services/redux'
 const constants = reduxService.prepareConstants(
   'views/Register',
   [
+    'SET_REGISTRATION_PREMIUM',
     'SET_HASH',
     'SET_SALT',
     'SET_PROGRESS',

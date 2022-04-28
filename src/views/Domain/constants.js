@@ -6,6 +6,7 @@ const constants = reduxService.prepareConstants(
     'SET_DOMAIN',
     'SET_LOADING', 
     'SET_AUCTION_PHASES',
+    'SET_REGISTRATION_PREMIUM',
 
     // records
     'IS_SETTING_RECORD',

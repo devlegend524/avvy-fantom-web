@@ -270,16 +270,18 @@ class AvvyClient {
 
   async register(domains, quantities, constraintsProofs, pricingProofs, salt) {
     const { total, hashes } = await this._getRegistrationArgs(domains, quantities)
+    const premium = await this.getRegistrationPremium()
     const registerTx = await this.contracts.LeasingAgentV1.register(hashes, quantities, constraintsProofs, pricingProofs, salt, {
-      value: total
+      value: total.add(premium)
     })
     await registerTx.wait()
   }
 
   async registerWithPreimage(domains, quantities, constraintsProofs, pricingProofs, salt, preimages) {
     const { total, hashes } = await this._getRegistrationArgs(domains, quantities)
+    const premium = await this.getRegistrationPremium()
     const registerTx = await this.contracts.LeasingAgentV1.registerWithPreimage(hashes, quantities, constraintsProofs, pricingProofs, salt, preimages, {
-      value: total
+      value: total.add(premium)
     })
     await registerTx.wait()
   }
@@ -419,6 +421,11 @@ class AvvyClient {
   async submitAccountVerification(signature) {
     const tx = await this.contracts.AccountGuardV1.verify(ethers.utils.getAddress(this.account), signature)
     await tx.wait()
+  }
+
+  async getRegistrationPremium() {
+    const registrationPremium = await this.contracts.LeasingAgentV1.getRegistrationPremium()
+    return registrationPremium
   }
 
   async buildPreimages(names) {

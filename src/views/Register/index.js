@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { ChevronLeftIcon, ChevronRightIcon, PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/solid'
+import { QuestionMarkCircleIcon, ChevronLeftIcon, ChevronRightIcon, PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/solid'
 
 import services from 'services'
 import components from 'components'
@@ -26,6 +26,7 @@ class Register extends React.PureComponent {
   componentDidMount() {
     services.linking.addEventListener('Domain', this.updateParams)
     services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
+    this.props.loadRegistrationPremium()
   }
 
   componentWillUnmount() {
@@ -151,7 +152,12 @@ class Register extends React.PureComponent {
     const nameData = this.props.nameData[name]
     if (!nameData) return null
     return (
-      <div className='text-gray-400 font-bold text-sm'>{services.money.renderUSD(nameData.priceUSDCents)} / year</div>
+      <>
+        <div className='text-gray-400 font-bold text-sm'>{services.money.renderUSD(nameData.priceUSDCents)} / year</div>
+        {this.props.registrationPremium ? (
+         <a target="_blank" href="https://avvy.domains/docs/sunrise-auction/" className='relative mt-2 flex text-xs bg-gray-200 dark:bg-gray-600 py-1 px-2 rounded'><span>Premium: +{services.money.renderAVAX(this.props.registrationPremium)}</span> <QuestionMarkCircleIcon className='w-4 right-0 ml-2' /></a>
+        ) : null}
+      </>
     )
   }
 
@@ -232,12 +238,13 @@ class Register extends React.PureComponent {
         </div>
       </div>
     )
-    if (this.props.isRefreshingNameData) return (
+    if (this.props.isRefreshingNameData || !this.props.registrationPremium) return (
       <div className='mt-8 max-w-sm m-auto text-center'>
         <components.ProgressBar progress={this.props.refreshNameDataProgress} />
         <div className='mt-4 text-gray-400 dark:text-gray-700'>{'Loading registration data'}</div>
       </div>
     )
+
     let names = Array.from(this.props.names).sort((a, b) => a > b ? 1 : -1)
     const nameData = this.props.nameData
     const quantities = this.props.quantities
@@ -262,7 +269,7 @@ class Register extends React.PureComponent {
       }
       const quantity = quantities[curr]
       const registrationPrice = services.money.mul(namePrice, quantity)
-      const registrationPriceAvax = services.money.mul(namePriceAvax, quantity)
+      const registrationPriceAvax = services.money.add(services.money.mul(namePriceAvax, quantity), this.props.registrationPremium)
       return {
         usd: services.money.add(sum.usd, registrationPrice),
         avax: services.money.add(sum.avax, registrationPriceAvax),
@@ -294,12 +301,23 @@ class Register extends React.PureComponent {
             </div>
             <div className='flex justify-between'>
               <div className='font-bold'>
-                {"Total"}
+                {"Registration Fees"}
               </div>
               <div className=''>
                 {services.money.renderUSD(total.usd)}
               </div>
             </div>
+            {this.props.registrationPremium ? (
+              <div className='flex justify-between'>
+                <a href="https://avvy.domains/docs/sunrise-auction/" target="_blank" className='flex font-bold'>
+                  {"Premium"}
+                  <QuestionMarkCircleIcon className='ml-2 w-4' />
+                </a>
+                <div className=''>
+                  {services.money.renderAVAX(this.props.registrationPremium.mul(names.length))}
+                </div>
+              </div>
+            ) : null}
             <div className='flex justify-between'>
               <div className='font-bold'>
                 {"Total (AVAX)"}
@@ -402,6 +420,7 @@ class Register extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
+  registrationPremium: selectors.registrationPremium(state),
   names: services.cart.selectors.names(state),
   nameData: services.cart.selectors.nameData(state),
   quantities: services.cart.selectors.quantities(state),
@@ -412,6 +431,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  loadRegistrationPremium: () => dispatch(actions.loadRegistrationPremium()),
   removeFromCart: (name) => dispatch(services.cart.actions.removeFromCart(name)),
   incrementQuantity: (name) => dispatch(services.cart.actions.incrementQuantity(name)),
   decrementQuantity: (name) => dispatch(services.cart.actions.decrementQuantity(name)),
