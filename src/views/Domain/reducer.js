@@ -6,6 +6,7 @@ export const initialState = {
   isLoading: false,
   domain: null,
   auctionPhases: null,
+  registrationPremium: null,
 
   // records
   isSettingRecord: false,
@@ -36,6 +37,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         auctionPhases: action.auctionPhases
+      }
+
+    case constants.SET_REGISTRATION_PREMIUM:
+      return { 
+        ...state,
+        registrationPremium: action.premium
       }
 
     case constants.IS_SETTING_RECORD:

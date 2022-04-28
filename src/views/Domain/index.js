@@ -53,6 +53,7 @@ class Domain extends React.PureComponent {
     const params = services.linking.getParams('Domain')
     const domain = params.domain ? params.domain.toLowerCase() : null
     this.props.loadDomain(domain)
+    this.props.loadRegistrationPremium()
   }
 
   onConnect() {
@@ -107,7 +108,19 @@ class Domain extends React.PureComponent {
           <CheckCircleIcon className='w-6 text-alert-blue mr-2' />
           <div className='text-alert-blue'>{'Available for registration'}</div>
         </div>
-        <div className='mt-8'>
+        {this.props.registrationPremium ? (
+          <div className='mt-4 border-2 rounded-lg border-gray-100 dark:border-gray-700 p-4'>
+            <div className='font-bold'>Registration Premium</div>
+            <div>
+              {'The .avax namespace is currently launching with a Dutch Auction. Names can be acquired for a premium. The premium decreases as time passes, eventually reaching 0.'}
+            </div>
+            <div className='mt-4 underline'>
+              <a href="https://avvy.domains/docs/sunrise-auction/" target="_blank">Read more about the Dutch Auction</a>
+            </div>
+            <div className='mt-4'>Current Premium: <span className='font-bold'>{services.money.renderAVAX(this.props.registrationPremium)}</span></div>
+          </div>
+        ) : null}
+        <div className='mt-4'>
           <components.buttons.Button 
             text={'Register this name'} 
             onClick={(navigator) => this.addToCart(navigator)} 
@@ -348,9 +361,11 @@ const mapStateToProps = (state) => ({
   avatarRecord: selectors.avatarRecord(state),
   resolver: selectors.resolver(state),
   hasSeenBidDisclaimer: services.sunrise.selectors.hasSeenBidDisclaimer(state),
+  registrationPremium: selectors.registrationPremium(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  loadRegistrationPremium: () => dispatch(actions.loadRegistrationPremium()),
   loadDomain: (domain) => dispatch(actions.loadDomain(domain)),
   addToCart: (domain) => dispatch(services.cart.actions.addToCart(domain)),
   addBid: (domain, amount) => dispatch(services.sunrise.actions.addBid(domain, amount)),

@@ -23,19 +23,11 @@ class Landing extends React.PureComponent {
           <ArrowRightIcon className="h-6" />
         </Link>
         <Link
-          to={services.linking.path('SunriseAuction')}
+          to={services.linking.path('Register')}
           className="flex justify-between bg-gray-100 font-bold p-4 rounded mb-2 dark:bg-gray-700">
-          <div>{'Sunrise Auction'}</div>
+          <div>{'Register a Name'}</div>
           <ArrowRightIcon className="h-6" />
         </Link>
-        {services.environment.REGISTRATIONS_ENABLED ? (
-          <Link
-            to={services.linking.path('Register')}
-            className="flex justify-between bg-gray-100 font-bold p-4 rounded mb-2 dark:bg-gray-700">
-            <div>{'Register a Name'}</div>
-            <ArrowRightIcon className="h-6" />
-          </Link>
-        ) : null}
         <a href="https://avvy.domains/docs/"
           target="_blank"
           className="flex justify-between bg-gray-100 font-bold p-4 rounded mb-2 dark:bg-gray-700">

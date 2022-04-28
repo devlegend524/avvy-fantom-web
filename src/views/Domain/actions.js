@@ -60,6 +60,21 @@ const actions = {
     }
   },
 
+  setRegistrationPremium: (premium) => {
+    return {
+      type: constants.SET_REGISTRATION_PREMIUM,
+      premium
+    }
+  },
+
+  loadRegistrationPremium: () => {
+    return async (dispatch, getState) => {
+      const api = services.provider.buildAPI()
+      const premium = await api.getRegistrationPremium()
+      dispatch(actions.setRegistrationPremium(premium))
+    }
+  },
+
   // records
 
   isSettingRecord: (value) => {

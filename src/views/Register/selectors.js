@@ -12,6 +12,7 @@ const selectors = {
   isCommitting: (state) => root(state).isCommitting,
   isFinalizing: (state) => root(state).isFinalizing,
   enhancedPrivacy: (state) => root(state).enableEnhancedPrivacy,
+  registrationPremium: (state) => root(state).registrationPremium,
 }
 
 export default selectors

@@ -3,6 +3,7 @@ import constants from './constants'
 export const reducerName = 'registerView'
 
 export const initialState = {
+  registrationPremium: null,
   commitHash: null,
   commitSalt: null,
   progress: {},
@@ -68,6 +69,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         enableEnhancedPrivacy: action.value
+      }
+
+    case constants.SET_REGISTRATION_PREMIUM:
+      return {
+        ...state,
+        registrationPremium: action.premium
       }
 
     default:

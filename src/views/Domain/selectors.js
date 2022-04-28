@@ -6,6 +6,7 @@ const selectors = {
   isLoading: (state) => root(state).isLoading,
   domain: (state) => root(state).domain,
   auctionPhases: (state) => root(state).auctionPhases,
+  registrationPremium: (state) => root(state).registrationPremium,
 
   isSettingRecord: (state) => root(state).isSettingRecord,
   isLoadingRecords: (state) => root(state).isLoadingRecords,

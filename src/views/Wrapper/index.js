@@ -64,14 +64,6 @@ class Wrapper extends React.PureComponent {
             <div className='w-full h-1 bg-gray-100 dark:bg-gray-800'></div>
             <Link 
               className='block text-lg p-2 w-full h-16 flex items-center justify-between' 
-              to={services.linking.path('SunriseAuction')}
-              onClick={this.toggleMenu.bind(this)}>
-              <div>Sunrise Auction</div>
-              <ArrowRightIcon className='w-6' />
-            </Link>
-            <div className='w-full h-1 bg-gray-100 dark:bg-gray-800'></div>
-            <Link 
-              className='block text-lg p-2 w-full h-16 flex items-center justify-between' 
               to={services.linking.path('Settings')}
               onClick={this.toggleMenu.bind(this)}>
               <div>Settings</div>
@@ -120,9 +112,6 @@ class Wrapper extends React.PureComponent {
 							</svg>
 						</div>
 						<div className="pr-8 hidden md:flex items-center dark:text-white">
-							<div className="font-poppins text-md">
-								<Link to={services.linking.path('SunriseAuction')}>Sunrise Auction</Link>
-							</div>
 							<div className="font-poppins ml-8 text-md">
         				<Link to={services.linking.path('MyDomains')}>My Domains</Link>
 							</div>
