@@ -14,7 +14,7 @@ class Settings extends React.PureComponent {
         <div className='dark:border-gray-700 rounded border-gray-100 border-2 p-4'>
           <div>
             <div className='font-bold'>{'Browser Data Storage'}</div>
-            <div className='mb-4 text-gray-700 dark:text-gray-200 text-sm'>{'Your browser stores important non-public information, such as revealed names of your Enhanced Privacy domains and unsealed bid information at various stages of the Sunrise Auction.'}</div>
+            <div className='mb-4 text-gray-700 dark:text-gray-200 text-sm'>{'Your browser stores important non-public information, such as revealed names of your Enhanced Privacy domains.'}</div>
           </div>
           <div onClick={() => services.data.backup()} className="flex cursor-pointer justify-between bg-gray-100 dark:bg-gray-700 font-bold p-4 rounded mb-2">
             <div>{'Backup Data'}</div>
