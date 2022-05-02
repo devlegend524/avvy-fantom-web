@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/solid'
 import { InformationCircleIcon, PlusIcon } from '@heroicons/react/outline' 
+import { ethers } from 'ethers'
+
 import services from 'services'
 import components from 'components'
 
@@ -108,7 +110,7 @@ class Domain extends React.PureComponent {
           <CheckCircleIcon className='w-6 text-alert-blue mr-2' />
           <div className='text-alert-blue'>{'Available for registration'}</div>
         </div>
-        {this.props.registrationPremium ? (
+        {this.props.registrationPremium.gt(ethers.BigNumber.from('0')) ? (
           <div className='mt-4 border-2 rounded-lg border-gray-100 dark:border-gray-700 p-4'>
             <div className='font-bold'>Registration Premium</div>
             <div>
@@ -119,7 +121,9 @@ class Domain extends React.PureComponent {
             </div>
             <div className='mt-4'>Current Premium: <span className='font-bold'>{services.money.renderAVAX(this.props.registrationPremium)}</span></div>
           </div>
-        ) : null}
+        ) : (
+          <div className='p-4'></div>
+        )}
         <div className='mt-4'>
           <components.buttons.Button 
             text={'Register this name'} 

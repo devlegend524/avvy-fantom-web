@@ -147,10 +147,6 @@ class AvvyClient {
     // hash the name
     const hash = await client.utils.nameHash(domain)
     const tokenExists = await this.tokenExists(hash)
-    const auctionPhases = await this.getAuctionPhases()
-    const isAuctionPeriod = await this.isAuctionPeriod(auctionPhases)
-    const isBiddingOpen = await this.isBiddingOpen(auctionPhases)
-    const isRegistrationPeriod = await this.isRegistrationPeriod()
     let domainStatus
     let owner = null
 
@@ -158,11 +154,7 @@ class AvvyClient {
       owner = await this.ownerOf(hash)
       if (owner && this.account && owner.toLowerCase() === this.account.toLowerCase()) domainStatus = this.DOMAIN_STATUSES.REGISTERED_SELF
       else domainStatus = this.DOMAIN_STATUSES.REGISTERED_OTHER
-    } else if (isAuctionPeriod && isBiddingOpen) {
-      domainStatus = this.DOMAIN_STATUSES.AUCTION_AVAILABLE
-    } else if (isAuctionPeriod && !isBiddingOpen) {
-      domainStatus = this.DOMAIN_STATUSES.AUCTION_BIDDING_CLOSED
-    } else if (isRegistrationPeriod) {
+    } else {
       domainStatus = this.DOMAIN_STATUSES.AVAILABLE
     }
 
@@ -268,19 +260,19 @@ class AvvyClient {
     }
   }
 
-  async register(domains, quantities, constraintsProofs, pricingProofs, salt) {
+  async register(domains, quantities, constraintsProofs, pricingProofs) {
     const { total, hashes } = await this._getRegistrationArgs(domains, quantities)
     const premium = await this.getRegistrationPremium()
-    const registerTx = await this.contracts.LeasingAgentV1.register(hashes, quantities, constraintsProofs, pricingProofs, salt, {
+    const registerTx = await this.contracts.LeasingAgentV1.register(hashes, quantities, constraintsProofs, pricingProofs, {
       value: total.add(premium)
     })
     await registerTx.wait()
   }
 
-  async registerWithPreimage(domains, quantities, constraintsProofs, pricingProofs, salt, preimages) {
+  async registerWithPreimage(domains, quantities, constraintsProofs, pricingProofs, preimages) {
     const { total, hashes } = await this._getRegistrationArgs(domains, quantities)
     const premium = await this.getRegistrationPremium()
-    const registerTx = await this.contracts.LeasingAgentV1.registerWithPreimage(hashes, quantities, constraintsProofs, pricingProofs, salt, preimages, {
+    const registerTx = await this.contracts.LeasingAgentV1.registerWithPreimage(hashes, quantities, constraintsProofs, pricingProofs, preimages, {
       value: total.add(premium)
     })
     await registerTx.wait()
