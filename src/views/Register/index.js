@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { QuestionMarkCircleIcon, ChevronLeftIcon, ChevronRightIcon, PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/solid'
+import { ethers } from 'ethers'
 
 import services from 'services'
 import components from 'components'
@@ -154,7 +155,7 @@ class Register extends React.PureComponent {
     return (
       <>
         <div className='text-gray-400 font-bold text-sm'>{services.money.renderUSD(nameData.priceUSDCents)} / year</div>
-        {this.props.registrationPremium ? (
+        {this.props.registrationPremium.gt(ethers.BigNumber.from('0')) ? (
          <a target="_blank" href="https://avvy.domains/docs/sunrise-auction/" className='relative mt-2 flex text-xs bg-gray-200 dark:bg-gray-600 py-1 px-2 rounded'><span>Premium: +{services.money.renderAVAX(this.props.registrationPremium)}</span> <QuestionMarkCircleIcon className='w-4 right-0 ml-2' /></a>
         ) : null}
       </>
@@ -307,7 +308,7 @@ class Register extends React.PureComponent {
                 {services.money.renderUSD(total.usd)}
               </div>
             </div>
-            {this.props.registrationPremium ? (
+            {this.props.registrationPremium.gt(ethers.BigNumber.from('0')) ? (
               <div className='flex justify-between'>
                 <a href="https://avvy.domains/docs/sunrise-auction/" target="_blank" className='flex font-bold'>
                   {"Premium"}

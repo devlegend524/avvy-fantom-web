@@ -21,7 +21,7 @@ class DomainPrivacy extends React.PureComponent {
           <div onClick={() => this.props.onCheck(true)} className={`cursor-pointer bg-gray-100 dark:bg-gray-800 p-4 rounded-xl border-2 ${error ? 'border-red-500' : this.props.isEnhancedPrivacy ? 'border-gray-700 dark:border-white' : 'border-gray-100 dark:border-gray-800'}`}>
             <div className='font-bold flex items-center justify-between'><div className=''>{'Enhanced Privacy'}</div><div className={this.props.isEnhancedPrivacy ? '' : 'hidden'}><CheckCircleIcon className='w-6 text-gray-700 dark:text-white' /></div></div>
             <ul className='list-disc pl-4 mt-4 text-sm'>
-              <li>{'Internet users cannot read your domain names*'}</li>
+              <li>{'Others will have difficulty reading your domain names*'}</li>
               <li>{'NFT exchanges cannot list your domain names*'}</li>
               <li>{'Your wallet will not remember your domain names**'}</li>
               <li>{'Reverse resolution will not work for your domain names'}</li>
@@ -30,7 +30,7 @@ class DomainPrivacy extends React.PureComponent {
           </div>
         </div>
         <div className='text-gray-500 text-xs mt-4'>
-          <div>{'* In some cases, it may be possible to read Enhanced Privacy domains'}</div>
+          <div>{'* Enhanced Privacy uses hashing to obfuscate your domain name - this is a weak privacy layer which can be attacked'}</div>
           <div>{'** With Enhanced Privacy, you must remember the domain name you have registered or back up your data'}</div>
           <div>{'*** Enabling Enhanced Privacy for names that were previously registered with Standard Privacy will have no effect'}</div>
           <div className='mt-4'><a target="_blank" rel="noreferrer" href="https://avvy.domains/docs/privacy-features-registrations/" className='underline'>{'Read more about Enhanced Privacy'}</a></div>

@@ -35,10 +35,6 @@ class RegistrationFlow extends React.PureComponent {
     })
   }
 
-  commitTransaction() {
-    this.props.commitTransaction()
-  }
-
   finalizeTransaction() {
     this.props.finalizeTransaction()
   }
@@ -133,10 +129,7 @@ class RegistrationFlow extends React.PureComponent {
         ) : null}
         <div className='mt-8 max-w-sm m-auto'>
           <div className='mt-4'>
-            <components.buttons.Button text={'Commit registration'} onClick={this.commitTransaction.bind(this)} loading={this.props.isCommitting && !this.props.hasCommit} disabled={this.props.hasCommit} />
-          </div>
-          <div className='mt-4'>
-            <components.buttons.Button text={'Finalize registration'} onClick={this.finalizeTransaction.bind(this)} loading={this.props.isFinalizing} disabled={!this.props.hasCommit} />
+            <components.buttons.Button text={'Finalize registration'} onClick={this.finalizeTransaction.bind(this)} loading={this.props.isFinalizing} />
           </div>
         </div>
       </>
@@ -212,7 +205,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   generateProofs: (names) => dispatch(actions.generateProofs(names)),
-  commitTransaction: () => dispatch(actions.commit()),
   finalizeTransaction: () => dispatch(actions.finalize()),
   enableEnhancedPrivacy: (value) => dispatch(actions.enableEnhancedPrivacy(value)),
   nextBatch: () => dispatch(actions.reset()),

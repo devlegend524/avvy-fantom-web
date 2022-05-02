@@ -4,13 +4,6 @@ import constants from './constants'
 import selectors from './selectors'
 
 const actions = {
-  setSalt: (salt) => {
-    return {
-      type: constants.SET_SALT,
-      salt
-    }
-  },
-
   setHash: (hash) => {
     return {
       type: constants.SET_HASH,
@@ -25,23 +18,9 @@ const actions = {
     }
   },
 
-  setIsCommitting:(value) => {
-    return {
-      type: constants.SET_IS_COMMITTING,
-      value
-    }
-  },
-
   setIsFinalizing:(value) => {
     return {
       type: constants.SET_IS_FINALIZING,
-      value
-    }
-  },
-
-  setHasCommit: (value) => {
-    return {
-      type: constants.SET_HAS_COMMIT,
       value
     }
   },
@@ -63,9 +42,7 @@ const actions = {
   reset: () => {
     return (dispatch, getState) => {
       dispatch(actions.setIsComplete(false))
-      dispatch(actions.setHasCommit(false))
       dispatch(actions.setIsFinalizing(false))
-      dispatch(actions.setIsCommitting(false))
       dispatch(actions.setProgress(0))
     }
   },
@@ -126,46 +103,6 @@ const actions = {
     }
   },
 
-  commit: (names, quantities) => {
-    return async (dispatch, getState) => {
-      try {
-        dispatch(actions.setIsCommitting(true))
-        const state = getState()
-        const api = services.provider.buildAPI()
-        let names = services.cart.selectors.names(state)
-        const _quantities = services.cart.selectors.quantities(state)
-        const _constraintsProofs = services.proofs.selectors.constraintsProofs(state)
-        const _pricingProofs = services.proofs.selectors.pricingProofs(state)
-        let quantities = []
-        let pricingProofs = []
-        let constraintsProofs = []
-        names = names.slice(0, services.environment.MAX_REGISTRATION_NAMES)
-        names.forEach(name => {
-          quantities.push(_quantities[name])
-          pricingProofs.push(_pricingProofs[name])
-          constraintsProofs.push(_constraintsProofs[name])
-        })
-        let salt = services.random.salt()
-        dispatch(actions.setSalt(salt))
-        await api.commit(
-          names,
-          quantities,
-          constraintsProofs,
-          pricingProofs,
-          salt,
-        )
-        dispatch(actions.setHasCommit(true))
-      } catch (err) {
-        if (err.code === 4001) {
-          dispatch(actions.setIsCommitting(false))
-          return // user rejected transaction, give them another chance
-        }
-        services.logger.error(err)
-        dispatch(actions.setHasError(true))
-      }
-    }
-  },
-
   finalize: () => {
     return async (dispatch, getState) => {
       try {
@@ -173,7 +110,6 @@ const actions = {
         const state = getState()
         const api = services.provider.buildAPI()
         let names = services.cart.selectors.names(state)
-        const salt = selectors.commitSalt(state)
         const _quantities = services.cart.selectors.quantities(state)
         const _constraintsProofs = services.proofs.selectors.constraintsProofs(state)
         const _pricingProofs = services.proofs.selectors.pricingProofs(state)
@@ -200,7 +136,6 @@ const actions = {
             quantities,
             constraintsProofs,
             pricingProofs,
-            salt,
           )
         } else {
           const _names = names.map(n => reverseLookups[n])
@@ -210,7 +145,6 @@ const actions = {
             quantities,
             constraintsProofs,
             pricingProofs,
-            salt,
             preimages
           )
         }
