@@ -156,7 +156,7 @@ class Register extends React.PureComponent {
       <>
         <div className='text-gray-400 font-bold text-sm'>{services.money.renderUSD(nameData.priceUSDCents)} / year</div>
         {this.props.registrationPremium.gt(ethers.BigNumber.from('0')) ? (
-         <a target="_blank" href="https://avvy.domains/docs/sunrise-auction/" className='relative mt-2 flex text-xs bg-gray-200 dark:bg-gray-600 py-1 px-2 rounded'><span>Premium: +{services.money.renderAVAX(this.props.registrationPremium)}</span> <QuestionMarkCircleIcon className='w-4 right-0 ml-2' /></a>
+         <a target="_blank" href="https://avvy.domains/docs/registration-premiums/" className='relative mt-2 flex text-xs bg-gray-200 dark:bg-gray-600 py-1 px-2 rounded'><span>Premium: +{services.money.renderAVAX(this.props.registrationPremium)}</span> <QuestionMarkCircleIcon className='w-4 right-0 ml-2' /></a>
         ) : null}
       </>
     )
@@ -256,11 +256,17 @@ class Register extends React.PureComponent {
         return null
       }
     }
+
+    let hasRenewal = false
+    const hasRegistrationPremium = this.props.registrationPremium.gt(ethers.BigNumber.from('0'))
     const unavailable = []
     const total = names.reduce((sum, curr) => {
       if (nameData[curr].status !== nameData[curr].constants.DOMAIN_STATUSES.AVAILABLE && nameData[curr].status !== nameData[curr].constants.DOMAIN_STATUSES.REGISTERED_SELF) {
         unavailable.push(curr)
         return sum
+      }
+      if (nameData[curr].status === nameData[curr].constants.DOMAIN_STATUSES.REGISTERED_SELF) {
+        hasRenewal = true
       }
       const namePrice = nameData[curr].priceUSDCents
       const namePriceAvax = nameData[curr].priceAVAXEstimate
@@ -308,9 +314,9 @@ class Register extends React.PureComponent {
                 {services.money.renderUSD(total.usd)}
               </div>
             </div>
-            {this.props.registrationPremium.gt(ethers.BigNumber.from('0')) ? (
+            {hasRegistrationPremium ? (
               <div className='flex justify-between'>
-                <a href="https://avvy.domains/docs/sunrise-auction/" target="_blank" className='flex font-bold'>
+                <a href="https://avvy.domains/docs/registration-premiums/" target="_blank" className='flex font-bold'>
                   {"Premium"}
                   <QuestionMarkCircleIcon className='ml-2 w-4' />
                 </a>
@@ -331,6 +337,11 @@ class Register extends React.PureComponent {
           <div className='my-8'>
             <components.labels.Information text={'Registrations are priced in USD, but payable in AVAX. Amounts noted are estimates; actual price will be determined in future steps.'} />
           </div>
+          {hasRenewal && hasRegistrationPremium ? (
+            <div className='mb-8'>
+              <components.labels.Warning text={'We recommend waiting until the Registration Premium has decreased to 0 to renew your domains. If you wish to renew now, you must pay the Registration Premium.'} />
+            </div>
+          ) : null}
           <components.buttons.Button text={'Continue Registration'} onClick={this.startPurchase.bind(this)} />
           <div className='mt-4 text-center text-gray-500 text-sm'>
             <div className='underline cursor-pointer' onClick={() => this.cancelRegistration()}>{'Cancel registration'}</div>

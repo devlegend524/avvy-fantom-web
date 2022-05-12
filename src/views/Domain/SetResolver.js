@@ -61,7 +61,8 @@ class SetResolver extends React.PureComponent {
     return (
       <>
         <div className='max-w-md m-auto'>
-          <div className='font-bold mb-2'>
+          <components.labels.Warning text={'Resolvers are currently in Beta. They have not yet been audited & may change in the future. Use at your own risk.'} />
+          <div className='font-bold mb-2 mt-4'>
             Type
           </div>
           <components.Select initial={initial} options={this.state.resolverOptions} ref={(ref) => {
