@@ -2,13 +2,9 @@
 # yarn lockfile v1
 
 
-"@avvy/artifacts@file:../avvy-v2/js_lib":
-  "resolved" "file:../avvy-v2/js_lib"
-  "version" "1.0.6"
-
 "@avvy/client@file:../avvy-v2-client":
   "resolved" "file:../avvy-v2-client"
-  "version" "2.0.8"
+  "version" "2.1.1"
   dependencies:
     "assert" "^2.0.0"
     "circomlibjs" "^0.0.8"
