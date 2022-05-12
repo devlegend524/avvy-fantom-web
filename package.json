@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@avvy/artifacts": "file:../avvy-v2/js_lib",
     "@avvy/client": "file:../avvy-v2-client",
     "@babel/core": "7.12.3",
     "@heroicons/react": "^1.0.5",

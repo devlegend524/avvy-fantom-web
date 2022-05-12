@@ -5,7 +5,6 @@
 // extracted later for the public
 // API clients.
 //
-import artifacts from '@avvy/artifacts'
 import { ethers } from 'ethers'
 import client from '@avvy/client'
 
@@ -14,7 +13,10 @@ import services from 'services'
 class AvvyClient {
   constructor(chainId, account, signerOrProvider) {
     this.chainId = parseInt(chainId)
-    this.contracts = artifacts.contracts.load(chainId, signerOrProvider)
+    this.avvy = new client(signerOrProvider, {
+      chainId
+    })
+    this.contracts = this.avvy.contracts
 
     this.account = account
     this.signer = signerOrProvider
@@ -112,7 +114,7 @@ class AvvyClient {
     // checks whether a given name is supported by the system
     if (!name) return false
     const hash = await client.utils.nameHash(name)
-    if (artifacts.blocklist.isBlocked(hash)) return false
+    if (client.blocklist.isBlocked(hash)) return false
     const split = name.split('.')
     if (split.length !== 2) return false
     if (split[1] !== 'avax') return false
@@ -416,7 +418,8 @@ class AvvyClient {
   }
 
   async getRegistrationPremium() {
-    const registrationPremium = await this.contracts.LeasingAgentV1.getRegistrationPremium()
+    const now = parseInt(Date.now() / 1000)
+    const registrationPremium = await this.contracts.LeasingAgentV1.getRegistrationPremium(now)
     return registrationPremium
   }
 
