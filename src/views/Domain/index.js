@@ -114,10 +114,10 @@ class Domain extends React.PureComponent {
           <div className='mt-4 border-2 rounded-lg border-gray-100 dark:border-gray-700 p-4'>
             <div className='font-bold'>Registration Premium</div>
             <div>
-              {'The .avax namespace is currently launching with a Dutch Auction. Names can be acquired for a premium. The premium decreases as time passes, eventually reaching 0.'}
+              {'The .avax namespace is currently launching. Names can be acquired, but a one-time Registration Premium must be paid in AVAX. This Registration Premium decreases as time passes, eventually reaching 0.'}
             </div>
             <div className='mt-4 underline'>
-              <a href="https://avvy.domains/docs/sunrise-auction/" target="_blank">Read more about the Dutch Auction</a>
+              <a href="https://avvy.domains/docs/registration-premiums/" target="_blank">Read more about Registration Premiums</a>
             </div>
             <div className='mt-4'>Current Premium: <span className='font-bold'>{services.money.renderAVAX(this.props.registrationPremium)}</span></div>
           </div>
