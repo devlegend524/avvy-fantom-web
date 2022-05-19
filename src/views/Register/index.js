@@ -156,7 +156,7 @@ class Register extends React.PureComponent {
       <>
         <div className='text-gray-400 font-bold text-sm'>{services.money.renderUSD(nameData.priceUSDCents)} / year</div>
         {this.props.registrationPremium.gt(ethers.BigNumber.from('0')) ? (
-         <a target="_blank" href="https://avvy.domains/docs/registration-premiums/" className='relative mt-2 flex text-xs bg-gray-200 dark:bg-gray-600 py-1 px-2 rounded'><span>Premium: +{services.money.renderAVAX(this.props.registrationPremium)}</span> <QuestionMarkCircleIcon className='w-4 right-0 ml-2' /></a>
+         <a target="_blank" href="https://avvy.domains/docs/registration-premiums/" className='relative mt-2 inline-block text-xs bg-gray-200 dark:bg-gray-600 py-1 px-2 rounded'><span className='inline-block'>Premium: +{services.money.renderAVAX(this.props.registrationPremium)}</span> <QuestionMarkCircleIcon className='w-4 right-0 ml-2 inline-block' /></a>
         ) : null}
       </>
     )
