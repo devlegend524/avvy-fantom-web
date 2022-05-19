@@ -25,14 +25,14 @@ const circuits = {
       reader.readAsDataURL(new Blob([buff]))
     })
     const proveRes = await window.snarkjs.plonk.prove( 
-      services.linking.static(`circuits/${circuitName}_final.zkey`),
+      services.linking.static(`circuits/${circuitName}_final.zkey?v=${services.environment.PROOF_KEY}`),
       base64wtns
     )
     return proveRes
   },
 
   verify: async (circuitName, proveRes) => {
-    const vkeyPath = services.linking.static(`circuits/${circuitName}_verification_key.json`)
+    const vkeyPath = services.linking.static(`circuits/${circuitName}_verification_key.json?v=${services.environment.PROOF_KEY}`)
     const fetchRes = await fetch(vkeyPath)
     const vkey = await fetchRes.json()
     const res = await window.snarkjs.plonk.verify(vkey, proveRes.publicSignals, proveRes.proof)
