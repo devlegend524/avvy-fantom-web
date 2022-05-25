@@ -124,12 +124,14 @@ class Domain extends React.PureComponent {
         ) : (
           <div className='p-4'></div>
         )}
-        <div className='mt-4'>
-          <components.buttons.Button 
-            text={'Register this name'} 
-            onClick={(navigator) => this.addToCart(navigator)} 
-          />
-        </div>
+        {services.environment.REGISTRATIONS_ENABLED ? (
+          <div className='mt-4'>
+            <components.buttons.Button 
+              text={'Register this name'} 
+              onClick={(navigator) => this.addToCart(navigator)} 
+            />
+          </div>
+        ) : null}
         <div className='mt-4'>
           <components.DomainSearch placeholder={this.searchPlaceholder} />
         </div>
