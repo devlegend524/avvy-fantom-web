@@ -262,10 +262,19 @@ class AvvyClient {
     }
   }
 
+  _getTreasuryGasSurplus() {
+    return '20000'
+  }
+
   async register(domains, quantities, constraintsProofs, pricingProofs) {
     const { total, hashes } = await this._getRegistrationArgs(domains, quantities)
     const premium = await this.getRegistrationPremium()
+    const gasEstimate = await this.contracts.LeasingAgentV1.estimateGas.register(hashes, quantities, constraintsProofs, pricingProofs, {
+      value: total.add(premium)
+    })
+    const gasLimit = gasEstimate.add(this._getTreasuryGasSurplus())
     const registerTx = await this.contracts.LeasingAgentV1.register(hashes, quantities, constraintsProofs, pricingProofs, {
+      gasLimit,
       value: total.add(premium)
     })
     await registerTx.wait()
@@ -274,7 +283,13 @@ class AvvyClient {
   async registerWithPreimage(domains, quantities, constraintsProofs, pricingProofs, preimages) {
     const { total, hashes } = await this._getRegistrationArgs(domains, quantities)
     const premium = await this.getRegistrationPremium()
+    const gasEstimate = await this.contracts.LeasingAgentV1.estimateGas.registerWithPreimage(hashes, quantities, constraintsProofs, pricingProofs, preimages, {
+      value: total.add(premium)
+    })
+
+    const gasLimit = gasEstimate.add(this._getTreasuryGasSurplus())
     const registerTx = await this.contracts.LeasingAgentV1.registerWithPreimage(hashes, quantities, constraintsProofs, pricingProofs, preimages, {
+      gasLimit,
       value: total.add(premium)
     })
     await registerTx.wait()
