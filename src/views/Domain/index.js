@@ -74,10 +74,15 @@ class Domain extends React.PureComponent {
     }
   }
 
+  setApi = async () => {
+    this.api = await services.provider.buildAPI()
+  }
+
   componentDidMount() {
     services.linking.addEventListener('Domain', this.updateParams)
     services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
     this.setDefaultResolver()
+    this.setApi()
   }
 
   componentWillUnmount() {
@@ -203,7 +208,7 @@ class Domain extends React.PureComponent {
     return (
       <div className='max-w-screen-md m-auto flex w-full md:flex-row md:items-start'>
         <components.Modal title={'Set Record'} ref={(ref) => this.setRecordModal = ref}>
-          <SetRecord key={this.state.setRecordReset} handleSubmit={this._handleSetRecord} loading={this.props.isSettingRecord} />
+          <SetRecord key={this.state.setRecordReset} handleSubmit={this._handleSetRecord} loading={this.props.isSettingRecord} api={this.api} />
         </components.Modal>
         <components.Modal title={'Set Resolver'} ref={(ref) =>  this.setResolverModal = ref}>
           <SetResolver onComplete={() => this.setResolverModal.toggle()} domain={this.state.domain} resolver={this.props.resolver} />
