@@ -31,9 +31,9 @@ class SetResolver extends React.PureComponent {
     const defaultResolverAddress = api.getDefaultResolverAddress()
     this.setState({
       resolverOptions: [
+        { name: 'None', value: 'NONE'},
         { name: 'Default Resolver', value: defaultResolverAddress },
         //{ name: 'Custom Resolver', value: 'CUSTOM' },
-        { name: 'None', value: 'NONE'},
       ]
     })
   }
