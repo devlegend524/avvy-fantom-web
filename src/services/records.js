@@ -1,11 +1,11 @@
 const records = {
   standard: [
     { name: 'X-Chain Address', type: 1 },
-    { name: 'C-Chain Address', type: 2 },
-    { name: 'Nickname', type: 3 },
+    { name: 'P-Chain Address', type: 2 },
+    { name: 'C-Chain / EVM Address', type: 3 },
     { name: 'Avatar', type: 4 },
-    { name: 'CNAME Record', type: 5 },
-    { name: 'A Record', type: 6 },
+    { name: 'DNS CNAME Record', type: 5 },
+    { name: 'DNS A Record', type: 6 },
   ],
 
   getStandard: (type) => {
