@@ -122,7 +122,7 @@ class Domain extends React.PureComponent {
               {'The .avax namespace is currently launching. Names can be acquired, but a one-time Registration Premium must be paid in AVAX. This Registration Premium decreases as time passes, eventually reaching 0.'}
             </div>
             <div className='mt-4 underline'>
-              <a href="https://avvy.domains/docs/registration-premiums/" target="_blank">Read more about Registration Premiums</a>
+              <a href="https://avvy.domains/auction-guide/" target="_blank">Read more about Registration Premiums</a>
             </div>
             <div className='mt-4'>Current Premium: <span className='font-bold'>{services.money.renderAVAX(this.props.registrationPremium)}</span></div>
           </div>
