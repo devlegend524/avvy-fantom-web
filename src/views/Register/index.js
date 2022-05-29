@@ -156,7 +156,7 @@ class Register extends React.PureComponent {
       <>
         <div className='text-gray-400 font-bold text-sm'>{services.money.renderUSD(nameData.priceUSDCents)} / year</div>
         {this.props.registrationPremium.gt(ethers.BigNumber.from('0')) ? (
-         <a target="_blank" href="https://avvy.domains/docs/registration-premiums/" className='relative mt-2 inline-block text-xs bg-gray-200 dark:bg-gray-600 py-1 px-2 rounded'><span className='inline-block'>Premium: +{services.money.renderAVAX(this.props.registrationPremium)}</span> <QuestionMarkCircleIcon className='w-4 right-0 ml-2 inline-block' /></a>
+         <a target="_blank" href="https://avvy.domains/auction-guide/" className='relative mt-2 inline-block text-xs bg-gray-200 dark:bg-gray-600 py-1 px-2 rounded'><span className='inline-block'>Premium: +{services.money.renderAVAX(this.props.registrationPremium)}</span> <QuestionMarkCircleIcon className='w-4 right-0 ml-2 inline-block' /></a>
         ) : null}
       </>
     )
@@ -316,7 +316,7 @@ class Register extends React.PureComponent {
             </div>
             {hasRegistrationPremium ? (
               <div className='flex justify-between'>
-                <a href="https://avvy.domains/docs/registration-premiums/" target="_blank" className='flex font-bold'>
+                <a href="https://avvy.domains/auction-guide/" target="_blank" className='flex font-bold'>
                   {"Premium"}
                   <QuestionMarkCircleIcon className='ml-2 w-4' />
                 </a>
