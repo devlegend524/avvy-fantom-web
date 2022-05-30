@@ -503,6 +503,11 @@ class AvvyClient {
       }
     }).filter(res => res.value !== '')
   }
+
+  async getBalance() {
+    const balance = await this.signer.getBalance()
+    return balance
+  }
 }
 
 export default AvvyClient

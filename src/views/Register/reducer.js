@@ -13,10 +13,17 @@ export const initialState = {
   isCommitting: false,
   isFinalizing: false,
   enableEnhancedPrivacy: false,
+  balance: null,
 }
 
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case constants.SET_BALANCE:
+      return {
+        ...state,
+        balance: action.balance
+      }
+
     case constants.SET_SALT:
       return {
         ...state,
