@@ -36,6 +36,7 @@ class Register extends React.PureComponent {
   }
 
   onConnect() {
+    this.props.loadBalance()
     if (this.connectModal) {
       this.connectModal.hide()
     }
@@ -228,6 +229,8 @@ class Register extends React.PureComponent {
   }
 
   renderNames() {
+    if (!this.props.balance) return null
+
     if (!this.props.names || this.props.names.length === 0) return (
       <div className='max-w-md m-auto'>
         <div className='mb-8'>
@@ -342,7 +345,12 @@ class Register extends React.PureComponent {
               <components.labels.Warning text={'We recommend waiting until the Registration Premium has decreased to 0 to renew your domains. If you wish to renew now, you must pay the Registration Premium.'} />
             </div>
           ) : null}
-          <components.buttons.Button text={'Continue Registration'} onClick={this.startPurchase.bind(this)} />
+          {this.props.balance.lt(total.avax) ? (
+            <div className='mb-8'>
+              <components.labels.Error text={'Your connected wallet does not have enough funds to continue the registration.'} />
+            </div>
+          ) : null}
+          <components.buttons.Button text={'Continue Registration'} onClick={this.startPurchase.bind(this)} disabled={this.props.balance.lt(total.avax)} />
           <div className='mt-4 text-center text-gray-500 text-sm'>
             <div className='underline cursor-pointer' onClick={() => this.cancelRegistration()}>{'Cancel registration'}</div>
           </div>
@@ -440,10 +448,12 @@ const mapStateToProps = (state) => ({
   isDarkmode: services.darkmode.selectors.isDarkmode(state),
   bulkRegistrationProgress: services.cart.selectors.bulkRegistrationProgress(state),
   refreshNameDataProgress: services.cart.selectors.refreshNameDataProgress(state),
+  balance: selectors.balance(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
   loadRegistrationPremium: () => dispatch(actions.loadRegistrationPremium()),
+  loadBalance: () => dispatch(actions.loadBalance()),
   removeFromCart: (name) => dispatch(services.cart.actions.removeFromCart(name)),
   incrementQuantity: (name) => dispatch(services.cart.actions.incrementQuantity(name)),
   decrementQuantity: (name) => dispatch(services.cart.actions.decrementQuantity(name)),

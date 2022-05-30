@@ -62,6 +62,21 @@ const actions = {
     }
   },
 
+  setBalance: (balance) => {
+    return {
+      type: constants.SET_BALANCE,
+      balance
+    }
+  },
+
+  loadBalance: () => {
+    return async (dispatch, getState) => {
+      const api = services.provider.buildAPI()
+      const balance = await api.getBalance()
+      dispatch(actions.setBalance(balance))
+    }
+  },
+
   generateProofs: (names) => {
     return async (dispatch, getState) => {
       try {
