@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/solid'
+import { CheckCircleIcon, PlusCircleIcon, ExternalLinkIcon } from '@heroicons/react/solid'
 import { InformationCircleIcon, PlusIcon } from '@heroicons/react/outline' 
 import { ethers } from 'ethers'
 
@@ -33,7 +33,6 @@ class Domain extends React.PureComponent {
 
   async setDefaultResolver() { 
     const api = await services.provider.buildAPI()
-    console.log('setting default resolver')
     this.setState({
       defaultResolver: api.getDefaultResolverAddress()
     }, () => {
@@ -204,6 +203,7 @@ class Domain extends React.PureComponent {
 
   renderRegistered() {
     const isOwned = services.provider.getAccount() === this.props.domain.owner.toLowerCase()
+    const hasLoadedPrivacy = !!this.props.isRevealed && (this.props.isRevealed[this.props.domain.hash] != undefined)
     
     return (
       <div className='max-w-screen-md m-auto flex w-full md:flex-row md:items-start'>
@@ -212,6 +212,24 @@ class Domain extends React.PureComponent {
         </components.Modal>
         <components.Modal title={'Set Resolver'} ref={(ref) =>  this.setResolverModal = ref}>
           <SetResolver onComplete={() => this.setResolverModal.toggle()} domain={this.state.domain} resolver={this.props.resolver} />
+        </components.Modal>
+        <components.Modal title={'Switch to Standard Privacy'} ref={(ref) => this.revealDomainModal = ref}>
+          {this.props.isRevealComplete ? (
+            <div className='max-w-md m-auto'>
+              <div className='my-8'>
+                <components.labels.Success text={'Your domain has been switched to Standard Privacy'} />
+              </div>
+              <div className=''>
+                <components.buttons.Button text={'Close'} onClick={() => this.revealDomainModal.toggle()} />
+              </div>
+            </div>
+          ) : (
+            <div className='max-w-md m-auto text-gray-700'>
+              <components.labels.Warning text={'Switching to Standard Privacy reveals your domain name on-chain. This action cannot be reversed.'} />
+              <a className='flex items-center justify-center my-4 bg-gray-100 dark:bg-gray-800 dark:text-white p-4 rounded-lg text-center' href="https://avvy.domains/docs/privacy-features-registrations/" target="_blank">Read about privacy features <ExternalLinkIcon className='ml-4 text-gray-400 dark:text-gray-100 w-6' /></a>
+              <components.buttons.Button text="Switch to Standard Privacy" onClick={() => this.props.revealDomain(this.state.domain)} loading={this.props.isRevealingDomain} />
+            </div>
+          )}
         </components.Modal>
         <components.Modal title={'Connect Wallet'} ref={(ref) => this.connectModal = ref}>
           <components.ConnectWallet />
@@ -268,6 +286,24 @@ class Domain extends React.PureComponent {
                 ) : null}
               </div>
             </div>
+            {hasLoadedPrivacy ? (
+              <div className='mt-4 text-sm'>
+                <div className='font-bold'>{'Privacy'}</div>
+                <div className='truncate flex items-center'>
+                  {this.props.isRevealed[this.props.domain.hash] ? (
+                    <div>Standard Privacy</div>
+                  ) : (
+                    <div>Enhanced Privacy</div>
+                  )}
+                  {this.state.connected && isOwned && !this.props.isRevealed[this.props.domain.hash] ? (
+                    <components.buttons.Transparent onClick={() => {
+                      this.props.resetRevealDomain()
+                      this.revealDomainModal.toggle()
+                    }}><div className='ml-2 inline-block cursor-pointer text-alert-blue underline'>Switch to Standard Privacy</div></components.buttons.Transparent>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
           </div>
           {this.props.resolver && this.props.resolver.resolver === this.state.defaultResolver ? (
             <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
@@ -373,6 +409,9 @@ const mapStateToProps = (state) => ({
   resolver: selectors.resolver(state),
   hasSeenBidDisclaimer: services.sunrise.selectors.hasSeenBidDisclaimer(state),
   registrationPremium: selectors.registrationPremium(state),
+  isRevealed: services.names.selectors.isRevealed(state),
+  isRevealingDomain: selectors.isRevealingDomain(state),
+  isRevealComplete: selectors.isRevealComplete(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -385,6 +424,8 @@ const mapDispatchToProps = (dispatch) => ({
   renewDomain: (domain) => dispatch(services.cart.actions.addToCart(domain)),
   resetSetResolver: () => dispatch(actions.setResolverComplete(false)),
   setHasSeenBidDisclaimer: (value) => dispatch(services.sunrise.actions.setHasSeenBidDisclaimer(value)),
+  revealDomain: (domain) => dispatch(actions.revealDomain(domain)),
+  resetRevealDomain: () => dispatch(actions.resetRevealDomain()),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Domain)

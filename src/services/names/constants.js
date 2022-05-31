@@ -5,6 +5,7 @@ const constants = reduxService.prepareConstants(
   [
     'ADD_RECORD',
     'BULK_ADD_RECORDS',
+    'IS_REVEALED',
   ]
 )
 

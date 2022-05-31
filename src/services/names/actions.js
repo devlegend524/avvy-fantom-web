@@ -10,6 +10,14 @@ const actions = {
     }
   },
 
+  isRevealed: (hash, isRevealed) => {
+    return {
+      type: constants.IS_REVEALED,
+      hash,
+      isRevealed
+    }
+  },
+
   addRecordWithoutHash: (name) => {
     return async (dispatch, getState) => {
       const api = await services.provider.buildAPI()
@@ -23,6 +31,17 @@ const actions = {
       type: constants.BULK_ADD_RECORDS,
       names,
       hashes,
+    }
+  },
+
+  checkIsRevealed: (hash) => {
+    return async (dispatch, getState) => {
+      const api = services.provider.buildAPI()
+      try {
+        const isRevealed = await api.isPreimageRevealed(hash)
+        dispatch(actions.isRevealed(hash, isRevealed))
+      } catch (err) {
+      }
     }
   },
 

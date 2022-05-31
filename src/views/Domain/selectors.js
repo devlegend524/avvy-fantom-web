@@ -16,6 +16,9 @@ const selectors = {
   resolver: (state) => root(state).resolver,
   setResolverLoading: (state) => root(state).setResolverLoading,
   setResolverComplete: (state) => root(state).setResolverComplete,
+
+  isRevealingDomain: (state) => root(state).isRevealingDomain,
+  isRevealComplete: (state) => root(state).isRevealComplete,
 }
 
 export default selectors

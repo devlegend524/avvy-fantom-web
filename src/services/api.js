@@ -144,6 +144,13 @@ class AvvyClient {
     return ethers.BigNumber.from('10').pow('24').div(rate)
   }
 
+  async revealDomain(domain) {
+    const preimage = await client.utils.encodeNameHashInputSignals(domain)
+    const hash = await client.utils.nameHash(domain)
+    const tx = await this.contracts.RainbowTableV1.reveal(preimage, hash)
+    await tx.wait()
+  }
+
   async loadDomain(domain) {
     
     // hash the name
@@ -451,6 +458,11 @@ class AvvyClient {
     const output = await this.contracts.RainbowTableV1.lookup(hash)
     const name = await client.utils.decodeNameHashInputSignals(output)
     return name
+  }
+
+  async isPreimageRevealed(hash) {
+    const output = await this.contracts.RainbowTableV1.isRevealed(hash)
+    return output
   }
 
   getDefaultResolverAddress() {

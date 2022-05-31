@@ -4,6 +4,7 @@ export const reducerName = 'nameService'
 
 export const initialState = {
   reverseLookups: {}, // these lookups use the hash as a key and resolve to the name.
+  isRevealed: {}, // these lookups show whether a hash is revealed on-chain
 }
 
 export const reducer = (state = initialState, action) => {
@@ -18,7 +19,6 @@ export const reducer = (state = initialState, action) => {
       }
 
     case constants.BULK_ADD_RECORDS:
-      console.log(action)
       return {
         ...state,
         reverseLookups: {
@@ -28,6 +28,15 @@ export const reducer = (state = initialState, action) => {
             obj[hash] = name
             return obj
           }, {})
+        }
+      }
+
+    case constants.IS_REVEALED:
+      return {
+        ...state,
+        isRevealed: {
+          ...state.isRevealed,
+          [action.hash]: action.isRevealed
         }
       }
 

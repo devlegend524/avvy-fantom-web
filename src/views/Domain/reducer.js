@@ -17,6 +17,10 @@ export const initialState = {
   resolver: null,
   setResolverLoading: false,
   setResolverComplete: false,
+
+  // reveal
+  isRevealingDomain: false,
+  isRevealComplete: false,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -89,6 +93,18 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         setResolverComplete: action.complete
+      }
+
+    case constants.IS_REVEALING_DOMAIN:
+      return {
+        ...state,
+        isRevealingDomain: action.isRevealing,
+      }
+
+    case constants.SET_REVEAL_COMPLETE:
+      return {
+        ...state,
+        isRevealComplete: action.isRevealed
       }
 
     default:
