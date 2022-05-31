@@ -28,6 +28,7 @@ class Register extends React.PureComponent {
     services.linking.addEventListener('Domain', this.updateParams)
     services.provider.addEventListener(services.provider.EVENTS.CONNECTED, this.onConnect.bind(this))
     this.props.loadRegistrationPremium()
+    this.props.loadBalance()
   }
 
   componentWillUnmount() {
