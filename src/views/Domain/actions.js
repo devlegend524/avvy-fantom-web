@@ -25,6 +25,7 @@ const actions = {
       if (isSupported) {
         domain = await api.loadDomain(_domain)
         dispatch(services.names.actions.addRecord(_domain, domain.hash))
+        dispatch(services.names.actions.checkIsRevealed(domain.hash))
         if (domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_SELF || domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_OTHER) dispatch(actions.loadRecords(_domain))
         if (domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_SELF) {
           const currExpiry = domain.expiresAt
@@ -33,7 +34,6 @@ const actions = {
           const registeredExpiry = currExpiry + 2 * oneYear
           domain.canRenew = !(registeredExpiry >= now + oneYear * services.environment.MAX_REGISTRATION_QUANTITY)
         }
-
       } else {
         domain = {
           supported: false,
@@ -42,6 +42,46 @@ const actions = {
       }
       dispatch(actions.setDomain(domain))
       dispatch(actions.setLoading(false))
+    }
+  },
+
+  setRevealingDomain: (isRevealing) => {
+    return {
+      type: constants.IS_REVEALING_DOMAIN,
+      isRevealing
+    }
+  },
+
+  setRevealComplete: (isRevealed) => {
+    return {
+      type: constants.SET_REVEAL_COMPLETE,
+      isRevealed
+    }
+  },
+
+  revealDomain: (domain) => {
+    return async (dispatch, getState) => {
+      dispatch(actions.setRevealingDomain(true))
+      const api = services.provider.buildAPI()
+      const hash = await api.client.utils.nameHash(domain)
+      let failed = false
+      try {
+        await api.revealDomain(domain)
+      } catch (err) {
+        failed = true
+      }
+      dispatch(actions.setRevealingDomain(false))
+      if (!failed) {
+        dispatch(actions.setRevealComplete(true))
+        dispatch(services.names.actions.isRevealed(hash, true))
+      }
+    }
+  },
+
+  resetRevealDomain: () => {
+    return async (dispatch, getState) => {
+      dispatch(actions.setRevealingDomain(false))
+      dispatch(actions.setRevealComplete(false))
     }
   },
 

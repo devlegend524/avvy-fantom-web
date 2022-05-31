@@ -16,6 +16,10 @@ const constants = reduxService.prepareConstants(
     'SET_RESOLVER',
     'SET_RESOLVER_LOADING',
     'SET_RESOLVER_COMPLETE',
+
+    // revealing
+    'IS_REVEALING_DOMAIN',
+    'SET_REVEAL_COMPLETE',
   ]
 )
 
