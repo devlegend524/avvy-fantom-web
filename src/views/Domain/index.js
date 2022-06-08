@@ -326,7 +326,7 @@ class Domain extends React.PureComponent {
               ) : this.props.records.map((record, index) => (
                 <div className='mt-4' key={index}>
                   <div className='text-sm font-bold'>
-                    {record.typeName}
+                    {record.label}
                   </div>
                   <div className='text-sm truncate'>
                     {record.value}

@@ -201,6 +201,10 @@ const actions = {
     return async (dispatch, getState) => {
       dispatch(actions.isLoadingRecords(true))
       const api = services.provider.buildAPI()
+      const recordsByKey = api.avvy.RECORDS._LIST.reduce((sum, curr) => {
+        sum[curr.key] = curr
+        return sum
+      }, {})
       let resolver = null
       try {
         resolver = await api.getResolver(domain)
@@ -210,9 +214,11 @@ const actions = {
       dispatch(actions._setResolver(resolver))
       if (resolver) {
         const records = await api.getStandardRecords(domain)
-        dispatch(actions.recordsLoaded(records.map(record => Object.assign(record, {
-          typeName: services.records.getStandard(record.type).name
-        }))))
+        dispatch(actions.recordsLoaded(records.map(record => {
+          const obj = Object.assign(record, recordsByKey[record.type])
+          console.log(obj)
+          return obj
+        })))
       }
       dispatch(actions.isLoadingRecords(false))
     }
