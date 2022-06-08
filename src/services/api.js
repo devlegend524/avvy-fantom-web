@@ -498,15 +498,8 @@ class AvvyClient {
 
   async getStandardRecords(domain) {
     // this won't work for subdomains yet.
-    const promises = []
     const hash = await client.utils.nameHash(domain)
-    for (let i = 1; i <= 6; i += 1) {
-      promises.push(this.contracts.PublicResolverV1.resolveStandard(hash, hash, i))
-    }
-    const types = [
-      'X-Chain Address',
-      'C-Chain Address',
-    ]
+    const promises = this.avvy.RECORDS._LIST.map(r => this.contracts.PublicResolverV1.resolveStandard(hash, hash, r.key))
     const results = await Promise.all(promises)
     return results.map((res, index) => {
       return {
