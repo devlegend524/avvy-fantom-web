@@ -15,10 +15,12 @@ class AddRecord extends React.PureComponent {
 
       // props.api has a reference to the Avvy Client. can be used
       // to generate options in the future.
-      options: services.records.standard.map(opt => {
-        opt.value = opt.type
-        return opt
-      }),
+      options: props.api ? props.api.avvy.RECORDS._LIST.map(record => {
+        return {
+          value: record.key,
+          name: record.label
+        }
+      }) : []
     }
   }
 
