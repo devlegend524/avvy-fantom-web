@@ -92,15 +92,23 @@ class ConnectWallet extends React.PureComponent {
 
   render() {
     const wallets = [
+      {
+        name: 'Core Wallet',
+        logo: services.linking.static('images/vendor/core.svg'),
+        connect: this.connectMetamask.bind(this),
+        class: 'h-12 w-12',
+      },
       { 
         name: 'MetaMask',
         logo: services.linking.static('images/vendor/metamask.svg'),
-        connect: this.connectMetamask.bind(this)
+        connect: this.connectMetamask.bind(this),
+        class: 'h-12 w-12',
       },
       {
         name: 'WalletConnect',
         logo: services.linking.static('images/vendor/walletconnect.svg'),
-        connect: this.walletConnect.bind(this)
+        connect: this.walletConnect.bind(this),
+        class: 'h-12 w-12',
       }
     ]
     if (!this.props.hasAcceptedDisclaimers) return this.renderDisclaimers()
@@ -120,7 +128,7 @@ class ConnectWallet extends React.PureComponent {
           <div className='relative grid grid-cols-2 md:grid-cols-4 gap-4 mt-4'>
             {wallets.map((wal, index) => (
               <div key={index} onClick={wal.connect} className={`cursor-pointer flex flex-col items-center justify-center rounded-xl m-auto bg-gray-100 dark:bg-gray-800 w-full h-32 ${this.state.connecting ? 'blur' : ''}`}>
-                <div className='w-12 h-12 flex items-center justify-center'>
+                <div className={`${wal.class} flex items-center justify-center`}>
                   <img src={wal.logo} alt={wal.name} className='w-full' />
                 </div>
                 <div>
