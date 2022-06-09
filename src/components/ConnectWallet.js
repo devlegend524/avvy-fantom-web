@@ -93,7 +93,7 @@ class ConnectWallet extends React.PureComponent {
   render() {
     const wallets = [
       {
-        name: 'Core Wallet',
+        name: 'Core',
         logo: services.linking.static('images/vendor/core.svg'),
         connect: this.connectMetamask.bind(this),
         class: 'h-12 w-12',
