@@ -128,7 +128,12 @@ class AvvyClient {
   async getAVAXConversionRateFromChainlink(address) {
     let oracle = new ethers.Contract(address, services.abi.chainlink, this.signer)
     let roundData = await oracle.latestRoundData()
-    return roundData[1].toString()
+    let rate = roundData[1].toString()
+
+    // add a buffer to the rate, so that we can have less chance of getting a revert due to not enough AVAX
+    rate = ethers.BigNumber.from(rate).div('10').mul('9').toString()
+
+    return rate
   }
 
   async getAVAXConversionRate() {
