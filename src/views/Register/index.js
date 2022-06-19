@@ -300,6 +300,7 @@ class Register extends React.PureComponent {
     const pageLength = 5
     const hasPagination = names.length > pageLength
     const numPages = names.length / pageLength
+    const totalNames = names.length
     names = names.slice(this.state.paginationIndex * pageLength, this.state.paginationIndex * pageLength + pageLength)
 
     return (
@@ -327,7 +328,7 @@ class Register extends React.PureComponent {
                   <QuestionMarkCircleIcon className='ml-2 w-4' />
                 </a>
                 <div className=''>
-                  {services.money.renderAVAX(this.props.registrationPremium.mul(names.length))}
+                  {services.money.renderAVAX(this.props.registrationPremium.mul(totalNames))}
                 </div>
               </div>
             ) : null}

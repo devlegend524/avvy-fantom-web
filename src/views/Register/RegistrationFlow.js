@@ -124,12 +124,11 @@ class RegistrationFlow extends React.PureComponent {
         {inBatches ? (
           <>
             <components.labels.Warning text={`You have ${names.length} names to register. You must register them in batches of ${services.environment.MAX_REGISTRATION_NAMES}.`} />
-            <div className='text-gray-700 mt-8 text-center w-full font-bold'>{`Register next ${services.environment.MAX_REGISTRATION_NAMES} names`}</div>
           </>
         ) : null}
         <div className='mt-8 max-w-sm m-auto'>
           <div className='mt-4'>
-            <components.buttons.Button text={'Finalize registration'} onClick={this.finalizeTransaction.bind(this)} loading={this.props.isFinalizing} />
+            <components.buttons.Button text={inBatches ? `Register next ${services.environment.MAX_REGISTRATION_NAMES} names` : 'Finalize registration'} onClick={this.finalizeTransaction.bind(this)} loading={this.props.isFinalizing} />
           </div>
         </div>
       </>
