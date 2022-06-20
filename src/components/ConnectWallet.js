@@ -75,16 +75,20 @@ class ConnectWallet extends React.PureComponent {
     return (
       <>
         <div className=''>
-          By checking the boxes below, you acknowledge that you have read and agree to our <a className='text-alert-blue' href="https://avvy.domains/p/privacy-policy" target="_blank">Privacy Policy</a> and our <a className='text-alert-blue' href="https://avvy.domains/p/terms-of-service" target="_blank">Terms of Service</a>
+          <p>By checking the boxes below, you acknowledge that you have read and agree to our <a className='text-alert-blue' href="https://avvy.domains/p/privacy-policy" target="_blank">Privacy Policy</a> and our <a className='text-alert-blue' href="https://avvy.domains/p/terms-of-service" target="_blank">Terms of Service</a>.</p>
+          <p className='mt-2'>You also acknowledge that <a className='text-alert-blue' target="_blank" href="https://avvy.domains/blog/name-squatting-dispute-resolution/">Avvy Domains supports name disputes</a>.</p>
         </div>
         <div className='mt-4'>
-          <components.checkbox.Checkbox text={'Privacy Policy'} singleLine={true} checked={this.state.privacy} onCheck={() => this.toggleDisclaimer('privacy')} />
+          <components.checkbox.Checkbox text={'I have read and agree to the Privacy Policy'} singleLine={true} checked={this.state.privacy} onCheck={() => this.toggleDisclaimer('privacy')} />
         </div>
         <div className='mt-2'>
-          <components.checkbox.Checkbox text={'Terms of Service'} singleLine={true} checked={this.state.terms} onCheck={() => this.toggleDisclaimer('terms')} />
+          <components.checkbox.Checkbox text={'I have read and agree to the Terms of Service'} singleLine={true} checked={this.state.terms} onCheck={() => this.toggleDisclaimer('terms')} />
+        </div>
+        <div className='mt-2'>
+          <components.checkbox.Checkbox text={'I understand that Avvy supports name disputes'} singleLine={true} checked={this.state.disputes} onCheck={() => this.toggleDisclaimer('disputes')} />
         </div>
         <div className='mt-4 max-w-sm m-auto'>
-          <components.buttons.Button disabled={!this.state.terms || !this.state.privacy} text={'Continue'} onClick={() => this.props.acceptDisclaimers()} />
+          <components.buttons.Button disabled={!this.state.terms || !this.state.privacy || !this.state.disputes} text={'Continue'} onClick={() => this.props.acceptDisclaimers()} />
         </div>
       </>
     )
