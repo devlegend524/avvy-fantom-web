@@ -202,7 +202,8 @@ class Domain extends React.PureComponent {
   }
 
   renderRegistered() {
-    const isOwned = services.provider.getAccount().toLowerCase() === this.props.domain.owner.toLowerCase()
+    let account = services.provider.getAccount()
+    const isOwned = account ? account.toLowerCase() === this.props.domain.owner.toLowerCase() : false
     const hasLoadedPrivacy = !!this.props.isRevealed && (this.props.isRevealed[this.props.domain.hash] != undefined)
     
     return (
