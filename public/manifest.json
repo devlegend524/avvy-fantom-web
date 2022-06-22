@@ -1,4 +1,7 @@
 {
+  "name": "Avvy Domains",
+  "description": "Manage your .avax domains.",
+  "iconPath": "https://app.avvy.domains/images/logo.png",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
