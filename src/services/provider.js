@@ -103,7 +103,10 @@ const provider = {
   // connect to web3 via metamask
   connectMetamask: () => {
     return new Promise(async (resolve, reject) => {
-      const provider = await detectEthereumProvider()
+      let provider = await detectEthereumProvider()
+      if (provider.providers) {
+        provider = provider.providers.find((provider) => provider.isMetaMask)
+      }
 
       if (!provider) {
         services.logger.error('No window.ethereum provider')
