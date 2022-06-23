@@ -101,20 +101,16 @@ const provider = {
   },
 
   // connect to web3 via metamask
-  connectMetamask: () => {
+  connectMetamask: (providerFunc) => {
     return new Promise(async (resolve, reject) => {
       let provider = await detectEthereumProvider()
       if (provider.providers) {
-        provider = provider.providers.find((provider) => provider.isMetaMask)
+        provider = provider.providers.find(providerFunc)
       }
 
       if (!provider) {
         services.logger.error('No window.ethereum provider')
         return reject('NO_PROVIDER')
-      }
-      if (!provider.isMetaMask) {
-        services.logger.error('Attempted to connect Metamask when provider is not Metamask')
-        return reject('NOT_METAMASK')
       }
 
       const _getChainId = async () => {

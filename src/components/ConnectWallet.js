@@ -21,13 +21,13 @@ class ConnectWallet extends React.PureComponent {
     })
   }
 
-  async connectMetamask() {
+  async connectMetamask(providerFunc) {
     const func = async () => {
       this.setState({
         connecting: true
       }, async () => {
         try {
-          await services.provider.connectMetamask()
+          await services.provider.connectMetamask(providerFunc)
         } catch (err) {
           alert('Failed to connect')
           this.setState({
@@ -99,7 +99,16 @@ class ConnectWallet extends React.PureComponent {
       { 
         name: 'MetaMask',
         logo: services.linking.static('images/vendor/metamask.svg'),
-        connect: this.connectMetamask.bind(this)
+        connect: () => {
+          this.connectMetamask.bind(this)((provider) => provider.isMetaMask)
+        }
+      },
+      {
+        name: 'Coinbase Wallet', 
+        logo: services.linking.static('images/vendor/coinbase.png'),
+        connect: () => {
+          this.connectMetamask.bind(this)((provider) => provider.isCoinbaseWallet)
+        }
       },
       {
         name: 'WalletConnect',
@@ -127,7 +136,7 @@ class ConnectWallet extends React.PureComponent {
                 <div className='w-12 h-12 flex items-center justify-center'>
                   <img src={wal.logo} alt={wal.name} className='w-full' />
                 </div>
-                <div>
+                <div className='mt-2'>
                   {wal.name}
                 </div>
               </div>
