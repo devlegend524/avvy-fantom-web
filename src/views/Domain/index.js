@@ -10,6 +10,7 @@ import components from 'components'
 import AddBid from './AddBid'
 import SetRecord from './SetRecord'
 import SetResolver from './SetResolver'
+import TransferDomain from './TransferDomain'
 import actions from './actions'
 import constants from './constants'
 import reducer from './reducer'
@@ -208,6 +209,12 @@ class Domain extends React.PureComponent {
     
     return (
       <div className='max-w-screen-md m-auto flex w-full md:flex-row md:items-start'>
+        <components.Modal title={'Transfer Domain'} ref={(ref) => this.transferDomainModal = ref}>
+          <TransferDomain onComplete={() => {
+            this.loadDomain()
+            this.transferDomainModal.toggle()
+          }} domain={this.state.domain} />
+        </components.Modal>
         <components.Modal title={'Set Record'} ref={(ref) => this.setRecordModal = ref}>
           <SetRecord key={this.state.setRecordReset} handleSubmit={this._handleSetRecord} loading={this.props.isSettingRecord} api={this.api} />
         </components.Modal>
@@ -251,8 +258,14 @@ class Domain extends React.PureComponent {
             <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
             <div className='mt-4 text-sm'>
               <div className='font-bold'>{'Registrant'}</div>
-              <div className='truncate'>
-                {this.props.domain.owner}
+              <div className='truncate flex items-center flex-wrap'>
+                <div className='truncate'>{this.props.domain.owner}</div>
+                {this.state.connected && isOwned ? (
+                  <components.buttons.Transparent onClick={() => {
+                    this.props.resetTransferDomain()
+                    this.transferDomainModal.toggle()
+                  }}><div className='ml-2 inline-block cursor-pointer text-alert-blue underline'>Transfer</div></components.buttons.Transparent>
+                ) : null}
               </div>
             </div>
             <div className='mt-4 text-sm flex items-center justify-between'>
@@ -427,6 +440,7 @@ const mapDispatchToProps = (dispatch) => ({
   setHasSeenBidDisclaimer: (value) => dispatch(services.sunrise.actions.setHasSeenBidDisclaimer(value)),
   revealDomain: (domain) => dispatch(actions.revealDomain(domain)),
   resetRevealDomain: () => dispatch(actions.resetRevealDomain()),
+  resetTransferDomain: () => dispatch(actions.resetTransferDomain()),
 })
 
 const component = connect(mapStateToProps, mapDispatchToProps)(Domain)

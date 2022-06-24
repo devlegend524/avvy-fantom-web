@@ -520,6 +520,12 @@ class AvvyClient {
     const balance = await this.signer.getBalance()
     return balance
   }
+
+  async transferDomain(domain, address) {
+    const tokenId = await client.utils.nameHash(domain)
+    const tx = await this.contracts.Domain['safeTransferFrom(address,address,uint256)'](this.account, address, tokenId)
+    await tx.wait()
+  }
 }
 
 export default AvvyClient

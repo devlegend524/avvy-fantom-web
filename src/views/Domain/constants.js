@@ -20,6 +20,11 @@ const constants = reduxService.prepareConstants(
     // revealing
     'IS_REVEALING_DOMAIN',
     'SET_REVEAL_COMPLETE',
+
+    // transferring
+    'TRANSFER_DOMAIN_SUCCESS',
+    'TRANSFER_DOMAIN_ERROR',
+    'IS_TRANSFERRING_DOMAIN',
   ]
 )
 

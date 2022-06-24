@@ -19,6 +19,11 @@ const selectors = {
 
   isRevealingDomain: (state) => root(state).isRevealingDomain,
   isRevealComplete: (state) => root(state).isRevealComplete,
+
+  // transfer
+  isTransferringDomain: (state) => root(state).isTransferringDomain,
+  transferDomainSuccess: (state) => root(state).transferDomainSuccess,
+  transferDomainError: (state) => root(state).transferDomainError,
 }
 
 export default selectors
