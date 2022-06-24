@@ -10,6 +10,7 @@ import store from './store'
 
 import services from 'services'
 
+services.provider.init()
 
 ReactDOM.render(
   <React.StrictMode>
