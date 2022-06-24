@@ -222,8 +222,52 @@ const actions = {
       }
       dispatch(actions.isLoadingRecords(false))
     }
-  }
+  },
 
+  transferDomainSuccess: (success) => {
+    return {
+      type: constants.TRANSFER_DOMAIN_SUCCESS,
+      success,
+    }
+  },
+  
+  isTransferringDomain: (transferring) => {
+    return {
+      type: constants.IS_TRANSFERRING_DOMAIN,
+      transferring,
+    }
+  },
+
+  transferDomainError: (error) => {
+    return {
+      type: constants.TRANSFER_DOMAIN_ERROR,
+      error,
+    }
+  },
+
+  resetTransferDomain: () => {
+    return async (dispatch, getState) => {
+      dispatch(actions.transferDomainSuccess(false))
+      dispatch(actions.isTransferringDomain(false))
+      dispatch(actions.transferDomainError(null))
+    }
+  },
+
+  transferDomain: (domain, address) => {
+    return async (dispatch, getState) => {
+      dispatch(actions.isTransferringDomain(true))
+      dispatch(actions.transferDomainError(null))
+
+      const api = services.provider.buildAPI()
+      try {
+        await api.transferDomain(domain, address)
+        dispatch(actions.transferDomainSuccess(true))
+      } catch (err) {
+        dispatch(actions.transferDomainError(err.message))
+      }
+      dispatch(actions.isTransferringDomain(false))
+    }
+  },
 }
 
 export default actions

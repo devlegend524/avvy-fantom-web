@@ -21,6 +21,11 @@ export const initialState = {
   // reveal
   isRevealingDomain: false,
   isRevealComplete: false,
+
+  // transfer
+  isTransferringDomain: false,
+  transferDomainSuccess: false,
+  transferDomainError: null,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -105,6 +110,24 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         isRevealComplete: action.isRevealed
+      }
+
+    case constants.TRANSFER_DOMAIN_SUCCESS:
+      return {
+        ...state,
+        transferDomainSuccess: action.success
+      }
+
+    case constants.TRANSFER_DOMAIN_ERROR:
+      return {
+        ...state,
+        transferDomainError: action.error
+      }
+
+    case constants.IS_TRANSFERRING_DOMAIN:
+      return {
+        ...state,
+        isTransferringDomain: action.transferring
       }
 
     default:

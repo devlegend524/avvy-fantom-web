@@ -3,6 +3,7 @@ import ContinueRegistration from './ContinueRegistration'
 import DomainPrivacy from './DomainPrivacy'
 import DomainSearch from './DomainSearch'
 import DomainReveal from './DomainReveal'
+import Input from './Input'
 import Modal from './Modal'
 import ProgressBar from './ProgressBar'
 import Select from './Select'
@@ -24,6 +25,7 @@ const components = {
   DomainPrivacy,
   DomainSearch,
   DomainReveal,
+  Input,
   Modal,
   ProgressBar,
   Select,
