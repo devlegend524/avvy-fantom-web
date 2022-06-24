@@ -5,6 +5,8 @@
   "dependencies": {
     "@avvy/client": "file:../avvy-v2-client",
     "@babel/core": "7.12.3",
+    "@gnosis.pm/safe-apps-provider": "^0.11.1",
+    "@gnosis.pm/safe-apps-sdk": "^7.4.0",
     "@heroicons/react": "^1.0.5",
     "@metamask/detect-provider": "^1.2.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",

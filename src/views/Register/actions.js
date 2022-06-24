@@ -63,6 +63,7 @@ const actions = {
   },
 
   setBalance: (balance) => {
+    
     return {
       type: constants.SET_BALANCE,
       balance

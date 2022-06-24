@@ -7,6 +7,8 @@ import API from 'services/api'
 import { ethers } from 'ethers'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import detectEthereumProvider from '@metamask/detect-provider'
+import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk'
+import { SafeAppProvider } from '@gnosis.pm/safe-apps-provider'
 
 import services from 'services'
 
@@ -38,6 +40,41 @@ const provider = {
 
   providerType: () => {
     return _providerType
+  },
+
+  initGnosisSafe: async () => {
+    const opts = {
+      allowedDomains: [/gnosis-safe.io/],
+    }
+    const sdk = new SafeAppsSDK(opts)
+    const safe = await sdk.safe.getInfo()
+    services.logger.info('Gnosis Safe is connected')
+    const chainId = safe.chainId
+    if (chainId === parseInt(services.environment.DEFAULT_CHAIN_ID)) {
+      services.logger.info('Chain ID is correct')
+      const safeProvider = new SafeAppProvider(safe, sdk)
+      _provider = new ethers.providers.Web3Provider(safeProvider)
+      _signer = _provider.getSigner()
+      _chainId = chainId
+      _account = safe.safeAddress 
+      _isConnected = true
+      const balance = await _signer.getBalance()
+      
+      // we put a timeout here to let react
+      // components digest the connection first
+      setTimeout(() => {
+        events.dispatchEvent(
+          new Event(EVENTS.CONNECTED)
+        )
+      }, 1)
+    } else {
+      services.logger.info('Incorrect Chain ID')
+    }
+  },
+
+  init: () => {
+    // this performs some checks when the application starts
+    provider.initGnosisSafe()
   },
 
   connectWalletConnect: () => {
