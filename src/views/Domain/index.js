@@ -258,12 +258,7 @@ class Domain extends React.PureComponent {
               <div className='font-bold'>{'Basic Information'}</div>
               {!this.state.connected ? (
                 <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
-              ) : isOwned && services.environment.REGISTRATIONS_ENABLED ? (
-                <components.buttons.Button disabled={!this.props.domain.canRenew} sm={true} text='Renew' onClick={(navigator) => {
-                  this.props.renewDomain(this.props.domain.domain)
-                  services.linking.navigate(navigator, 'Register')
-                }} />
-              ) : null}
+              ) : null} 
             </div>
             <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
             <div className='mt-4 text-sm'>
@@ -293,16 +288,24 @@ class Domain extends React.PureComponent {
             <div className='mt-4 text-sm flex items-center justify-between'>
               <div>
                 <div className='font-bold'>{'Expiry'}</div>
-                <div>
-                  {new Intl.DateTimeFormat(
-                    navigator.language,
-                    { month: 'short', day: 'numeric', year: 'numeric' }
-                  ).format(this.props.domain.expiresAt * 1000)}
-                  {' at '}
-                  {new Intl.DateTimeFormat(
-                    navigator.langauge,
-                    { hour: 'numeric', minute: 'numeric' }
-                  ).format(this.props.domain.expiresAt * 1000)}
+                <div className='flex items-center'>
+                  <div>
+                    {new Intl.DateTimeFormat(
+                      navigator.language,
+                      { month: 'short', day: 'numeric', year: 'numeric' }
+                    ).format(this.props.domain.expiresAt * 1000)}
+                    {' at '}
+                    {new Intl.DateTimeFormat(
+                      navigator.langauge,
+                      { hour: 'numeric', minute: 'numeric' }
+                    ).format(this.props.domain.expiresAt * 1000)}
+                  </div>
+                  {this.state.connected && isOwned && this.props.domain.canRenew && services.environment.REGISTRATIONS_ENABLED ? (
+                    <components.buttons.Transparent onClick={(navigator) => {
+                      this.props.renewDomain(this.props.domain.domain)
+                      services.linking.navigate(navigator, 'Register')
+                    }}><div className='ml-2 inline-block cursor-pointer text-alert-blue underline'>Renew</div></components.buttons.Transparent>
+                  ) : null}
                 </div>
               </div>
             </div>
