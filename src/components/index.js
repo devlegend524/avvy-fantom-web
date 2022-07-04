@@ -1,5 +1,6 @@
 import ConnectWallet from './ConnectWallet'
 import ContinueRegistration from './ContinueRegistration'
+import DataExplorer from './DataExplorer'
 import DomainPrivacy from './DomainPrivacy'
 import DomainSearch from './DomainSearch'
 import DomainReveal from './DomainReveal'
@@ -20,6 +21,7 @@ const components = {
   checkbox,
   labels,
 
+  DataExplorer,
   ConnectWallet,
   ContinueRegistration,
   DomainPrivacy,

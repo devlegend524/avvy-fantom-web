@@ -27,9 +27,16 @@ class Domain extends React.PureComponent {
       connected: services.provider.isConnected(),
       setRecordReset: 0, // increment this to reset the form
       defaultResolver: undefined,
+      dataExplorer: null,
     }
     this.searchPlaceholder = 'Search for another name'
     this.loadDomain(domain)
+    this.getAvvy()
+  }
+
+  async getAvvy() {
+    const api = await services.provider.buildAPI()
+    this.avvy = api.avvy
   }
 
   async setDefaultResolver() { 
@@ -209,6 +216,9 @@ class Domain extends React.PureComponent {
     
     return (
       <div className='max-w-screen-md m-auto flex w-full md:flex-row md:items-start'>
+        <components.Modal ref={(ref) => this.dataExplorerModal = ref}>
+          <components.DataExplorer data={this.state.dataExplorer} />
+        </components.Modal>
         <components.Modal title={'Transfer Domain'} ref={(ref) => this.transferDomainModal = ref}>
           <TransferDomain onComplete={() => {
             this.loadDomain()
@@ -259,12 +269,24 @@ class Domain extends React.PureComponent {
             <div className='mt-4 text-sm'>
               <div className='font-bold'>{'Registrant'}</div>
               <div className='truncate flex items-center flex-wrap'>
-                <div className='truncate'>{this.props.domain.owner}</div>
+                <div className='flex items-center cursor-pointer w-full sm:w-auto' onClick={() => {
+                  this.setState({
+                    dataExplorer: {
+                      title: 'View on Block Explorer',
+                      data: this.props.domain.owner,
+                      dataType: this.avvy.RECORDS.EVM,
+                    }
+                  })
+                  this.dataExplorerModal.toggle()
+                }}>
+                  <div className='truncate'>{this.props.domain.owner}</div>
+                  <ExternalLinkIcon className='w-4 ml-2 flex-shrink-0' />
+                </div>
                 {this.state.connected && isOwned ? (
                   <components.buttons.Transparent onClick={() => {
                     this.props.resetTransferDomain()
                     this.transferDomainModal.toggle()
-                  }}><div className='ml-2 inline-block cursor-pointer text-alert-blue underline'>Transfer</div></components.buttons.Transparent>
+                  }}><div className='sm:ml-2 inline-block cursor-pointer text-alert-blue underline'>Transfer</div></components.buttons.Transparent>
                 ) : null}
               </div>
             </div>
@@ -342,8 +364,17 @@ class Domain extends React.PureComponent {
                   <div className='text-sm font-bold'>
                     {record.label}
                   </div>
-                  <div className='text-sm truncate'>
-                    {record.value}
+                  <div className='text-sm flex items-center cursor-pointer w-full' onClick={() => {
+                    this.setState({
+                      dataExplorer: {
+                        data: record.value,
+                        dataType: record.key,
+                      }
+                    })
+                    this.dataExplorerModal.toggle()
+                  }}>
+                    <div className='truncate'>{record.value}</div>
+                    <ExternalLinkIcon className='w-4 ml-2 pb-1 flex-shrink-0' />
                   </div>
                 </div>
               ))}

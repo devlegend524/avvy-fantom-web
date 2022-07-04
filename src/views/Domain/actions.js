@@ -216,7 +216,6 @@ const actions = {
         const records = await api.getStandardRecords(domain)
         dispatch(actions.recordsLoaded(records.map(record => {
           const obj = Object.assign(record, recordsByKey[record.type])
-          console.log(obj)
           return obj
         })))
       }
