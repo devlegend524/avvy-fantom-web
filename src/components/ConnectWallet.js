@@ -44,6 +44,22 @@ class ConnectWallet extends React.PureComponent {
     }
   }
 
+  async connectCore() {
+    this.setState({
+      connecting: true
+    }, async () => {
+      try {
+        debugger
+        await services.provider.connectCore()
+      } catch (err) {
+        alert('Failed to connect')
+        this.setState({
+          connecting: false
+        })
+      }
+    })
+  }
+
   async walletConnect() {
     this.setState({
       connecting: true
@@ -96,16 +112,14 @@ class ConnectWallet extends React.PureComponent {
 
   render() {
     const wallets = [
-      /*
       {
         name: 'Core',
         logo: services.linking.static('images/vendor/core.svg'),
         connect: () => {
-          this.connectMetamask.bind(this)()
+          this.connectCore.bind(this)()
         },
         class: 'h-12 w-12',
       },
-      */
       { 
         name: 'MetaMask',
         logo: services.linking.static('images/vendor/metamask.svg'),
