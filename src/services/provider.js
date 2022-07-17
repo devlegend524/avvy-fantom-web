@@ -235,6 +235,19 @@ const provider = {
     })
   },
 
+  connectCore: () => {
+    return new Promise(async (resolve, reject) => {
+      debugger
+      const handleChanged = () => {
+        window.ethereum.off('accountsChanged', handleChanged)
+        provider.connectMetamask((provider) => provider.isAvalanche)
+        resolve()
+      }
+      window.ethereum.on('accountsChanged', handleChanged)
+      provider.connectMetamask()
+    })
+  },
+
   // get the account
   getAccount: () => {
     return _account
