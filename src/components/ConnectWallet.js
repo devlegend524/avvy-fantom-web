@@ -49,7 +49,6 @@ class ConnectWallet extends React.PureComponent {
       connecting: true
     }, async () => {
       try {
-        debugger
         await services.provider.connectCore()
       } catch (err) {
         alert('Failed to connect')
