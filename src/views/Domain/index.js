@@ -106,6 +106,11 @@ class Domain extends React.PureComponent {
     this.bidModal.toggle()
   }
 
+  setResolver = () => {
+    this.props.resetSetResolver()
+    this.setResolverModal.toggle()
+  }
+
   handleAddBid(navigate, value) {
     this.props.addBid(this.state.domain, value)
     services.linking.navigate(navigate, 'SunriseAuctionMyBids')
@@ -309,22 +314,6 @@ class Domain extends React.PureComponent {
                 </div>
               </div>
             </div>
-            <div className='mt-4 text-sm'>
-              <div className='font-bold'>{'Resolver'}</div>
-              <div className='truncate flex items-center'>
-                {this.props.resolver ? (
-                  <div>{this.props.resolver.resolver === this.state.defaultResolver ? 'Default Resolver' : 'Unknown Resolver'}</div>
-                ) : (
-                  <div className='italic'>Not set</div>
-                )}
-                {this.state.connected && isOwned ? (
-                  <components.buttons.Transparent onClick={() => {
-                    this.props.resetSetResolver()
-                    this.setResolverModal.toggle()
-                  }}><div className='ml-2 inline-block cursor-pointer text-alert-blue underline'>Set Resolver</div></components.buttons.Transparent>
-                ) : null}
-              </div>
-            </div>
             {hasLoadedPrivacy ? (
               <div className='mt-4 text-sm'>
                 <div className='font-bold'>{'Privacy'}</div>
@@ -343,46 +332,120 @@ class Domain extends React.PureComponent {
                 </div>
               </div>
             ) : null}
-          </div>
-          {this.props.resolver && this.props.resolver.resolver === this.state.defaultResolver ? (
-            <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
-              <div className='flex justify-between items-center'>
-                <div className='font-bold'>{'Records'}</div>
-                {!this.state.connected ? (
-                  <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
-                ) : isOwned ? (
-                  <PlusCircleIcon className='cursor-pointer w-6' onClick={() => this.setRecordModal.toggle()} />
+            <div className='mt-4 text-sm'>
+              <div className='font-bold'>{'Resolver'}</div>
+              <div className='truncate flex items-center'>
+                {this.props.resolver ? (
+                  <div>{this.props.resolver.resolver === this.state.defaultResolver ? 'Default Resolver' : 'Unknown Resolver'}</div>
+                ) : (
+                  <div>Not set</div>
+                )}
+                {this.state.connected && isOwned ? (
+                  <components.buttons.Transparent onClick={this.setResolver}><div className='ml-2 inline-block cursor-pointer text-alert-blue underline'>Set Resolver</div></components.buttons.Transparent>
                 ) : null}
               </div>
-              {this.props.records.length > 0 ? (
-                <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
-              ) : null}
-              
-              {this.props.isLoadingRecords ? (
-                <div className='my-4 w-full text-center'>
-                  <components.Spinner />
-                </div>
-              ) : this.props.records.map((record, index) => (
-                <div className='mt-4' key={index}>
-                  <div className='text-sm font-bold'>
-                    {record.label}
-                  </div>
-                  <div className='text-sm flex items-center cursor-pointer w-full' onClick={() => {
-                    this.setState({
-                      dataExplorer: {
-                        data: record.value,
-                        dataType: record.key,
-                      }
-                    })
-                    this.dataExplorerModal.toggle()
-                  }}>
-                    <div className='truncate'>{record.value}</div>
-                    <ExternalLinkIcon className='w-4 ml-2 pb-1 flex-shrink-0' />
-                  </div>
-                </div>
-              ))}
             </div>
-          ) : null}
+          </div>
+          <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
+            <div className='flex justify-between items-center'>
+              <div className='font-bold'>{'Records'}</div>
+              {!this.state.connected ? (
+                <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
+              ) : null}
+            </div>
+            <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
+            {this.props.isLoadingRecords ? (
+              <div className='mt-4 w-full text-center'>
+                <components.Spinner />
+              </div>
+            ) : this.props.records.length === 0 ? (
+              <div className='mt-4 text-sm flex items-center'>
+                <div>{'No records have been set.'}</div>
+                {this.state.connected ? (this.props.resolver ? (
+                  <div onClick={() => this.setRecordModal.toggle()} className='ml-2 text-alert-blue underline cursor-pointer'>{'Add a record'}</div>
+                ) : (
+                  <div className='flex items-center'>
+                    <div onClick={this.setResolver} className='ml-2 text-alert-blue underline cursor-pointer'>{'Set a resolver'}</div>
+                    <div>&nbsp;{'to set records.'}</div>
+                  </div>
+                )) : null}
+              </div>
+            ) : this.props.records.map((record, index) => (
+              <div className='mt-4' key={index}>
+                <div className='text-sm font-bold'>
+                  {record.label}
+                </div>
+                <div className='text-sm flex items-center cursor-pointer w-full' onClick={() => {
+                  this.setState({
+                    dataExplorer: {
+                      data: record.value,
+                      dataType: record.key,
+                    }
+                  })
+                  this.dataExplorerModal.toggle()
+                }}>
+                  <div className='truncate'>{record.value}</div>
+                  <ExternalLinkIcon className='w-4 ml-2 pb-1 flex-shrink-0' />
+                </div>
+              </div>
+            ))}
+            {this.state.connected && this.props.resolver ? (
+              <div className='mt-4 flex'>
+                <components.buttons.Button sm={true} onClick={() => this.setRecordModal.toggle()} text='Add a record' />
+              </div>
+            ) : null}
+          </div>
+          {/*
+          <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
+            <div className='flex justify-between items-center'>
+              <div className='font-bold'>{'Reverse Records'}</div>
+              {!this.state.connected ? (
+                <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
+              ) : isOwned ? (
+                <PlusCircleIcon className='cursor-pointer w-6' onClick={() => this.setRecordModal.toggle()} />
+              ) : null}
+            </div>
+            {this.props.records.length > 0 ? (
+              <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
+            ) : null}
+
+            {this.props.records.length === 0 ? (
+              <div className='mt-4 text-sm flex items-center'>
+                <div>{'No records have been set.'}</div>
+                {this.state.connected ? (this.props.resolver ? (
+                  <div onClick={() => this.setRecordModal.toggle()} className='ml-2 text-alert-blue underline cursor-pointer'>{'Add a record'}</div>
+                ) : (
+                  <div className='flex items-center'>
+                    <div onClick={this.setResolver} className='ml-2 text-alert-blue underline cursor-pointer'>{'Set a resolver'}</div>
+                    <div>&nbsp;{'to set records.'}</div>
+                  </div>
+                )) : null}
+              </div>
+            ) : this.props.isLoadingRecords ? (
+              <div className='mt-4 w-full text-center'>
+                <components.Spinner />
+              </div>
+            ) : this.props.records.map((record, index) => (
+              <div className='mt-4' key={index}>
+                <div className='text-sm font-bold'>
+                  {record.label}
+                </div>
+                <div className='text-sm flex items-center cursor-pointer w-full' onClick={() => {
+                  this.setState({
+                    dataExplorer: {
+                      data: record.value,
+                      dataType: record.key,
+                    }
+                  })
+                  this.dataExplorerModal.toggle()
+                }}>
+                  <div className='truncate'>{record.value}</div>
+                  <ExternalLinkIcon className='w-4 ml-2 pb-1 flex-shrink-0' />
+                </div>
+              </div>
+            ))}
+          </div>
+          */}
         </div>
       </div>
     )
