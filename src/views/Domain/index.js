@@ -28,6 +28,8 @@ class Domain extends React.PureComponent {
       setRecordReset: 0, // increment this to reset the form
       defaultResolver: undefined,
       dataExplorer: null,
+      editRecordKey: null,
+      deleteRecordKey: null,
     }
     this.searchPlaceholder = 'Search for another name'
     this.loadDomain(domain)
@@ -76,7 +78,6 @@ class Domain extends React.PureComponent {
   componentDidUpdate(prevProps) {
     if (!prevProps.setRecordComplete && this.props.setRecordComplete) {
       this.setRecordModal.toggle()
-      this.setState(currState => ({ setRecordReset: currState.setRecordReset + 1 }))
       this.props.resetSetRecord()
     }
   }
@@ -118,6 +119,24 @@ class Domain extends React.PureComponent {
 
   _handleSetRecord = (type, value) => {
     this.props.setStandardRecord(this.state.domain, type, value)
+  }
+
+  showSetRecord = (key, value) => {
+    this.setState(currState => ({
+      editRecordKey: key,
+      deleteRecordKey: null,
+    }))
+    if (!value) value = ''
+    this.setRecord.setValue(value)
+    this.setRecordModal.toggle()
+  }
+
+  showDeleteRecord = (key) => {
+    this.setState(currState => ({
+      editRecordKey: null,
+      deleteRecordKey: key,
+    }))
+    this.setRecordModal.toggle()
   }
 
   renderAvailableBody() {
@@ -217,6 +236,7 @@ class Domain extends React.PureComponent {
   renderRegistered() {
     let account = services.provider.getAccount()
     const isOwned = account ? account.toLowerCase() === this.props.domain.owner.toLowerCase() : false
+    const isExpired = Date.now() >= this.props.domain.expiresAt * 1000 
     const hasLoadedPrivacy = !!this.props.isRevealed && (this.props.isRevealed[this.props.domain.hash] != undefined)
     
     return (
@@ -230,8 +250,8 @@ class Domain extends React.PureComponent {
             this.transferDomainModal.toggle()
           }} domain={this.state.domain} />
         </components.Modal>
-        <components.Modal title={'Set Record'} ref={(ref) => this.setRecordModal = ref}>
-          <SetRecord key={this.state.setRecordReset} handleSubmit={this._handleSetRecord} loading={this.props.isSettingRecord} api={this.api} />
+        <components.Modal title={this.state.deleteRecordKey ? 'Delete Record' : this.state.editRecordKey ? 'Edit Record' :  'Add Record'} ref={(ref) => this.setRecordModal = ref}>
+          <SetRecord deleteRecord={this.state.deleteRecordKey} editRecord={this.state.editRecordKey} handleSubmit={this._handleSetRecord} loading={this.props.isSettingRecord} api={this.api} ref={(ref) => this.setRecord = ref} />
         </components.Modal>
         <components.Modal title={'Set Resolver'} ref={(ref) =>  this.setResolverModal = ref}>
           <SetResolver onComplete={() => this.setResolverModal.toggle()} domain={this.state.domain} resolver={this.props.resolver} />
@@ -294,17 +314,23 @@ class Domain extends React.PureComponent {
               <div>
                 <div className='font-bold'>{'Expiry'}</div>
                 <div className='flex items-center'>
-                  <div>
-                    {new Intl.DateTimeFormat(
-                      navigator.language,
-                      { month: 'short', day: 'numeric', year: 'numeric' }
-                    ).format(this.props.domain.expiresAt * 1000)}
-                    {' at '}
-                    {new Intl.DateTimeFormat(
-                      navigator.langauge,
-                      { hour: 'numeric', minute: 'numeric' }
-                    ).format(this.props.domain.expiresAt * 1000)}
-                  </div>
+                  {isExpired ? (
+                    <div>
+                      Expired
+                    </div>
+                  ) : (
+                    <div>
+                      {new Intl.DateTimeFormat(
+                        navigator.language,
+                        { month: 'short', day: 'numeric', year: 'numeric' }
+                      ).format(this.props.domain.expiresAt * 1000)}
+                      {' at '}
+                      {new Intl.DateTimeFormat(
+                        navigator.langauge,
+                        { hour: 'numeric', minute: 'numeric' }
+                      ).format(this.props.domain.expiresAt * 1000)}
+                    </div>
+                  )}
                   {this.state.connected && isOwned && this.props.domain.canRenew && services.environment.REGISTRATIONS_ENABLED ? (
                     <components.buttons.Transparent onClick={(navigator) => {
                       this.props.renewDomain(this.props.domain.domain)
@@ -361,8 +387,8 @@ class Domain extends React.PureComponent {
             ) : this.props.records.length === 0 ? (
               <div className='mt-4 text-sm flex items-center'>
                 <div>{'No records have been set.'}</div>
-                {this.state.connected ? (this.props.resolver ? (
-                  <div onClick={() => this.setRecordModal.toggle()} className='ml-2 text-alert-blue underline cursor-pointer'>{'Add a record'}</div>
+                {this.state.connected && isOwned ? (this.props.resolver ? (
+                  <div onClick={() => this.showSetRecord()} className='ml-2 text-alert-blue underline cursor-pointer'>{'Add a record'}</div>
                 ) : (
                   <div className='flex items-center'>
                     <div onClick={this.setResolver} className='ml-2 text-alert-blue underline cursor-pointer'>{'Set a resolver'}</div>
@@ -370,30 +396,46 @@ class Domain extends React.PureComponent {
                   </div>
                 )) : null}
               </div>
-            ) : this.props.records.map((record, index) => (
-              <div className='mt-4' key={index}>
-                <div className='text-sm font-bold'>
-                  {record.label}
-                </div>
-                <div className='text-sm flex items-center cursor-pointer w-full' onClick={() => {
-                  this.setState({
-                    dataExplorer: {
-                      data: record.value,
-                      dataType: record.key,
-                    }
-                  })
-                  this.dataExplorerModal.toggle()
-                }}>
-                  <div className='truncate'>{record.value}</div>
-                  <ExternalLinkIcon className='w-4 ml-2 pb-1 flex-shrink-0' />
-                </div>
+            ) : (
+              <div>
+                {this.props.records.map((record, index) => (
+                  <div className='mt-4' key={index}>
+                    <div className='text-sm font-bold'>
+                      {record.label}
+                    </div>
+                    <div className='text-sm flex items-center cursor-pointer w-full' onClick={() => {
+                      this.setState({
+                        dataExplorer: {
+                          data: record.value,
+                          dataType: record.key,
+                        }
+                      })
+                      this.dataExplorerModal.toggle()
+                    }}>
+                      <div className='truncate'>{record.value}</div>
+                      <ExternalLinkIcon className='w-4 ml-2 pb-1 flex-shrink-0' />
+                      {this.state.connected && isOwned ? (
+                        <div className='flex items-center'>
+                          <div onClick={(e) => {
+                            e.stopPropagation()
+                            this.showSetRecord(record.key, record.value)
+                          }} className='ml-2 text-alert-blue underline cursor-pointer'>{'Edit'}</div>
+                          <div onClick={(e) => {
+                            e.stopPropagation()
+                            this.showDeleteRecord(record.key)
+                          }} className='ml-2 text-alert-blue underline cursor-pointer'>{'Delete'}</div>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                ))}
+                {this.state.connected && this.props.resolver && isOwned ? (
+                  <div className='mt-4 flex'>
+                    <components.buttons.Button sm={true} onClick={() => this.showSetRecord()} text='Add a record' />
+                  </div>
+                ) : null}
               </div>
-            ))}
-            {this.state.connected && this.props.resolver ? (
-              <div className='mt-4 flex'>
-                <components.buttons.Button sm={true} onClick={() => this.setRecordModal.toggle()} text='Add a record' />
-              </div>
-            ) : null}
+            )}
           </div>
           {/*
           <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>

@@ -188,8 +188,10 @@ const actions = {
       const api = await services.provider.buildAPI()
       try {
         await api.setResolver(domain, resolverAddress)
-        dispatch(actions.loadRecords(domain))
-        dispatch(actions.setResolverComplete(true))
+        setTimeout(() => {
+          dispatch(actions.loadRecords(domain))
+          dispatch(actions.setResolverComplete(true))
+        }, 1000)
       } catch (err) {
         alert('Failed to set resolver')
       }
