@@ -302,7 +302,7 @@ class Domain extends React.PureComponent {
                   <div className='truncate'>{this.props.domain.owner}</div>
                   <ExternalLinkIcon className='w-4 ml-2 flex-shrink-0' />
                 </div>
-                {this.state.connected && isOwned ? (
+                {this.state.connected && isOwned && !isExpired ? (
                   <components.buttons.Transparent onClick={() => {
                     this.props.resetTransferDomain()
                     this.transferDomainModal.toggle()
@@ -349,7 +349,7 @@ class Domain extends React.PureComponent {
                   ) : (
                     <div>Enhanced Privacy</div>
                   )}
-                  {this.state.connected && isOwned && !this.props.isRevealed[this.props.domain.hash] ? (
+                  {this.state.connected && isOwned && !isExpired && !this.props.isRevealed[this.props.domain.hash] ? (
                     <components.buttons.Transparent onClick={() => {
                       this.props.resetRevealDomain()
                       this.revealDomainModal.toggle()
@@ -366,7 +366,7 @@ class Domain extends React.PureComponent {
                 ) : (
                   <div>Not set</div>
                 )}
-                {this.state.connected && isOwned ? (
+                {this.state.connected && isOwned && !isExpired ? (
                   <components.buttons.Transparent onClick={this.setResolver}><div className='ml-2 inline-block cursor-pointer text-alert-blue underline'>Set Resolver</div></components.buttons.Transparent>
                 ) : null}
               </div>
@@ -387,7 +387,7 @@ class Domain extends React.PureComponent {
             ) : this.props.records.length === 0 ? (
               <div className='mt-4 text-sm flex items-center'>
                 <div>{'No records have been set.'}</div>
-                {this.state.connected && isOwned ? (this.props.resolver ? (
+                {this.state.connected && isOwned && !isExpired ? (this.props.resolver ? (
                   <div onClick={() => this.showSetRecord()} className='ml-2 text-alert-blue underline cursor-pointer'>{'Add a record'}</div>
                 ) : (
                   <div className='flex items-center'>
@@ -414,7 +414,7 @@ class Domain extends React.PureComponent {
                     }}>
                       <div className='truncate'>{record.value}</div>
                       <ExternalLinkIcon className='w-4 ml-2 pb-1 flex-shrink-0' />
-                      {this.state.connected && isOwned ? (
+                      {this.state.connected && isOwned && !isExpired ? (
                         <div className='flex items-center'>
                           <div onClick={(e) => {
                             e.stopPropagation()
@@ -429,7 +429,7 @@ class Domain extends React.PureComponent {
                     </div>
                   </div>
                 ))}
-                {this.state.connected && this.props.resolver && isOwned ? (
+                {this.state.connected && this.props.resolver && isOwned && !isExpired ? (
                   <div className='mt-4 flex'>
                     <components.buttons.Button sm={true} onClick={() => this.showSetRecord()} text='Add a record' />
                   </div>
