@@ -220,6 +220,8 @@ const actions = {
           const obj = Object.assign(record, recordsByKey[record.type])
           return obj
         })))
+      } else {
+        dispatch(actions.recordsLoaded([]))
       }
       dispatch(actions.isLoadingRecords(false))
     }
