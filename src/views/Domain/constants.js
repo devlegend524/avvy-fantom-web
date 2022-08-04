@@ -17,6 +17,12 @@ const constants = reduxService.prepareConstants(
     'SET_RESOLVER_LOADING',
     'SET_RESOLVER_COMPLETE',
 
+    // reverse records
+    'IS_LOADING_REVERSE_RECORDS',
+    'SET_REVERSE_RECORDS',
+    'IS_SETTING_EVM_REVERSE_RECORD',
+    'IS_SETTING_EVM_REVERSE_RECORD_COMPLETE',
+
     // revealing
     'IS_REVEALING_DOMAIN',
     'SET_REVEAL_COMPLETE',

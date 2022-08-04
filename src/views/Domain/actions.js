@@ -26,7 +26,10 @@ const actions = {
         domain = await api.loadDomain(_domain)
         dispatch(services.names.actions.addRecord(_domain, domain.hash))
         dispatch(services.names.actions.checkIsRevealed(domain.hash))
-        if (domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_SELF || domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_OTHER) dispatch(actions.loadRecords(_domain))
+        if (domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_SELF || domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_OTHER) {
+          dispatch(actions.loadRecords(_domain))
+          dispatch(actions.loadReverseRecords(_domain))
+        }
         if (domain.status === domain.constants.DOMAIN_STATUSES.REGISTERED_SELF) {
           const currExpiry = domain.expiresAt
           const now = parseInt(Date.now() / 1000)
@@ -224,6 +227,68 @@ const actions = {
         dispatch(actions.recordsLoaded([]))
       }
       dispatch(actions.isLoadingRecords(false))
+    }
+  },
+
+  isLoadingReverseRecords: (isLoading) => {
+    return {
+      type: constants.IS_LOADING_REVERSE_RECORDS,
+      isLoading
+    }
+  },
+
+  setReverseRecords: (reverseRecords) => {
+    return {
+      type: constants.SET_REVERSE_RECORDS,
+      reverseRecords
+    }
+  },
+
+  isSettingEVMReverseRecord: (isLoading) => {
+    return {
+      type: constants.IS_SETTING_EVM_REVERSE_RECORD,
+      isLoading
+    }
+  },
+
+  isSettingEVMReverseRecordComplete: (isComplete) => {
+    return {
+      type: constants.IS_SETTING_EVM_REVERSE_RECORD_COMPLETE,
+      isComplete
+    }
+  },
+
+  setEVMReverseRecord: (domain) => {
+    return async (dispatch, getState) => {
+      dispatch(actions.isSettingEVMReverseRecord(true))
+      try {
+        const api = services.provider.buildAPI()
+        await api.setEVMReverseRecord(domain)
+        dispatch(actions.setReverseRecords({
+          [api.avvy.RECORDS.EVM]: api.account
+        }))
+        dispatch(actions.isSettingEVMReverseRecordComplete(true))
+      } catch {
+        alert('Failed to set reverse record')
+      }
+      dispatch(actions.isSettingEVMReverseRecord(false))
+    }
+  },
+
+  resetSetEVMReverseRecord: () => {
+    return async (dispatch, getState) => {
+      dispatch(actions.isSettingEVMReverseRecordComplete(false))
+      dispatch(actions.isSettingEVMReverseRecord(false))
+    }
+  },
+
+  loadReverseRecords: (domain) => {
+    return async (dispatch, getState) => {
+      dispatch(actions.isLoadingReverseRecords(true))
+      const api = services.provider.buildAPI()
+      const reverseRecords = await api.getReverseRecords(domain)
+      dispatch(actions.setReverseRecords(reverseRecords))
+      dispatch(actions.isLoadingReverseRecords(false))
     }
   },
 
