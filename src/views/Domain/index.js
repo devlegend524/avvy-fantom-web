@@ -8,6 +8,7 @@ import services from 'services'
 import components from 'components'
 
 import AddBid from './AddBid'
+import SetEVMReverseRecord from './SetEVMReverseRecord'
 import SetRecord from './SetRecord'
 import SetResolver from './SetResolver'
 import TransferDomain from './TransferDomain'
@@ -45,8 +46,6 @@ class Domain extends React.PureComponent {
     const api = await services.provider.buildAPI()
     this.setState({
       defaultResolver: api.getDefaultResolverAddress()
-    }, () => {
-      console.log('default', this.state.defaultResolver)
     })
   }
 
@@ -238,11 +237,17 @@ class Domain extends React.PureComponent {
     const isOwned = account ? account.toLowerCase() === this.props.domain.owner.toLowerCase() : false
     const isExpired = Date.now() >= this.props.domain.expiresAt * 1000 
     const hasLoadedPrivacy = !!this.props.isRevealed && (this.props.isRevealed[this.props.domain.hash] != undefined)
+    if (!this.avvy) return
     
     return (
       <div className='max-w-screen-md m-auto flex w-full md:flex-row md:items-start'>
         <components.Modal ref={(ref) => this.dataExplorerModal = ref}>
           <components.DataExplorer data={this.state.dataExplorer} />
+        </components.Modal>
+        <components.Modal title={'Set C-Chain / EVM Reverse Record'} ref={(ref) => this.setEVMReverseRecordModal = ref}>
+          <SetEVMReverseRecord domain={this.state.domain} onComplete={() => {
+            this.setEVMReverseRecordModal.toggle()
+          }} />
         </components.Modal>
         <components.Modal title={'Transfer Domain'} ref={(ref) => this.transferDomainModal = ref}>
           <TransferDomain onComplete={() => {
@@ -437,57 +442,52 @@ class Domain extends React.PureComponent {
               </div>
             )}
           </div>
-          {/*
           <div className='mt-4 bg-gray-100 rounded-xl w-full relative p-4 md:p-8 dark:bg-gray-800 w-full'>
             <div className='flex justify-between items-center'>
               <div className='font-bold'>{'Reverse Records'}</div>
               {!this.state.connected ? (
                 <components.buttons.Button sm={true} text='Connect' onClick={() => this.connectModal.toggle()} />
-              ) : isOwned ? (
-                <PlusCircleIcon className='cursor-pointer w-6' onClick={() => this.setRecordModal.toggle()} />
               ) : null}
             </div>
-            {this.props.records.length > 0 ? (
-              <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
-            ) : null}
 
-            {this.props.records.length === 0 ? (
-              <div className='mt-4 text-sm flex items-center'>
-                <div>{'No records have been set.'}</div>
-                {this.state.connected ? (this.props.resolver ? (
-                  <div onClick={() => this.setRecordModal.toggle()} className='ml-2 text-alert-blue underline cursor-pointer'>{'Add a record'}</div>
-                ) : (
-                  <div className='flex items-center'>
-                    <div onClick={this.setResolver} className='ml-2 text-alert-blue underline cursor-pointer'>{'Set a resolver'}</div>
-                    <div>&nbsp;{'to set records.'}</div>
-                  </div>
-                )) : null}
-              </div>
-            ) : this.props.isLoadingRecords ? (
+            <div className='w-full bg-gray-300 dark:bg-gray-700 mt-4' style={{height: '1px'}}></div>
+
+            {this.props.isLoadingReverseRecords ? (
               <div className='mt-4 w-full text-center'>
                 <components.Spinner />
               </div>
-            ) : this.props.records.map((record, index) => (
-              <div className='mt-4' key={index}>
-                <div className='text-sm font-bold'>
-                  {record.label}
-                </div>
-                <div className='text-sm flex items-center cursor-pointer w-full' onClick={() => {
-                  this.setState({
-                    dataExplorer: {
-                      data: record.value,
-                      dataType: record.key,
-                    }
-                  })
-                  this.dataExplorerModal.toggle()
-                }}>
-                  <div className='truncate'>{record.value}</div>
-                  <ExternalLinkIcon className='w-4 ml-2 pb-1 flex-shrink-0' />
+            ) : (
+              <div className='mt-4 text-sm'>
+                <div className='font-bold'>{'C-Chain / EVM Address'}</div>
+                <div className='truncate flex items-center flex-wrap'>
+                  {this.props.reverseRecords[this.avvy.RECORDS.EVM] ? (
+                    <div className='flex items-center cursor-pointer w-full sm:w-auto' onClick={() => {
+                      this.setState({
+                        dataExplorer: {
+                          title: 'View on Block Explorer',
+                          data: this.props.domain.owner,
+                          dataType: this.avvy.RECORDS.EVM,
+                        }
+                      })
+                      this.dataExplorerModal.toggle()
+                    }}>
+                      <div className='truncate'>{this.props.domain.owner}</div>
+                      <ExternalLinkIcon className='w-4 ml-2 flex-shrink-0' />
+                    </div>
+                  ) : (
+                    <div>
+                      Not set
+                    </div>
+                  )}
+                  {this.state.connected && isOwned && !isExpired ? (
+                    <components.buttons.Transparent onClick={() => {
+                      this.setEVMReverseRecordModal.toggle()
+                    }}><div className='ml-2 inline-block cursor-pointer text-alert-blue underline'>Set Reverse</div></components.buttons.Transparent>
+                  ) : null}
                 </div>
               </div>
-            ))}
+            )}
           </div>
-          */}
         </div>
       </div>
     )
@@ -559,6 +559,10 @@ const mapStateToProps = (state) => ({
   records: selectors.records(state),
   setRecordComplete: selectors.setRecordComplete(state),
   avatarRecord: selectors.avatarRecord(state),
+
+  isLoadingReverseRecords: selectors.isLoadingReverseRecords(state),
+  reverseRecords: selectors.reverseRecords(state),
+
   resolver: selectors.resolver(state),
   hasSeenBidDisclaimer: services.sunrise.selectors.hasSeenBidDisclaimer(state),
   registrationPremium: selectors.registrationPremium(state),
