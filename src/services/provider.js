@@ -243,7 +243,7 @@ const provider = {
         resolve()
       }
       window.ethereum.on('accountsChanged', handleChanged)
-      provider.connectMetamask()
+      provider.connectMetamask((provider) => provider.isAvalanche)
     })
   },
 
