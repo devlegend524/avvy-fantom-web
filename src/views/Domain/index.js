@@ -131,11 +131,13 @@ class Domain extends React.PureComponent {
     this.setRecordModal.toggle()
   }
 
-  showDeleteRecord = (key) => {
+  showDeleteRecord = (key, value) => {
     this.setState(currState => ({
       editRecordKey: null,
       deleteRecordKey: key,
     }))
+    if (!value) value = ''
+    this.setRecord.setValue(value)
     this.setRecordModal.toggle()
   }
 
@@ -422,7 +424,7 @@ class Domain extends React.PureComponent {
                           }} className='ml-2 text-alert-blue underline cursor-pointer'>{'Edit'}</div>
                           <div onClick={(e) => {
                             e.stopPropagation()
-                            this.showDeleteRecord(record.key)
+                            this.showDeleteRecord(record.key, record.value)
                           }} className='ml-2 text-alert-blue underline cursor-pointer'>{'Delete'}</div>
                         </div>
                       ) : null}
