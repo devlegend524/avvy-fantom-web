@@ -18,6 +18,12 @@ export const initialState = {
   setResolverLoading: false,
   setResolverComplete: false,
 
+  // reverse records
+  isLoadingReverseRecords: false,
+  reverseRecords: {},
+  isSettingEVMReverseRecord: false,
+  isSettingEVMReverseRecordComplete: false,
+
   // reveal
   isRevealingDomain: false,
   isRevealComplete: false,
@@ -98,6 +104,33 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         setResolverComplete: action.complete
+      }
+
+    case constants.IS_LOADING_REVERSE_RECORDS:
+      return {
+        ...state,
+        isLoadingReverseRecords: action.isLoading
+      }
+
+    case constants.SET_REVERSE_RECORDS:
+      return {
+        ...state,
+        reverseRecords: {
+          ...state.reverseRecords,
+          ...action.reverseRecords,
+        }
+      }
+
+    case constants.IS_SETTING_EVM_REVERSE_RECORD:
+      return {
+        ...state,
+        isSettingEVMReverseRecord: action.isLoading
+      }
+
+    case constants.IS_SETTING_EVM_REVERSE_RECORD_COMPLETE:
+      return {
+        ...state,
+        isSettingEVMReverseRecordComplete: action.isComplete
       }
 
     case constants.IS_REVEALING_DOMAIN:

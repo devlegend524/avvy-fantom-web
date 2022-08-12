@@ -17,6 +17,11 @@ const selectors = {
   setResolverLoading: (state) => root(state).setResolverLoading,
   setResolverComplete: (state) => root(state).setResolverComplete,
 
+  isLoadingReverseRecords: (state) => root(state).isLoadingReverseRecords,
+  reverseRecords: (state) => root(state).reverseRecords,
+  isSettingEVMReverseRecord: (state) => root(state).isSettingEVMReverseRecord,
+  isSettingEVMReverseRecordComplete: (state) => root(state).isSettingEVMReverseRecordComplete,
+
   isRevealingDomain: (state) => root(state).isRevealingDomain,
   isRevealComplete: (state) => root(state).isRevealComplete,
 
