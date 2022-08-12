@@ -2,11 +2,11 @@
 # yarn lockfile v1
 
 
-"@avvy/client@file:../avvy-v2-client":
-  "resolved" "file:../avvy-v2-client"
-  "version" "2.1.7"
+"@avvy/client@file:../js-client":
+  "resolved" "file:../js-client"
+  "version" "2.3.0"
   dependencies:
-    "circomlibjs" "^0.0.8"
+    "circomlibjs" "git+https://git@github.com/connorbode/circomlibjs.git"
     "ethers" "^5.5.4"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.7", "@babel/code-frame@^7.5.5":
