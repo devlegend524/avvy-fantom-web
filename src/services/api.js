@@ -519,7 +519,7 @@ class AvvyClient {
   async getReverseRecords(domain) {
     const hash = await client.utils.nameHash(domain)
     const promises = [
-      this.avvy.contracts.EVMReverseResolverV1.entries(hash, hash)
+      this.avvy.contracts.EVMReverseResolverV1.getEntry(hash, hash)
     ]
     const results = await Promise.all(promises)
     return {
