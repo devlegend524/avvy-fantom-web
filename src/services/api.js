@@ -516,6 +516,23 @@ class AvvyClient {
     }).filter(res => res.value !== '')
   }
 
+  async getReverseRecords(domain) {
+    const hash = await client.utils.nameHash(domain)
+    const promises = [
+      this.avvy.contracts.EVMReverseResolverV1.entries(hash, hash)
+    ]
+    const results = await Promise.all(promises)
+    return {
+      [this.avvy.RECORDS.EVM]: results[0] === '0x0000000000000000000000000000000000000000' ? null : results[0]
+    }
+  }
+
+  async setEVMReverseRecord(domain) {
+    const hash = await client.utils.nameHash(domain)
+    const tx = await this.avvy.contracts.EVMReverseResolverV1.set(hash, [])
+    await tx.wait()
+  }
+
   async getBalance() {
     const balance = await this.signer.getBalance()
     return balance
